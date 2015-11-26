@@ -86,7 +86,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
   });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/home');
+  $urlRouterProvider.otherwise('/tab/cats');
 
   // 解决Android设备上tab变到上面去的问题
   $ionicConfigProvider.platform.android.tabs.position("bottom");
