@@ -18,7 +18,9 @@ angular.module('starter.controllers', ['ngCordova'])
 })
 
 .controller('CatDetailCtrl', function($scope, $rootScope,$stateParams, Chats,$cordovaMedia, $cordovaFile) {
+    $scope.step = 1;
   $scope.chat = Chats.get($stateParams.catId);
+    //alert($scope.chat.url);
     $scope.mode = '';
     if (!$rootScope.count) $rootScope.count = 0;
     $rootScope.count++;
@@ -102,6 +104,9 @@ angular.module('starter.controllers', ['ngCordova'])
       //$scope.mediaRec.pause();
 
       $scope.currentRecord = false;
+
+      $scope.step++;
+
     }
 
     $scope.previewRecord = function() {
@@ -168,7 +173,7 @@ angular.module('starter.controllers', ['ngCordova'])
         case -1:
               return '录音失败';
         case 0:
-              return '准备就绪';
+              return '等待视频加载...';
         case 1:
               return '开始';
         case 2:
@@ -197,8 +202,10 @@ angular.module('starter.controllers', ['ngCordova'])
       $scope.my_player.on("loadedmetadata", function(a){
         $scope.duration = parseInt($scope.my_player.duration());//获取总时长
         $scope.$apply();
-        //console.log($scope.duration);
-        //alert(a)
+
+        //setTimeout(function(){
+        //  $scope.resetRecord();
+        //},1000)
       });
       $scope.my_player.on("timeupdate", function(a){
         $scope.currentTime = parseInt($scope.my_player.currentTime());//获取当前播放时间
