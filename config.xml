@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget id="com.ionicframework.chang417506" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.geiliyou.chang417506" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>我来配音</name>
   <description>
         赞成正在进行的项目。
@@ -12,7 +12,9 @@
   <allow-navigation href="http://182.92.230.67/*"/>
   <allow-navigation href="http://101.200.81.99:8080/*"/>
   <allow-navigation href="http://video-js.zencoder.com/*"/>
+  <allow-navigation href="ftp://101.200.81.99/*"/>
   <allow-intent href="http://*/*" />
+  <allow-intent href="ftp://*/*" />
   <preference name="webviewbounce" value="false"/>
   <preference name="UIWebViewBounce" value="false"/>
   <preference name="DisallowOverscroll" value="true"/>

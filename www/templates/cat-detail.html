@@ -10,12 +10,13 @@
     <video class="video-js vjs-default-skin vjs-big-play-centered" on-finish-render ng-repeat="video in ['']"
           controls muted preload="true"  style="width: 100%" height="180" id="my_video{{videoid}}"
           poster="http://video-js.zencoder.com/oceans-clip.png"
-          data-setup="{}">
+           data-setup='{"example_option":true}'>
       <!--<source src="{{chat.url}}" type='video/mp4'>-->
       <source src="http://101.200.81.99:8080/ciwen/oceans.mp4" type='video/mp4'>
       <!--<source src="http://101.200.81.99:8080/ciwen/test2x.mp4" type='video/mp4'>-->
       <source src="http://video-js.zencoder.com/oceans-clip.webm" type='video/webm' />
       <source src="http://video-js.zencoder.com/oceans-clip.ogv" type='video/ogg' />
+      <!--<track kind="Subtitles" src="http://101.200.81.99:8080/ciwen/oceans.vtt" default srclang="zh" label="中文"></track>-->
     </video>
 
 
@@ -30,9 +31,22 @@
     </ion-list>
     <p class="{{!currentRecord ? 'balanced':'assertive'}} padding">
       <i class="button-large icon ion-ios-refresh" ng-show="step==1" ng-click="resetRecord()"  ng-show="!currentRecord"></i>
-      <i class="button-large icon {{currentRecord ? 'ion-stop':'ion-record'}}" ng-show="step>1" ng-click="captureAudio()"></i>
+      <i class="button-large icon {{currentRecord ? 'ion-pause':'ion-record'}}" ng-show="step>1" ng-click="captureAudio()"></i>
       <i class="button-large icon ion-ios-eye-outline" ng-click="previewRecord()" ng-show="!currentRecord && step>1"></i>
-
+      <i class="button-large icon ion-ios-upload-outline" ng-click="uploads()" ng-show="!currentRecord && step>1"></i>
+      <i class="button-large icon ion-information" ng-click="getInfo()" ng-show="!currentRecord && step>1"></i>
     </p>
+    <ion-list>
+      <ion-item class="text-left" >
+        <p>info: {{info_pause_count}}, {{start_time}}, {{current_time}}</p>
+        <p>pauseCount: {{pauseCount}}</p>
+        <p>preview_flag: {{preview_flag}}</p>
+        <p>preview_inprocess: {{preview_inprocess}}</p>
+        <p>currentTime: {{currentTime}}</p>
+        <p>mode: {{mode}}</p>
+        <p>currentRecord: {{currentRecord}}</p>
+        <p>step: {{step}}</p>
+      </ion-item>
+    </ion-list>
   </ion-content>
 </ion-view>

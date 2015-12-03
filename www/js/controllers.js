@@ -1,25 +1,31 @@
 angular.module('starter.controllers', ['ngCordova'])
 
-.controller('HomeCtrl', function($scope) {})
+  .controller('HomeCtrl', function($scope) {})
 
-.controller('CatsCtrl', function($scope, Chats) {
-  // With the new view caching in Ionic, Controllers are only called
-  // when they are recreated or on app start, instead of every page change.
-  // To listen for when this page is active (for example, to refresh data),
-  // listen for the $ionicView.enter event:
-  //
-  //$scope.$on('$ionicView.enter', function(e) {
-  //});
+  .controller('CatsCtrl', function($scope, Chats) {
+    // With the new view caching in Ionic, Controllers are only called
+    // when they are recreated or on app start, instead of every page change.
+    // To listen for when this page is active (for example, to refresh data),
+    // listen for the $ionicView.enter event:
+    //
+    //$scope.$on('$ionicView.enter', function(e) {
+    //});
 
-  $scope.chats = Chats.all();
-  $scope.remove = function(chat) {
-    Chats.remove(chat);
-  };
-})
+    $scope.chats = Chats.all();
+    $scope.remove = function(chat) {
+      Chats.remove(chat);
+    };
+  })
 
-.controller('CatDetailCtrl', function($scope, $rootScope,$stateParams, Chats,$cordovaMedia, $cordovaFile) {
+  .controller('CatDetailCtrl', function($scope, $rootScope,$stateParams, Chats,$cordovaMedia, $cordovaFile,$cordovaFileTransfer,$ionicLoading) {
+    var UPLOAD_URL = 'http://101.200.81.99:8080'
     $scope.step = 1;
-  $scope.chat = Chats.get($stateParams.catId);
+    $scope.pauseCount = 0;
+    $scope.info = [];
+    $scope.preview_flag = false;
+    $scope.preview_inprocess = false;
+
+    $scope.chat = Chats.get($stateParams.catId);
     //alert($scope.chat.url);
     $scope.mode = '';
     if (!$rootScope.count) $rootScope.count = 0;
@@ -43,7 +49,7 @@ angular.module('starter.controllers', ['ngCordova'])
           $cordovaFile.createFile($rootScope.rootDir, $scope.myRecord, true)
             .then(function (success) {
               // success
-              alert('创建文件成功');
+              //alert('创建文件成功');
             }, function (error) {
               // error
               alert('创建文件失败');
@@ -51,20 +57,16 @@ angular.module('starter.controllers', ['ngCordova'])
         });
     };
 
-    $scope.prepare = function(){
-      $scope.currentTime = 0;
-      $scope.recordReady = true;
+    $scope.prepare = function(pause_count,time){
+      //$scope.currentTime = 0;
       //$scope.volume = my_player.volume();
 
-      $scope.myRecord = 'myrecording.mp3';
+      $scope.myRecord = 'myrecording_' + pause_count + '.mp3';
       $scope.prepareAudiofile();
 
-      $scope.src = ''+ $rootScope.rootDir + $scope.myRecord;
-      //alert($scope.src);
-      $scope.mediaRec = new Media($scope.src,
+      $scope.mediaRec = new Media($rootScope.rootDir + $scope.myRecord,
         // success callback
         function() {
-
           if ($scope.mode == 'record'){ //录完
             //alert("录音完成");
             $scope.recordStatus = 5;
@@ -72,10 +74,9 @@ angular.module('starter.controllers', ['ngCordova'])
           else if ($scope.mode == 'preview'){ //播完
             //alert("录音播放完成");
             $scope.recordStatus = 6;
-            if ($scope.my_player)
-             $scope.my_player.pause();
+            //if ($scope.my_player)
+            //  $scope.my_player.pause();
           }
-          $scope.$apply();
         },
         // error callback
         function(err) {
@@ -83,15 +84,21 @@ angular.module('starter.controllers', ['ngCordova'])
           $scope.recordStatus = -1;
           $scope.$apply();
         }
-        //,function(status){
-        //  //alert("现在：" + status);
-        //  $scope.recordStatus = status;
-        //  $scope.$apply();
-        //}
+        ,function(status){
+        }
       );
+
+      if (!$scope.preview_flag){
+        var _info = {
+          count: pause_count,
+          start_time: time,
+          name: $scope.myRecord
+        };
+        $scope.info.push(_info);
+      }
+
     }
 
-    $scope.prepare();
     $scope.currentRecord = false;
 
     $scope.resetRecord = function() {
@@ -109,18 +116,18 @@ angular.module('starter.controllers', ['ngCordova'])
 
     }
 
+    // 支持preview播放
     $scope.previewRecord = function() {
       $scope.mode = 'preview';
-
       $scope.my_player.currentTime(0);
-      //$scope.mediaRec.stopRecord();
-      //$scope.mediaRec.seekTo(0); // 这个操作自动停止本次录制
       $scope.my_player.play();
-      $scope.mediaRec.play();
+
+      // 放到“timeupdate”事件触发时播放
+      $scope.preview_flag = true;
+      $scope.preview_inprocess = false;
+      $scope.pauseCount = 0; //不能再录了
 
       $scope.currentRecord = false;
-      $scope.recordReady = false;
-
       $scope.recordStatus = 7;
       $scope.$apply();
     }
@@ -135,7 +142,7 @@ angular.module('starter.controllers', ['ngCordova'])
       //$scope.mediaRec.seekTo(0);
 
       $scope.currentRecord = false;
-      $scope.recordReady = false;
+      $scope.pauseCount++;
     }
 
     //Media 不支持在录制过程中暂停，所以暂停其实是停止录制. 继续录制其实是开始录制
@@ -144,11 +151,14 @@ angular.module('starter.controllers', ['ngCordova'])
 
       if (!$scope.currentRecord){
 
-        if (!$scope.recordReady){
-          $scope.prepare();
+        // 录制第一个录音，清空先
+        if ($scope.pauseCount == 0){
+          $scope.info = []; //
         }
 
-        $scope.my_player.currentTime(0);
+        $scope.prepare($scope.pauseCount, $scope.my_player.currentTime());
+
+        //$scope.my_player.currentTime(0);
         $scope.my_player.play();
 
         // Record audio
@@ -160,36 +170,38 @@ angular.module('starter.controllers', ['ngCordova'])
         $scope.my_player.pause();
         $scope.mediaRec.stopRecord();
         $scope.mediaRec.release();
-        $scope.recordReady = false;
         $scope.mode = '';
-        $scope.recordStatus = 4;
+        $scope.recordStatus = 3; // 暂停
+        $scope.pauseCount++;
       }
       $scope.currentRecord = !$scope.currentRecord;
     }
+
+
 
     $scope.getStatus = function(id){
 
       switch (id){
         case -1:
-              return '录音失败';
+          return '录音失败';
         case 0:
-              return '等待视频加载...';
+          return '等待视频加载...';
         case 1:
-              return '开始';
+          return '开始';
         case 2:
-              return '运行';
+          return '运行';
         case 3:
-              return '暂停';
+          return '暂停';
         case 4:
-              return '停止';
+          return '停止';
         case 5:
           return '录音完成';
         case 6:
           return '录音播放完成';
         case 7:
-              return '开始播放';
+          return '开始播放';
         default :
-              return '';
+          return '';
       }
     }
 
@@ -207,11 +219,63 @@ angular.module('starter.controllers', ['ngCordova'])
         //  $scope.resetRecord();
         //},1000)
       });
+
       $scope.my_player.on("timeupdate", function(a){
-        $scope.currentTime = parseInt($scope.my_player.currentTime());//获取当前播放时间
+        var current_time = $scope.my_player.currentTime();//获取当前播放时间
+
+        // 在这里播放录音 preview，因为时间跟视频同步，比较准确
+        // 步骤:
+        //    1. 获取当前视频播放时间；
+        //    2. 查表获取与之对应的录音（文件名，开始时间）；
+        //    3. 关掉前面的录音，开始播放新的
+        if ($scope.preview_flag && !$scope.preview_inprocess){
+          for(var i=$scope.info.length-1; i >= 0 ; i--){
+            if ($scope.info[i].start_time <= current_time){ // 如果current_time到达或过了 start_time，则开始播放
+              $scope.start_time = $scope.info[i].start_time;
+              $scope.current_time = current_time
+              $scope.info_pause_count = $scope.info[i].count;
+
+              $scope.pauseCount = $scope.info[i].count;
+              $scope.preview_inprocess = true;
+
+
+              // 获取录音文件和开始播放时间
+              $scope.mediaRec = new Media($rootScope.rootDir + $scope.info[i].name, null, null, $scope.mediaStatusCallback);
+              //$scope.prepare($scope.pauseCount, $scope.info[i].start_time);
+
+              $scope.mediaRec.seekTo((current_time - $scope.info[i].start_time) * 1000);
+              $scope.mediaRec.play();
+
+              $scope.$apply(); // for test
+              return;
+            }
+          }
+        }
+
+        // 以下是更新信息
+        $scope.currentTime = parseInt(current_time);
         if (tmp_count !=  $scope.currentTime)
           $scope.$apply();
         tmp_count = $scope.currentTime;
+
+      });
+
+      $scope.mediaStatusCallback = function(status){
+        if (status == 0 || status == 4 ){//Media.MEDIA_NONE = 0; Media.MEDIA_STOPPED = 4;
+          $scope.preview_inprocess = false; //播放完的话就把flag设置回来
+          $scope.$apply();
+        }
+      }
+
+      $scope.my_player.on("ended", function(a){
+        if ($scope.currentRecord){
+          $scope.stopRecording();
+        }
+        $scope.preview_flag = false;
+        $scope.pauseCount = 0; //不能再录了
+        $scope.preview_inprocess = false;
+
+        $scope.$apply();// for test
 
       });
     });
@@ -227,15 +291,56 @@ angular.module('starter.controllers', ['ngCordova'])
       $scope.my_player.destroy();
 
     });
-  //============================================================================================================
-})
 
-.controller('AccountCtrl', function($scope) {
-  $scope.settings = {
-    enableFriends: true
-  };
-})
-//--------------------------------------------------------------------------------------------------------------
+    $scope.upload = function(file_name) {
+
+      var options = {
+        fileName: file_name,
+        chunkedMode: false,
+        mimeType: "audio/mpeg",
+        httpMethod: "post"
+      };
+
+      $cordovaFileTransfer.upload( "http://182.92.230.67:8888/upload",$rootScope.rootDir + options.fileName, options, true)
+        .then(function(result) {
+          //alert("SUCCESS: " + JSON.stringify(result.response));
+          $ionicLoading.hide();
+        }, function(err) {
+          $ionicLoading.hide(); // in case
+          alert("ERROR: " + JSON.stringify(err));
+        }, function (progress) {
+          // constant progress updates
+          if (progress.lengthComputable) {
+            $ionicLoading.show({
+              template: (progress.loaded / progress.total).toFixed(2) * 100 + '%上传'
+            });
+          } else {
+            $ionicLoading.show({
+              template: '上传中...'
+            });
+          }
+        });
+    }
+
+    $scope.uploads = function() {
+
+      for (var i=0; i< $scope.info.length; i++){
+        $scope.upload($scope.info[i].name);
+      }
+    }
+
+    $scope.getInfo = function(){
+      alert(JSON.stringify($scope.info));
+    }
+    //============================================================================================================
+  })
+
+  .controller('AccountCtrl', function($scope) {
+    $scope.settings = {
+      enableFriends: true
+    };
+  })
+  //--------------------------------------------------------------------------------------------------------------
   .directive('onFinishRender', function () {
     return {
       restrict: 'A',
