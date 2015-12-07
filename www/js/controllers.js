@@ -17,13 +17,14 @@ angular.module('starter.controllers', ['ngCordova'])
     };
   })
 
-  .controller('CatDetailCtrl', function($scope, $rootScope,$stateParams, Chats,$cordovaMedia, $cordovaFile,$cordovaFileTransfer,$ionicLoading) {
-    var UPLOAD_URL = 'http://101.200.81.99:8080'
+  .controller('CatDetailCtrl', function($scope, $rootScope,$stateParams, Chats,$cordovaMedia, $cordovaFile,$cordovaFileTransfer,$ionicLoading,$http) {
+    var UPLOAD_URL = 'http://101.200.81.99:8888'
     $scope.step = 1;
     $scope.pauseCount = 0;
     $scope.info = [];
     $scope.preview_flag = false;
     $scope.preview_inprocess = false;
+    $scope.file_no_ext = 'ocean';
 
     $scope.chat = Chats.get($stateParams.catId);
     //alert($scope.chat.url);
@@ -31,6 +32,7 @@ angular.module('starter.controllers', ['ngCordova'])
     if (!$rootScope.count) $rootScope.count = 0;
     $rootScope.count++;
     $scope.videoid = $rootScope.count;
+    $scope.output_video = '';
 
     //$scope.my_player = videojs("my_video");
 
@@ -61,7 +63,7 @@ angular.module('starter.controllers', ['ngCordova'])
       //$scope.currentTime = 0;
       //$scope.volume = my_player.volume();
 
-      $scope.myRecord = 'myrecording_' + pause_count + '.mp3';
+      $scope.myRecord = $scope.file_no_ext + pause_count + '.mp3';
       $scope.prepareAudiofile();
 
       $scope.mediaRec = new Media($rootScope.rootDir + $scope.myRecord,
@@ -280,11 +282,6 @@ angular.module('starter.controllers', ['ngCordova'])
       });
     });
 
-    //var my_timer = setInterval(function() {
-    //  //todo:
-    //
-    //}, 1000);
-
 
     $scope.$on('$ionicView.unloaded', function () {
       // render完成后执行的js
@@ -292,6 +289,7 @@ angular.module('starter.controllers', ['ngCordova'])
 
     });
 
+    $scope.uploaded_count = 0;
     $scope.upload = function(file_name) {
 
       var options = {
@@ -301,12 +299,18 @@ angular.module('starter.controllers', ['ngCordova'])
         httpMethod: "post"
       };
 
-      $cordovaFileTransfer.upload( "http://182.92.230.67:8888/upload",$rootScope.rootDir + options.fileName, options, true)
+      //$cordovaFileTransfer.upload( "http://182.92.230.67:8888/upload",$rootScope.rootDir + options.fileName, options, true)
+      $cordovaFileTransfer.upload( "http://101.200.81.99:8888/upload",$rootScope.rootDir + options.fileName, options, true)
         .then(function(result) {
-          //alert("SUCCESS: " + JSON.stringify(result.response));
           $ionicLoading.hide();
+
+          $scope.uploaded_count++; // 成功的上传个数
+          // 判断一下，如果全部传完，给服务器发个消息，要求进行音频的组合以及同视频的合成
+          if ($scope.uploaded_count == $scope.pauseCount){
+            $scope.uploaded();
+          }
         }, function(err) {
-          $ionicLoading.hide(); // in case
+          $ionicLoading.hide(); // hide it in case
           alert("ERROR: " + JSON.stringify(err));
         }, function (progress) {
           // constant progress updates
@@ -324,22 +328,55 @@ angular.module('starter.controllers', ['ngCordova'])
 
     $scope.uploads = function() {
 
+      $scope.uploaded_count = 0;
       for (var i=0; i< $scope.info.length; i++){
         $scope.upload($scope.info[i].name);
       }
     }
 
+    Object.toParams = function ObjecttoParams(obj) {
+      var p = [];
+      for (var key in obj) {
+        p.push(key + '=' + encodeURIComponent(obj[key]));
+      }
+      return p.join('&');
+    };
+
+    $scope.uploaded = function(){
+      $http.post('http://101.200.81.99:8888/uploaded',Object.toParams({name:$scope.file_no_ext, count: $scope.pauseCount}), {
+          dataType: 'json',
+          headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+        })
+        .success(function(data, status, headers, config){
+          if (!data || data.return == 'error'){
+            alert('转码失败!');
+            return;
+          }
+
+          //
+          $scope.output_video = data.return + '.mp4';
+          alert()
+        })
+        .error(function(data,status, headers, config){
+          console.log('uploaded ('+$scope.file_no_ext+') error');
+        });
+
+
+    }
+
     $scope.getInfo = function(){
       alert(JSON.stringify($scope.info));
     }
-    //============================================================================================================
   })
+
+  //============================================================================================================
 
   .controller('AccountCtrl', function($scope) {
     $scope.settings = {
       enableFriends: true
     };
   })
+
   //--------------------------------------------------------------------------------------------------------------
   .directive('onFinishRender', function () {
     return {
