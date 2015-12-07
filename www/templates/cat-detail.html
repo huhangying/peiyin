@@ -30,11 +30,12 @@
       </ion-item>
     </ion-list>
     <p class="{{!currentRecord ? 'balanced':'assertive'}} padding">
-      <i class="button-large icon ion-ios-refresh" ng-show="step==1" ng-click="resetRecord()"  ng-show="!currentRecord"></i>
-      <i class="button-large icon {{currentRecord ? 'ion-pause':'ion-record'}}" ng-show="step>1" ng-click="captureAudio()"></i>
+      <i class="button-large icon ion-ios-refresh" ng-show="step==0" ng-click="resetRecord()"  ng-show="!currentRecord"></i>
+      <i class="button-large icon {{currentRecord ? 'ion-pause':'ion-record'}}" ng-show="step>0" ng-click="captureAudio()"></i>
       <i class="button-large icon ion-ios-eye-outline" ng-click="previewRecord()" ng-show="!currentRecord && step>1"></i>
       <i class="button-large icon ion-ios-upload-outline" ng-click="uploads()" ng-show="!currentRecord && step>1"></i>
-      <i class="button-large icon ion-information" ng-click="getInfo()" ng-show="!currentRecord && step>1"></i>
+      <i class="button-large icon ion-information" ng-click="getInfo()" ng-show="!currentRecord && step>2"></i>
+      <a class="button-large icon ion-jet" href="{{output_video}}" ng-show="!currentRecord && step>3"></a>
     </p>
     <ion-list>
       <ion-item class="text-left" >

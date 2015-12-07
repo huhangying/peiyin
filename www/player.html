@@ -6,7 +6,7 @@
   <link href="lib/video.js/video-js.min.css" rel="stylesheet" type="text/css">
   <script src="lib/video.js/video.min.js"></script>
 </head>
-<body>
+<body onload="play()">
 
 <video class="video-js vjs-default-skin vjs-big-play-centered" id="my_video"
        controls preload="auto"  style="width: 100%;"
@@ -15,8 +15,11 @@
   <source src="http://101.200.81.99:8080/ciwen/output/w3chx0jtwk5c61xm.mp4" type='video/mp4'>
 </video>
 <script>
-  var my_player = videojs('my_video');
-  my_player.play();
+  function play(){
+    var my_player = videojs('my_video');
+    my_player.play();
+  }
+
 </script>
 
 </body>

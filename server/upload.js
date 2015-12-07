@@ -27,6 +27,7 @@ var jsonParser = bodyParser.json()
 
 
 var Uploader = require('./uploader');
+var Player = require('./player');
 
 // 设置URL路由
 var router = express.Router();
@@ -37,6 +38,10 @@ router.route('/upload')
   .post(Uploader.receiveFile);
 router.route('/uploaded')
   .post(urlencodedParser, Uploader.uploaded);
+router.route('/player/:vid')
+  .get(Player.load);
+
+
 
 app.use('/', router);
 

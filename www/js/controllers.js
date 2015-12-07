@@ -19,7 +19,7 @@ angular.module('starter.controllers', ['ngCordova'])
 
   .controller('CatDetailCtrl', function($scope, $rootScope,$stateParams, Chats,$cordovaMedia, $cordovaFile,$cordovaFileTransfer,$ionicLoading,$http) {
     var UPLOAD_URL = 'http://101.200.81.99:8888'
-    $scope.step = 1;
+    $scope.step = 0;
     $scope.pauseCount = 0;
     $scope.info = [];
     $scope.preview_flag = false;
@@ -32,7 +32,7 @@ angular.module('starter.controllers', ['ngCordova'])
     if (!$rootScope.count) $rootScope.count = 0;
     $rootScope.count++;
     $scope.videoid = $rootScope.count;
-    $scope.output_video = '';
+    $scope.output_video = ''; // actually URL
 
     //$scope.my_player = videojs("my_video");
 
@@ -114,7 +114,7 @@ angular.module('starter.controllers', ['ngCordova'])
 
       $scope.currentRecord = false;
 
-      $scope.step++;
+      $scope.step = 1;
 
     }
 
@@ -131,6 +131,8 @@ angular.module('starter.controllers', ['ngCordova'])
 
       $scope.currentRecord = false;
       $scope.recordStatus = 7;
+      $scope.step = 3; // 可以上传
+
       $scope.$apply();
     }
 
@@ -145,6 +147,7 @@ angular.module('starter.controllers', ['ngCordova'])
 
       $scope.currentRecord = false;
       $scope.pauseCount++;
+      $scope.step = 2; // 可以预览
     }
 
     //Media 不支持在录制过程中暂停，所以暂停其实是停止录制. 继续录制其实是开始录制
@@ -175,6 +178,7 @@ angular.module('starter.controllers', ['ngCordova'])
         $scope.mode = '';
         $scope.recordStatus = 3; // 暂停
         $scope.pauseCount++;
+        $scope.step = 2; // 可以预览
       }
       $scope.currentRecord = !$scope.currentRecord;
     }
@@ -215,6 +219,7 @@ angular.module('starter.controllers', ['ngCordova'])
 
       $scope.my_player.on("loadedmetadata", function(a){
         $scope.duration = parseInt($scope.my_player.duration());//获取总时长
+        $scope.step = 0; // 可以上传
         $scope.$apply();
 
         //setTimeout(function(){
@@ -332,6 +337,9 @@ angular.module('starter.controllers', ['ngCordova'])
       for (var i=0; i< $scope.info.length; i++){
         $scope.upload($scope.info[i].name);
       }
+
+      $scope.step = 4; // 可以分享
+
     }
 
     Object.toParams = function ObjecttoParams(obj) {
@@ -354,8 +362,9 @@ angular.module('starter.controllers', ['ngCordova'])
           }
 
           //
-          $scope.output_video = data.return + '.mp4';
-          alert()
+          $scope.output_video = UPLOAD_URL + '/player/'+ data.return;
+          $scope.$apply();
+          //alert($scope.output_video)
         })
         .error(function(data,status, headers, config){
           console.log('uploaded ('+$scope.file_no_ext+') error');

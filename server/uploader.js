@@ -62,7 +62,7 @@ module.exports = {
       }
 
       // 音视频合成
-      cmd = sprintf('ffmpeg -i ../assets/%s.mp4 -i upload/%s.m4a -c:v copy -c:a copy -y ../output/%s.mp4', name, name, token);
+      cmd = sprintf('ffmpeg -i ../assets/%s.mp4 -i upload/%s.m4a -c:v copy -c:a aac -strict experimental -map 0:v:0 -map 1:a:0  -y ../output/%s.mp4', name, name, token);
       //console.log(cmd);
       require('child_process').exec( cmd , function(err, stdout , stderr ) {
         if (err) {
