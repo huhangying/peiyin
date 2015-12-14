@@ -17,6 +17,26 @@ angular.module('starter.controllers', ['ngCordova'])
     };
   })
 
+  .controller('PlayerCtrl', function($scope, $stateParams) {
+    $scope.videoid = $stateParams.vid;
+
+    //$scope.output_video = 'http://101.200.81.99:8080/ciwen/output/' + $stateParams.vid + '.mp4';
+    //$scope.$apply();
+
+    alert($scope.videoid)
+
+
+
+    $scope.$on('ngRenderFinished', function (scope, element, attrs) {
+      // render完成后执行的js
+      alert($scope.videoid)
+      var my_player = videojs($scope.videoid);
+      //my_player.play();
+
+    });
+
+  })
+
   .controller('CatDetailCtrl', function($scope, $rootScope,$stateParams, Chats,$cordovaMedia, $cordovaFile,$cordovaFileTransfer,$ionicLoading,$http) {
     var UPLOAD_URL = 'http://101.200.81.99:8888'
     $scope.step = 0;
@@ -362,7 +382,8 @@ angular.module('starter.controllers', ['ngCordova'])
           }
 
           //
-          $scope.output_video = UPLOAD_URL + '/player/'+ data.return;
+          $scope.output_video = UPLOAD_URL + '/player/' + data.return;
+          //$scope.output_video = data.return;
           $scope.$apply();
           //alert($scope.output_video)
         })
