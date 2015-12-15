@@ -37,10 +37,13 @@ angular.module('starter.controllers', ['ngCordova'])
 
   })
 
+  //
   .controller('CatDetailCtrl', function($scope, $rootScope,$stateParams, Chats,$cordovaMedia, $cordovaFile,$cordovaFileTransfer,$ionicLoading,$http) {
+
     var UPLOAD_URL = 'http://101.200.81.99:8888'
     $scope.step = 0;
     $scope.pauseCount = 0;
+    $scope.totalCount = 0;
     $scope.info = [];
     $scope.preview_flag = false;
     $scope.preview_inprocess = false;
@@ -52,6 +55,9 @@ angular.module('starter.controllers', ['ngCordova'])
     if (!$rootScope.count) $rootScope.count = 0;
     $rootScope.count++;
     $scope.videoid = $rootScope.count;
+
+    $scope.videosrc = 'http://101.200.81.99:8080/ciwen/assets/ocean.mp4';
+    $scope.$apply();
     $scope.output_video = ''; // actually URL
 
     //$scope.my_player = videojs("my_video");
@@ -147,6 +153,7 @@ angular.module('starter.controllers', ['ngCordova'])
       // 放到“timeupdate”事件触发时播放
       $scope.preview_flag = true;
       $scope.preview_inprocess = false;
+      $scope.totalCount = $scope.pauseCount;
       $scope.pauseCount = 0; //不能再录了
 
       $scope.currentRecord = false;
@@ -167,6 +174,7 @@ angular.module('starter.controllers', ['ngCordova'])
 
       $scope.currentRecord = false;
       $scope.pauseCount++;
+      $scope.totalCount = $scope.pauseCount;
       $scope.step = 2; // 可以预览
     }
 
@@ -299,6 +307,7 @@ angular.module('starter.controllers', ['ngCordova'])
           $scope.stopRecording();
         }
         $scope.preview_flag = false;
+        $scope.totalCount = $scope.pauseCount;
         $scope.pauseCount = 0; //不能再录了
         $scope.preview_inprocess = false;
 
@@ -331,7 +340,7 @@ angular.module('starter.controllers', ['ngCordova'])
 
           $scope.uploaded_count++; // 成功的上传个数
           // 判断一下，如果全部传完，给服务器发个消息，要求进行音频的组合以及同视频的合成
-          if ($scope.uploaded_count == $scope.pauseCount){
+          if ($scope.uploaded_count == $scope.totalCount){
             $scope.uploaded();
           }
         }, function(err) {
@@ -371,7 +380,7 @@ angular.module('starter.controllers', ['ngCordova'])
     };
 
     $scope.uploaded = function(){
-      $http.post('http://101.200.81.99:8888/uploaded',Object.toParams({name:$scope.file_no_ext, count: $scope.pauseCount}), {
+      $http.post('http://101.200.81.99:8888/uploaded',Object.toParams({name:$scope.file_no_ext, count: $scope.totalCount}), {
           dataType: 'json',
           headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         })

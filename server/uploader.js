@@ -45,7 +45,7 @@ module.exports = {
 
     cmd = sprintf('ffmpeg %s -filter_complex concat=n=%s:v=0:a=1 -vn -y upload/%s.m4a', cmd, count, name);
 
-    //console.log(cmd);
+    console.log(cmd);
     require('child_process').exec( cmd , function(err, stdout , stderr ) {
       if (err) {
         console.log( stderr );
@@ -62,9 +62,10 @@ module.exports = {
       }
 
       // 音视频合成
-      cmd = sprintf('ffmpeg -i ../assets/%s.mp4 -i upload/%s.m4a -c:v copy -c:a copy -map 0:v:0 -map 1:a:0  -y ../output/%s.mp4', name, name, token);
-      //cmd = sprintf('ffmpeg -i ../assets/%s.mp4 -i upload/%s.m4a -c:v copy -c:a aac -strict experimental -map 0:v:0 -map 1:a:0  -y ../output/%s.mp4', name, name, token);
-      //console.log(cmd);
+      cmd = sprintf('ffmpeg -i ../assets/%s.mp4 -i upload/%s.m4a -c:v copy -codec:a libvo_aacenc -b:a 64k -maxrate 64k -map 0:v:0 -map 1:a:0  -y ../output/%s.mp4', name, name, token);
+      //cmd = sprintf('ffmpeg -i ../assets/%s.mp4 -i upload/%s.m4a -c:v copy -c:a aac -strict experimental -map 0:v:0 -map 1:a:0 -y ../output/%s.mp4', name, name, token);
+      //cmd = sprintf('ffmpeg -i ../assets/%s.mp4 -i upload/%s.m4a -profile:v high -preset slow -b:v 500k -maxrate 500k -bufsize 1000k -vf scale=-1:480 -threads 0 -codec:a libvo_aacenc -b:a 64k -map 0:v:0 -map 1:a:0 -y ../output/%s.mp4', name, name, token);
+      console.log(cmd);
       require('child_process').exec( cmd , function(err, stdout , stderr ) {
         if (err) {
           console.log(stderr);

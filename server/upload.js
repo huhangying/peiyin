@@ -39,7 +39,7 @@ router.route('/upload')
 router.route('/uploaded')
   .post(urlencodedParser, Uploader.uploaded);
 router.route('/player/:vid')
-  .get(Player.load);
+  .get(Player.videoTemplate);
 
 
 
