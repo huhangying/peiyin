@@ -7,8 +7,8 @@
 <ion-view view-title="{{chat.name}}">
   <ion-content class="text-center">
 
-    <video class="video-js vjs-default-skin vjs-big-play-centered" on-finish-render ng-repeat="video in ['']"
-          controls muted preload="true"  style="width: 100%" height="180" id="my_video{{videoid}}"
+    <video class="video-js" on-finish-render ng-repeat="video in ['']"
+          controls preload="true"  style="width: 100%" height="200" id="my_video{{videoid}}"
           poster="http://video-js.zencoder.com/oceans-clip.png"
            data-setup='{"example_option":true}' >
       <source src="" type='video/mp4'>
@@ -56,7 +56,7 @@
 
     <ion-list>
       <ion-item class="text-center">
-        <div class="energized">{{getStatus(recordStatus)}} ({{currentTime}} / {{duration}}s)</div>
+        <div class="energized">{{getStatus(recordStatus)}} ({{currentTime}}/{{bufferedTime}}/{{duration}}s)</div>
         <!--<i class="button icon ion-share icon-left button-light">分享</i>-->
         <!--<p>-->
           <!--{{chat.lastText}}-->
@@ -64,15 +64,13 @@
       </ion-item>
     </ion-list>
     <p class="{{!currentRecord ? 'balanced':'assertive'}} padding">
-      <i class="button-large icon ion-ios-refresh" ng-show="step==0" ng-click="resetRecord()"  ng-show="!currentRecord"></i>
       <i class="button-large icon {{currentRecord ? 'ion-pause':'ion-record'}}" ng-show="step>0" ng-click="captureAudio()"></i>
       <i class="button-large icon ion-ios-eye-outline" ng-click="previewRecord()" ng-show="!currentRecord && step>1"></i>
-      <i class="button-large icon ion-ios-upload-outline" ng-click="uploads()" ng-show="!currentRecord && step>1"></i>
-      <i class="button-large icon ion-information" ng-click="getInfo()" ng-show="!currentRecord && step>2"></i>
-      <!--<a class="button-large icon ion-jet" href="#/tab/player/{{output_video}}"  ng-show="!currentRecord && step>3"></a>-->
-      <a class="button-large icon ion-jet" href="{{output_video}}"  ng-show="!currentRecord && step>3"></a>
+      <!--<i class="button-large icon ion-ios-upload-outline" ng-click="uploads()" ng-show="!currentRecord && step>1"></i>-->
+      <a class="button-large icon ion-jet" href="#/tab/player/{{output_video}}"  ng-show="!currentRecord && step>2"></a>
+      <!--<a class="button-large icon ion-jet" href="{{output_video}}"  ng-show="!currentRecord && step>2"></a>-->
     </p>
-    <ion-list>
+    <ion-list ng-hide="true">
       <ion-item class="text-left" >
         <p>info: {{info_pause_count}}, {{start_time}}, {{current_time}}</p>
         <p>pauseCount: {{pauseCount}}</p>

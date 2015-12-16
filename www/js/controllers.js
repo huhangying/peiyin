@@ -21,18 +21,17 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
     $scope.videoid = $stateParams.vid;
 
     //$scope.output_video = 'http://101.200.81.99:8080/ciwen/output/' + $stateParams.vid + '.mp4';
-    //$scope.$apply();
+    $scope.$apply();
 
-    alert($scope.videoid)
+    //alert($scope.videoid)
 
 
 
     $scope.$on('ngRenderFinished', function (scope, element, attrs) {
       // render完成后执行的js
-      alert($scope.videoid)
-      var my_player = videojs($scope.videoid);
-      //my_player.play();
-
+      var my_player = videojs( $scope.videoid);
+      my_player.src({type: 'video/mp4', src: 'http://101.200.81.99:8080/ciwen/output/' +  $scope.videoid +'.mp4'});
+      my_player.play();
     });
 
   })
@@ -50,6 +49,8 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
     $scope.preview_flag = false;
     $scope.preview_inprocess = false;
     $scope.file_no_ext = 'ocean';
+    $scope.currentRecord = false;
+    $scope.$root.showUploadButton = false;
 
     $scope.chat = Chats.get($stateParams.catId);
     //alert($scope.chat.url);
@@ -57,10 +58,6 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
     if (!$rootScope.count) $rootScope.count = 0;
     $rootScope.count++;
     $scope.videoid = $rootScope.count;
-
-    $scope.output_video = ''; // actually URL
-
-    //$scope.my_player = videojs("my_video");
 
     //音量改变时
     //my_player.on("volumechange", function(){
@@ -127,23 +124,6 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
 
     }
 
-    $scope.currentRecord = false;
-
-    $scope.resetRecord = function() {
-      $scope.recordStatus = 0;
-
-      $scope.my_player.pause();
-      $scope.my_player.currentTime(0);
-
-      //$scope.mediaRec.seekTo(0);
-      //$scope.mediaRec.pause();
-
-      $scope.currentRecord = false;
-
-      $scope.step = 1;
-
-    }
-
     // 支持preview播放
     $scope.previewRecord = function() {
       $scope.mode = 'preview';
@@ -158,7 +138,10 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
 
       $scope.currentRecord = false;
       $scope.recordStatus = 7;
-      $scope.step = 3; // 可以上传
+
+      // 可以review&upload
+      $scope.step = 2;
+      $scope.$root.showUploadButton = true;
 
       $scope.$apply();
     }
@@ -175,7 +158,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
       $scope.currentRecord = false;
       $scope.pauseCount++;
       $scope.totalCount = $scope.pauseCount;
-      $scope.step = 2; // 可以预览
+      $scope.step = 2; // 可以review&upload
     }
 
     //Media 不支持在录制过程中暂停，所以暂停其实是停止录制. 继续录制其实是开始录制
@@ -206,7 +189,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
         $scope.mode = '';
         $scope.recordStatus = 3; // 暂停
         $scope.pauseCount++;
-        $scope.step = 2; // 可以预览
+        $scope.step = 1; // 可以review&upload?
       }
       $scope.currentRecord = !$scope.currentRecord;
     }
@@ -232,6 +215,10 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
           return '录音播放完成';
         case 7:
           return '开始播放';
+        case 8:
+          return '视频加载完成';
+        case 9:
+          return '视频加载出错';
         default :
           return '';
       }
@@ -246,7 +233,9 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
       // clear the environment
       $scope.recordStatus = '';
       $scope.currentTime = '';
-      $scope.duration = -1;
+      $scope.duration = '';
+      $scope.step = 0;
+      $scope.$root.showUploadButton = false;
 
       $scope.$apply();
     }
@@ -254,26 +243,67 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
     var tmp_count=0;
     $scope.$on('ngRenderFinished', function (scope, element, attrs) {
       // render完成后执行的js
-      $scope.my_player = videojs('my_video'+$scope.videoid);
-      $scope.my_player.src({type: "video/mp4", src:$scope.chat.url});
-      //$scope.my_player.src({type: "video/mp4", src:'http://101.200.81.99:8080/ciwen/assets/' +  $scope.file_no_ext +'.mp4'});
-      $scope.my_player.load();
+      $scope.my_player = videojs('my_video' + $scope.videoid);
+      $scope.loadVideoByid($scope.chat.id);
+      //$scope.my_player.muted('true' == window.localStorage.getItem('muted'));
+      $ionicLoading.show({
+        template: '视频加载中...',
+        noBackdrop:true
+      });
 
+
+      $scope.my_player.on("loadeddata", function(a){
+        if ($scope.duration < 1) return;
+
+        // 暂停，但下载还在继续
+        $scope.my_player.muted(false);
+        $scope.my_player.play()
+        //$scope.my_player.pause()
+
+        // 启动定时器检测视频下载进度
+        var timer = setInterval(function() {
+          // 获取视频已经下载的时长
+          var buffered = 0;
+          try {
+            buffered = $scope.my_player.bufferedEnd() || 0;
+            buffered = parseInt(buffered);
+          }
+          catch(e) {
+            alert(JSON.stringify(e))
+          }
+
+          if(buffered < $scope.duration) {
+            $scope.bufferedTime = buffered;
+            $scope.$apply();
+            return
+          }
+
+          // 全部下载，all buffered
+          $scope.step = 1; //可以开始了
+          $scope.recordStatus = 8; //loaded!
+          $ionicLoading.hide();
+          $scope.my_player.pause()
+          $scope.my_player.currentTime(0)
+          $scope.$apply();
+
+          $scope.my_player.muted('true' == window.localStorage.getItem('muted')); // 录制时要不要原声
+
+          clearInterval(timer)
+        }, 1000)
+      });
+
+      $scope.my_player.on("error", function(a) {
+        $scope.recordStatus = 9; //loaded error!
+        $ionicLoading.hide();
+        $scope.$apply();
+      });
 
       $scope.my_player.on("loadedmetadata", function(a){
         $scope.duration = parseInt($scope.my_player.duration());//获取总时长
-        $scope.step = 0; // 可以上传
         $scope.my_player.play();
 
-        setTimeout(function(){
-          //alert('timeout')
-          $scope.recordStatus = 0;
-          $scope.my_player.pause();
-          $scope.my_player.currentTime(0);
-          $scope.currentRecord = false;
-          $scope.step = 1;
-          $scope.$apply();
-        },500)
+        $scope.recordStatus = 0;
+        $scope.currentRecord = false;
       });
 
       $scope.my_player.on("timeupdate", function(a){
@@ -381,14 +411,14 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
         });
     }
 
-    $scope.uploads = function() {
+    $scope.$root.uploads = function() {
 
       $scope.uploaded_count = 0;
       for (var i=0; i< $scope.info.length; i++){
         $scope.upload($scope.info[i].name);
       }
 
-      $scope.step = 4; // 可以分享
+      $scope.step = 3; // 可以分享
 
     }
 
@@ -412,29 +442,32 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
           }
 
           //
-          $scope.output_video = UPLOAD_URL + '/player/' + data.return;
-          //$scope.output_video = data.return;
+          //$scope.output_video = UPLOAD_URL + '/player/' + data.return;
+          $scope.output_video = data.return;
           $scope.$apply();
           //alert($scope.output_video)
         })
         .error(function(data,status, headers, config){
           console.log('uploaded ('+$scope.file_no_ext+') error');
         });
-
-
-    }
-
-    $scope.getInfo = function(){
-      alert(JSON.stringify($scope.info));
     }
   })
 
   //============================================================================================================
 
   .controller('AccountCtrl', function($scope) {
-    $scope.settings = {
-      enableFriends: true
-    };
+    if (window.localStorage.getItem('muted') ==  null){
+      $scope.muted = true; //default
+      window.localStorage.setItem('muted',true);
+    }
+
+
+    $scope.muted = ('true' == window.localStorage.getItem('muted'));
+
+    $scope.updateMuted = function(){
+      $scope.muted = !$scope.muted;
+      window.localStorage.setItem('muted',$scope.muted);
+    }
   })
 
   //--------------------------------------------------------------------------------------------------------------
