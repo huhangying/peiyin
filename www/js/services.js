@@ -14,19 +14,19 @@ angular.module('starter.services', [])
     id: 1,
     name: '视频片段2',
     lastText: '内容简介2',
-    url: 'http://video-js.zencoder.com/oceans-clip.mp4',
+    url: 'http://101.200.81.99:8080/ciwen/assets/ocean.mp4',
     face: 'img/max.png'
   }, {
     id: 2,
     name: '视频片段3',
     lastText: '内容简介3',
-    url: 'http://gslb.miaopai.com/stream/aOrX3hUkGBenBg8OUulHZQ__.mp4',
+    url: 'http://101.200.81.99:8080/ciwen/assets/aOrX3hUkGBenBg8OUulHZQ__.mp4',
     face: 'img/adam.jpg'
   }, {
     id: 3,
     name: '视频片段4',
     lastText: '内容简介4!',
-    url: 'http://101.200.81.99:8080/ciwen/test2x.mp4',
+    url: 'http://101.200.81.99:8080/ciwen/output/oocean.mp4',
     face: 'img/perry.png'
   }, {
     id: 4,

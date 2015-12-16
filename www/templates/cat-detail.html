@@ -10,16 +10,49 @@
     <video class="video-js vjs-default-skin vjs-big-play-centered" on-finish-render ng-repeat="video in ['']"
           controls muted preload="true"  style="width: 100%" height="180" id="my_video{{videoid}}"
           poster="http://video-js.zencoder.com/oceans-clip.png"
-           data-setup='{"example_option":true}'>
-      <!--<source src="{{chat.url}}" type='video/mp4'>-->
-      <source src="http://101.200.81.99:8080/ciwen/assets/aOrX3hUkGBenBg8OUulHZQ__.mp4" type='video/mp4'>
+           data-setup='{"example_option":true}' >
+      <source src="" type='video/mp4'>
+      <!--<source src="http://101.200.81.99:8080/ciwen/assets/aOrX3hUkGBenBg8OUulHZQ__.mp4" type='video/mp4'>-->
       <!--<source src="http://101.200.81.99:8080/ciwen/assets/ocean.mp4" type='video/mp4'>-->
       <!--<source src="{{videosrc}}" type='video/mp4'>-->
       <!--<source src="http://101.200.81.99:8080/ciwen/test2x.mp4" type='video/mp4'>-->
-      <source src="http://video-js.zencoder.com/oceans-clip.webm" type='video/webm' />
+      <!--<source src="http://video-js.zencoder.com/oceans-clip.webm" type='video/webm' />-->
       <!--<track kind="Subtitles" src="http://101.200.81.99:8080/ciwen/oceans.vtt" default srclang="zh" label="中文"></track>-->
     </video>
 
+    <style>
+      /* 所有class为menu的div中的ul样式 */
+      ul
+      {
+        list-style:none; /* 去掉ul前面的符号 */
+        margin: 0px; /* 与外界元素的距离为0 */
+        padding: 0px; /* 与内部元素的距离为0 */
+        width: 800px; /* 宽度根据元素内容调整 */
+      }
+      /* 所有class为menu的div中的ul中的li样式 */
+      ul li
+      {
+        float:left; /* 向左漂移，将竖排变为横排 */
+        width:80px;
+      }
+      #hlist .item{
+        border: none;
+      }
+    </style>
+    <ion-scroll direction="x" >
+      <ul id="hlist" >
+        <li ng-repeat="c in chats">
+          <i class = "item item-avatar" ng-click='loadVideoByid(c.id)'>
+              <img src="{{c.face}}">
+          </i>
+        </li>
+        <li ng-repeat="c in chats">
+          <i class = "item item-avatar" ng-click='loadVideoByid(c.id)'>
+            <img src="{{c.face}}">
+          </i>
+        </li>
+      </ul>
+    </ion-scroll>
 
     <ion-list>
       <ion-item class="text-center">

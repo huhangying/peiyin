@@ -1,4 +1,4 @@
-angular.module('starter.controllers', ['ngCordova'])
+angular.module('starter.controllers', ['ngCordova','ngSanitize'])
 
   .controller('HomeCtrl', function($scope) {})
 
@@ -38,7 +38,9 @@ angular.module('starter.controllers', ['ngCordova'])
   })
 
   //
-  .controller('CatDetailCtrl', function($scope, $rootScope,$stateParams, Chats,$cordovaMedia, $cordovaFile,$cordovaFileTransfer,$ionicLoading,$http) {
+  .controller('CatDetailCtrl', function($scope,Chats,$sce, $rootScope,$stateParams, Chats,$cordovaMedia, $cordovaFile,$cordovaFileTransfer,$ionicLoading,$http) {
+
+    $scope.chats = Chats.all();
 
     var UPLOAD_URL = 'http://101.200.81.99:8888'
     $scope.step = 0;
@@ -56,8 +58,6 @@ angular.module('starter.controllers', ['ngCordova'])
     $rootScope.count++;
     $scope.videoid = $rootScope.count;
 
-    $scope.videosrc = 'http://101.200.81.99:8080/ciwen/assets/ocean.mp4';
-    $scope.$apply();
     $scope.output_video = ''; // actually URL
 
     //$scope.my_player = videojs("my_video");
@@ -211,8 +211,6 @@ angular.module('starter.controllers', ['ngCordova'])
       $scope.currentRecord = !$scope.currentRecord;
     }
 
-
-
     $scope.getStatus = function(id){
 
       switch (id){
@@ -239,20 +237,43 @@ angular.module('starter.controllers', ['ngCordova'])
       }
     }
 
+    $scope.loadVideoByid = function(id){
+      $scope.chat = Chats.get(id);
+
+      $scope.my_player.src({type: "video/mp4", src:$scope.chat.url});
+      $scope.my_player.load();
+
+      // clear the environment
+      $scope.recordStatus = '';
+      $scope.currentTime = '';
+      $scope.duration = -1;
+
+      $scope.$apply();
+    }
+
     var tmp_count=0;
     $scope.$on('ngRenderFinished', function (scope, element, attrs) {
       // render完成后执行的js
-      //alert($scope.videoid)
-      $scope.my_player = videojs('my_video'+ $scope.videoid);
+      $scope.my_player = videojs('my_video'+$scope.videoid);
+      $scope.my_player.src({type: "video/mp4", src:$scope.chat.url});
+      //$scope.my_player.src({type: "video/mp4", src:'http://101.200.81.99:8080/ciwen/assets/' +  $scope.file_no_ext +'.mp4'});
+      $scope.my_player.load();
+
 
       $scope.my_player.on("loadedmetadata", function(a){
         $scope.duration = parseInt($scope.my_player.duration());//获取总时长
         $scope.step = 0; // 可以上传
-        $scope.$apply();
+        $scope.my_player.play();
 
-        //setTimeout(function(){
-        //  $scope.resetRecord();
-        //},1000)
+        setTimeout(function(){
+          //alert('timeout')
+          $scope.recordStatus = 0;
+          $scope.my_player.pause();
+          $scope.my_player.currentTime(0);
+          $scope.currentRecord = false;
+          $scope.step = 1;
+          $scope.$apply();
+        },500)
       });
 
       $scope.my_player.on("timeupdate", function(a){
@@ -281,7 +302,7 @@ angular.module('starter.controllers', ['ngCordova'])
               $scope.mediaRec.seekTo((current_time - $scope.info[i].start_time) * 1000);
               $scope.mediaRec.play();
 
-              $scope.$apply(); // for test
+              //$scope.$apply(); // for test
               return;
             }
           }

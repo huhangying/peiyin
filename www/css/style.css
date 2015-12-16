@@ -1,1 +1,6 @@
 /* Empty. Add your own CSS if you like */
+.wide-item {
+  width: 10000px;
+  /*  overflow-x: scroll; /*
+  /*  -webkit-overflow-scrolling: touch;  */
+}
