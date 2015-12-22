@@ -20,8 +20,8 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
   .controller('PlayerCtrl', function($scope, $stateParams) {
     $scope.videoid = $stateParams.vid;
 
-    //$scope.output_video = 'http://101.200.81.99:8080/ciwen/output/' + $stateParams.vid + '.mp4';
-    $scope.$apply();
+    //$scope.output_video = 'http://101.200.81.99:8080/ciwen/server/output/' + $stateParams.vid + '.mp4';
+    //$scope.$apply();
 
     //alert($scope.videoid)
 
@@ -29,10 +29,14 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
 
     $scope.$on('ngRenderFinished', function (scope, element, attrs) {
       // render完成后执行的js
-      var my_player = videojs( $scope.videoid);
-      my_player.src({type: 'video/mp4', src: 'http://101.200.81.99:8080/ciwen/output/' +  $scope.videoid +'.mp4'});
-      my_player.play();
+      $scope.myplayer = videojs( $scope.videoid);
+      $scope.myplayer.src({type: 'video/mp4', src: 'http://101.200.81.99:8080/ciwen/server/output/' +  $scope.videoid +'.mp4'});
+      $scope.myplayer.play();
     });
+
+    $scope.playIt = function(){
+      $scope.play();
+    }
 
   })
 
@@ -48,7 +52,6 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
     $scope.info = [];
     $scope.preview_flag = false;
     $scope.preview_inprocess = false;
-    $scope.file_no_ext = 'ocean';
     $scope.currentRecord = false;
     $scope.$root.showUploadButton = false;
 
@@ -59,10 +62,12 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
     $rootScope.count++;
     $scope.videoid = $rootScope.count;
 
+
     //音量改变时
     //my_player.on("volumechange", function(){
     //  $scope.volume = my_player.volume();//获取当前音量
     //});
+    //$scope.output_video = '9pigu4mbfi6auhhn'; // for test
 
     $scope.prepareAudiofile = function(){
 
@@ -133,7 +138,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
       // 放到“timeupdate”事件触发时播放
       $scope.preview_flag = true;
       $scope.preview_inprocess = false;
-      $scope.totalCount = $scope.pauseCount;
+      //$scope.totalCount = $scope.pauseCount;
       $scope.pauseCount = 0; //不能再录了
 
       $scope.currentRecord = false;
@@ -189,6 +194,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
         $scope.mode = '';
         $scope.recordStatus = 3; // 暂停
         $scope.pauseCount++;
+        $scope.totalCount = $scope.pauseCount;
         $scope.step = 1; // 可以review&upload?
       }
       $scope.currentRecord = !$scope.currentRecord;
@@ -219,6 +225,8 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
           return '视频加载完成';
         case 9:
           return '视频加载出错';
+        case 10:
+          return '上传完成';
         default :
           return '';
       }
@@ -226,7 +234,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
 
     $scope.loadVideoByid = function(id){
       $scope.chat = Chats.get(id);
-
+      $scope.file_no_ext = $scope.chat.file_no_ext;
       $scope.my_player.src({type: "video/mp4", src:$scope.chat.url});
       $scope.my_player.load();
 
@@ -240,6 +248,8 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
       $scope.$apply();
     }
 
+
+
     var tmp_count=0;
     $scope.$on('ngRenderFinished', function (scope, element, attrs) {
       // render完成后执行的js
@@ -247,10 +257,12 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
       $scope.loadVideoByid($scope.chat.id);
       //$scope.my_player.muted('true' == window.localStorage.getItem('muted'));
       $ionicLoading.show({
-        template: '视频加载中...',
+        template: '<i onclick="hideLoading()">视频加载中...</i>',
         noBackdrop:true
       });
-
+      var hideLoading = function(){
+        $ionicLoading.hide();
+      }
 
       $scope.my_player.on("loadeddata", function(a){
         if ($scope.duration < 1) return;
@@ -358,7 +370,6 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
           $scope.stopRecording();
         }
         $scope.preview_flag = false;
-        $scope.totalCount = $scope.pauseCount;
         $scope.pauseCount = 0; //不能再录了
         $scope.preview_inprocess = false;
 
@@ -390,9 +401,12 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
           $ionicLoading.hide();
 
           $scope.uploaded_count++; // 成功的上传个数
+
           // 判断一下，如果全部传完，给服务器发个消息，要求进行音频的组合以及同视频的合成
           if ($scope.uploaded_count == $scope.totalCount){
             $scope.uploaded();
+            $scope.getStatus = 10;
+            $scope.$apply();
           }
         }, function(err) {
           $ionicLoading.hide(); // hide it in case
@@ -400,9 +414,15 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
         }, function (progress) {
           // constant progress updates
           if (progress.lengthComputable) {
-            $ionicLoading.show({
-              template: (progress.loaded / progress.total).toFixed(2) * 100 + '%上传'
-            });
+            if (progress.loaded == progress.total){
+              $ionicLoading.hide();
+            }
+            else {
+              $ionicLoading.show({
+                template: (progress.loaded / progress.total).toFixed(2) * 100 + '%上传'
+              });
+            }
+
           } else {
             $ionicLoading.show({
               template: '上传中...'
@@ -430,7 +450,9 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
       return p.join('&');
     };
 
+
     $scope.uploaded = function(){
+      //alert('uploaded: '+$scope.totalCount)
       $http.post('http://101.200.81.99:8888/uploaded',Object.toParams({name:$scope.file_no_ext, count: $scope.totalCount}), {
           dataType: 'json',
           headers: {'Content-Type': 'application/x-www-form-urlencoded'}
@@ -480,4 +502,4 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
         }, 1);
       }
     };
-  });;
+  });

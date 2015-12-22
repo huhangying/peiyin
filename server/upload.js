@@ -8,7 +8,11 @@
 
 var express = require('express');
 var http = require('http');
+var path = require('path');
 var app = express();
+//app.set('views', path.join(__dirname, 'views'));
+//app.set("view engine","ejs");
+//app.use(express.static(__dirname + '/static'));
 //设置跨域访问
 app.all('*', function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -30,8 +34,13 @@ var Uploader = require('./uploader');
 var Player = require('./player');
 
 // 设置URL路由
-var router = express.Router();
 
+////ejs的路由
+//app.get('/play/:vid', function(req, res){
+//  res.render('player', {vid: req.params.vid, title: 'tttt'});
+//});
+
+var router = express.Router();
 // REST API
 router.route('/upload')
   .get(Uploader.showFileUploadForm)
@@ -40,7 +49,8 @@ router.route('/uploaded')
   .post(urlencodedParser, Uploader.uploaded);
 router.route('/player/:vid')
   .get(Player.videoTemplate);
-
+router.route('/video/:vid')
+  .get(Player.videoPlayer);
 
 
 app.use('/', router);

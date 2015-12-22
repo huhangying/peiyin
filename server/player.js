@@ -7,7 +7,7 @@ var sprintf = require("sprintf-js").sprintf;
 module.exports = {
 
   // 返回一个播放器的页面
-  load: function(req, res){
+  videoPlayer: function(req, res){
     if (req.params && req.params.vid) {
       res.writeHeader(200, {'content-type': 'text/html;charset=utf-8'});
 
@@ -26,7 +26,7 @@ module.exports = {
         'controls preload="auto" style="width:100%;"' +
         'poster="http://video-js.zencoder.com/oceans-clip.png"' +
         'data-setup=\'{"example_option":true}\'> ' +
-        '<source src="http://101.200.81.99:8080/ciwen/output/' + req.params.vid + '.mp4" type="video/mp4">' +
+        '<source src="http://101.200.81.99:8080/ciwen/server/output/' + req.params.vid + '.mp4" type="video/mp4">' +
         '</video>' +
         '</body>' +
         '</html>'
@@ -42,7 +42,7 @@ module.exports = {
         '<ion-content class="text-center">' +
         '<video controls muted preload="true" style="width:100%;" height="200" id="my_video"' +
         'poster="http://video-js.zencoder.com/oceans-clip.png">' +
-        '<source src="http://101.200.81.99:8080/ciwen/output/' + req.params.vid + '.mp4" type="video/mp4">' +
+        '<source src="http://101.200.81.99:8080/ciwen/server/output/' + req.params.vid + '.mp4" type="video/mp4">' +
         '</video>' +
         '</ion-content>' +
         '</ion-view>');

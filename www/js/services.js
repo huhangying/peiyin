@@ -9,30 +9,35 @@ angular.module('starter.services', [])
     name: '地球1小时',
     lastText: '内容简介1',
     url: 'http://101.200.81.99:8080/ciwen/assets/shutdown1h.mp4',
+    file_no_ext: 'shutdown1h',
     face: 'img/shutdown1h.JPG'
   }, {
     id: 1,
     name: '长留冰红茶',
     lastText: '内容简介2',
     url: 'http://101.200.81.99:8080/ciwen/assets/icetea.mp4',
+    file_no_ext: 'icetea',
     face: 'img/icetea.JPG'
   }, {
     id: 2,
     name: '爱护公物',
     lastText: '内容简介3',
     url: 'http://101.200.81.99:8080/ciwen/assets/takecare.mp4',
+    file_no_ext: 'takecare',
     face: 'img/takecare.JPG'
   }, {
     id: 3,
-    name: '视频片段4',
+    name: '花千骨2015 MV',
     lastText: '内容简介4!',
-    url: 'http://101.200.81.99:8080/ciwen/assets/aOrX3hUkGBenBg8OUulHZQ__.mp4',
-    face: 'img/perry.png'
+    url: 'http://101.200.81.99:8080/ciwen/assets/mv_hjg.mp4',
+    file_no_ext: 'mv_hjg',
+    face: 'img/mv_hqg.jpg'
   }, {
     id: 4,
-    name: '视频片段5',
+    name: '花千骨2015 MV 片段',
     lastText: '内容简介5',
-    url: 'http://101.200.81.99:8080/ciwen/test2.mp4',
+    url: 'http://101.200.81.99:8080/ciwen/assets/mvtest.mp4',
+    file_no_ext: 'mvtest',
     face: 'img/mike.png'
   }];
 
