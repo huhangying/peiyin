@@ -38,6 +38,14 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
       $scope.play();
     }
 
+    $scope.doRefresh = function(){
+      $scope.myplayer = videojs( $scope.videoid);
+      $scope.myplayer.src({type: 'video/mp4', src: 'http://101.200.81.99:8080/ciwen/server/output/' +  $scope.videoid +'.mp4'});
+      $scope.myplayer.play();
+      //Stop the ion-refresher from spinning
+      $scope.$broadcast('scroll.refreshComplete');
+    }
+
   })
 
   //
