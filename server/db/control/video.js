@@ -12,21 +12,18 @@ module.exports = {
   getOne: function(req, res){
     if (req.params && req.params.vid){
       var result = Video.find({name: req.params.vid});
-      res.send(result);
+      Video.find({_id: req.params.vid})
+        .populate('comments')
+        .exec(function (err, videos) {
+          if (!videos)
+            return res.send('null');
+          res.json(videos);
+        });
     }
   },
   getAll: function(req, res){
-    //_Video.videoModel.find(function(err, doc) {
-    //  res.json(doc);
-    //});
-    //var video = new Video();
-    //res.send(video.module.find());
-    //res.send(Video.find(function (err, videos){
-    //  if (err) return console.error(err);
-    //  //videos.populate('comments').exec();
-    //}));
     Video.find()
-      .populate('comments')
+      //.populate('comments')
       .exec(function (err, videos) {
         if (!videos)
           return res.send('null');

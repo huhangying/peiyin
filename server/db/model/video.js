@@ -12,6 +12,7 @@ var _Video = Schema({
   url: String,
   dl_url: String,
   poster: String,
+  icon: String,
   datetime: {type : Date, default: Date.now},
   from: String,
   author: String,

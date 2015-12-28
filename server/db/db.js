@@ -6,6 +6,16 @@ var express = require("express");
 var http = require('http');
 var app = express();
 
+//设置跨域访问
+app.all('*', function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
+  res.header("X-Powered-By",' Harry')
+  res.header("Content-Type", "application/json;charset=utf-8");
+  next();
+});
+
 var bodyParser = require('body-parser');
 //通常 POST 内容的格式是 application/x-www-form-urlencoded, 因此要用下面的方式来使用
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
@@ -31,6 +41,8 @@ var router = express.Router();
 // REST API
 router.route('/video')
   .get(Video.getAll);
+router.route('/video/:vid')
+  .get(Video.getOne);
 router.route('/video/add/:vid')
   .get(Video.Add);
 router.route('/video/update/:vid')

@@ -1,19 +1,77 @@
+var SITE_API_URL = "http://182.92.230.67:33445";
+
 angular.module('starter.controllers', ['ngCordova','ngSanitize'])
 
-  .controller('HomeCtrl', function($scope) {})
+  .controller('HomeCtrl', function($scope,$rootScope,$http,$cordovaToast,$ionicHistory) {
+    $scope.title = '<img src="img/logo.png" alt="首页" height="40px" />'
 
-  .controller('CatsCtrl', function($scope, Chats) {
-    // With the new view caching in Ionic, Controllers are only called
-    // when they are recreated or on app start, instead of every page change.
-    // To listen for when this page is active (for example, to refresh data),
-    // listen for the $ionicView.enter event:
-    //
-    //$scope.$on('$ionicView.enter', function(e) {
-    //});
+    $scope.getVideos = function() {
 
-    $scope.chats = Chats.all();
-    $scope.remove = function(chat) {
-      Chats.remove(chat);
+
+      $http.get(SITE_API_URL + '/video').then(function(response){
+
+        if (response.data.return == 'empty'){
+          $scope.videos = [];
+          $cordovaToast.showShortCenter('没有视频');
+          return;
+        }
+
+        $scope.videos = response.data;
+
+        if ($scope.videos && $scope.videos.length > 0){
+          $scope.videos = response.data;
+
+          $scope.video = $scope.videos[0];
+          if (!$rootScope.count) $rootScope.count = 0;
+          $rootScope.count++;
+          $scope.videoid = $rootScope.count;
+        }
+      });
+    };
+
+    $scope.getVideos();
+
+    $scope.$on('ngRenderFinished', function (ngRenderFinishedEvent) {
+      // render完成后执行的js
+      $scope.player = videojs("main_video"+ $scope.videoid);
+      $scope.player.src({type: 'video/mp4', src: 'http://101.200.81.99:8080/ciwen/assets/' +  $scope.video.url +'.mp4'});
+      //$scope.player.src({type: 'video/mp4', src: 'http://101.200.81.99:8080/ciwen/assets/' +  $scope.video.url +'.mp4'});
+    });
+    $scope.$on('$ionicView.unloaded', function () {
+      // render完成后执行的js
+      $scope.player.destroy();
+      $ionicHistory.clearCache();
+    });
+
+    $scope.videoHeight = function(){
+      var winWidth = 0;
+      if (window.innerWidth)
+        winWidth = window.innerWidth;
+      else if ((document.body) && (document.body.clientWidth))
+        winWidth = document.body.clientWidth;
+      if (document.documentElement && document.documentElement.clientHeight && document.documentElement.clientWidth)
+      {
+        winWidth = document.documentElement.clientWidth;
+      }
+      return winWidth * 9 / 16;
+    }
+
+    $scope.doRefresh = function(){
+      this.getVideos();
+
+      //Stop the ion-refresher from spinning
+      $scope.$broadcast('scroll.refreshComplete');
+    }
+
+  })
+
+  .controller('CatsCtrl', function($scope, $http,$q, Videos) {
+
+    Videos.all().then(function(data){
+      $scope.videos = data;
+    });
+    $scope.remove = function(video) {
+      Videos.remove(video);
     };
   })
 
@@ -49,9 +107,12 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
   })
 
   //
-  .controller('CatDetailCtrl', function($scope,Chats,$sce, $rootScope,$stateParams, Chats,$cordovaMedia, $cordovaFile,$cordovaFileTransfer,$ionicLoading,$http) {
+  .controller('CatDetailCtrl', function($scope,$sce, $rootScope,$stateParams, Videos,$cordovaMedia, $cordovaFile,$cordovaFileTransfer,$ionicLoading,$http) {
 
-    $scope.chats = Chats.all();
+    Videos.all().then(function(data){
+      $scope.videos = data;
+      $scope.$apply();
+    });
 
     var UPLOAD_URL = 'http://101.200.81.99:8888'
     $scope.step = 0;
@@ -63,8 +124,6 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
     $scope.currentRecord = false;
     $scope.$root.showUploadButton = false;
 
-    $scope.chat = Chats.get($stateParams.catId);
-    //alert($scope.chat.url);
     $scope.mode = '';
     if (!$rootScope.count) $rootScope.count = 0;
     $rootScope.count++;
@@ -240,29 +299,48 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
       }
     }
 
-    $scope.loadVideoByid = function(id){
-      $scope.chat = Chats.get(id);
-      $scope.file_no_ext = $scope.chat.file_no_ext;
-      $scope.my_player.src({type: "video/mp4", src:$scope.chat.url});
-      $scope.my_player.load();
-
-      // clear the environment
-      $scope.recordStatus = '';
-      $scope.currentTime = '';
-      $scope.duration = '';
-      $scope.step = 0;
-      $scope.$root.showUploadButton = false;
-
-      $scope.$apply();
+    $scope.getVideo = function(id){
+      $http.get('http://182.92.230.67:33445/video/' + id).then(function(response) {
+        if (response.data.return == 'empty') {
+          //$cordovaToast.showShortCenter('视频不存在');
+          return null;
+        }
+        return response.data[0];
+      });
     }
 
+    $scope.loadVideoByid = function(id){
 
+      //alert(id)
+      Videos.get(id).then(function(data){
+        $scope.myvideo = data[0];
+        //alert(JSON.stringify($scope.myvideo))
+
+        $scope.file_no_ext = $scope.myvideo.url;
+        //alert($scope.myvideo.url)
+        $scope.my_player.src({type: "video/mp4", src:'http://101.200.81.99:8080/ciwen/assets/' + $scope.myvideo.url + '.mp4'});
+        $scope.my_player.load();
+
+        //alert( $scope.myvideo.name)
+
+        // clear the environment
+        $scope.recordStatus = '';
+        $scope.currentTime = '';
+        $scope.duration = '';
+        $scope.step = 0;
+        $scope.$root.showUploadButton = false;
+
+        $scope.$apply();
+      });
+    }
 
     var tmp_count=0;
     $scope.$on('ngRenderFinished', function (scope, element, attrs) {
       // render完成后执行的js
       $scope.my_player = videojs('my_video' + $scope.videoid);
-      $scope.loadVideoByid($scope.chat.id);
+
+      $scope.loadVideoByid($stateParams.catId);
+
       //$scope.my_player.muted('true' == window.localStorage.getItem('muted'));
       $ionicLoading.show({
         template: '<i onclick="hideLoading()">视频加载中...</i>',
@@ -385,7 +463,6 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
 
       });
     });
-
 
     $scope.$on('$ionicView.unloaded', function () {
       // render完成后执行的js
@@ -511,3 +588,4 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
       }
     };
   });
+

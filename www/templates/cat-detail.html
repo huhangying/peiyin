@@ -4,7 +4,7 @@
   The FriendsCtrl pulls data from the Friends service (service.js)
   The Friends service returns an array of friend data
 -->
-<ion-view view-title="{{chat.name}}">
+<ion-view view-title="{{myvideo.name}}">
   <ion-content class="text-center">
 
     <video class="video-js" on-finish-render ng-repeat="video in ['']"
@@ -41,14 +41,14 @@
     </style>
     <ion-scroll direction="x" >
       <ul id="hlist" >
-        <li ng-repeat="c in chats">
-          <i class = "item item-avatar" ng-click='loadVideoByid(c.id)'>
-              <img src="{{c.face}}">
+        <li ng-repeat="c in videos">
+          <i class = "item item-avatar" ng-click='loadVideoByid(c._id)'>
+              <img src="{{c.poster}}">
           </i>
         </li>
-        <li ng-repeat="c in chats">
-          <i class = "item item-avatar" ng-click='loadVideoByid(c.id)'>
-            <img src="{{c.face}}">
+        <li ng-repeat="c in videos">
+          <i class = "item item-avatar" ng-click='loadVideoByid(c._id)'>
+            <img src="{{c.poster}}">
           </i>
         </li>
       </ul>
