@@ -13,7 +13,8 @@ module.exports = {
     if (req.params && req.params.vid){
       var result = Video.find({name: req.params.vid});
       Video.find({_id: req.params.vid})
-        .populate('comments')
+        //.populate('comments')
+        .populate('author')
         .exec(function (err, videos) {
           if (!videos)
             return res.send('null');
@@ -23,7 +24,7 @@ module.exports = {
   },
   getAll: function(req, res){
     Video.find()
-      //.populate('comments')
+      .populate('author')
       .exec(function (err, videos) {
         if (!videos)
           return res.send('null');

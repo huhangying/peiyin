@@ -9,26 +9,36 @@ var Comment = require('../model/comment.js');
 module.exports = {
 
   GetAll: function (req, res) {
-    var result = Comment.find();
-    res.send(result);
+
+    var result = Comment.find()
+      .populate('author')
+      //.populate('video')
+      .exec(function (err, comments) {
+        if (!comments)
+          return res.send('null');
+        res.json(comments);
+      });
   },
 
   Get: function (req, res) {
     if (req.params && req.params.vid) {
-      var result = Comment.find({video_id: req.params.vid});
-      res.send(result);
+      var result = Comment.find({video: req.params.vid})
+        .sort({created: -1})
+        .populate('author')
+        //.populate('video')
+        .exec(function (err, comments) {
+          if (!comments)
+            return res.send('null');
+          res.json(comments);
+        });
+
     }
   },
 
   Add: function(req, res){
-    var video_id='', title = '', content = '';
-    if (req.params){
-      video_id = req.params.vid;
-      title = req.params.title;
-      content = req.params.content;
-    }
+    var comment = req.body;
 
-    Comment.create({video_id: video_id, title: title, comment: content}, function (err, raw) {
+    Comment.create({video: comment.video, author: comment.author, comment: comment.comment}, function (err, raw) {
       if (err) return console.error(err);
       res.send('add comment success: ', raw);
     });

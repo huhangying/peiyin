@@ -1,0 +1,37 @@
+<ion-view cache-view="false" view-title="{{myvideo.name}}">
+  <ion-content class="text-centerd">
+
+    <video class="video-js vjs-default-skin vjs-big-play-centered" on-finish-render ng-repeat="video in ['']"
+           controls preload="true" style="width:100%;" height="200" id="{{videoid}}"
+           poster="http://video-js.zencoder.com/oceans-clip.png"
+           data-setup='{"example_option":true}'>
+      <source src="" type='video/mp4'>
+      <!--<source src="http://101.200.81.99:8080/ciwen/server/output/ffpv5ksf7e2qc8o2s7.mp4" type='video/mp4'>-->
+    </video>
+    <p>
+      <i>{{myvideo.desc}}</i>
+    </p>
+    {{comments.length}}条评论
+    <div class="list">
+      <i class="item item-avatar"  ng-repeat="comment in comments">
+        <img src="{{comment.author.icon}}" />
+        <h2>{{comment.author.name}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{comment.created | date:'MM-dd HH:mm'}}</h2>
+        <p>{{comment.comment}}</p>
+
+      </i>
+    </div>
+
+
+    <div class="list">
+      <div class="row-no-padding">
+        <span class="item item-input">
+          <i class="icon ion-at placeholder-icon"></i>
+          <input id="txtMyComment" type="text" placeholder="写评论..." ng-model="$root.myComment">
+          <i class="button button-clear button-positive" ng-click="sendMyComment()">发送</i>
+        </span>
+      </div>
+    </div>
+
+
+  </ion-content>
+</ion-view>

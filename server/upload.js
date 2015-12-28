@@ -32,7 +32,6 @@ var jsonParser = bodyParser.json()
 
 var Uploader = require('./uploader');
 var Player = require('./player');
-var Video = require('./control/video');
 
 // 设置URL路由
 
@@ -50,9 +49,7 @@ router.route('/uploaded')
   .post(urlencodedParser, Uploader.uploaded);
 router.route('/player/:vid')
   .get(Player.videoPlayer);
-router.route('/video/:vid')
-  //.get(Video.getOne);
-  .get(Video.Add);
+
 
 
 app.use('/', router);

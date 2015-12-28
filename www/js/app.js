@@ -75,6 +75,18 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
       }
     })
 
+    //
+    .state('tab.video', {
+      url: '/video/:vid',
+      views: {
+        'tab-noshow': {
+          templateUrl: 'templates/video.html',
+          controller: 'VideoCtrl'
+        }
+      }
+    })
+
+    // 纯单个视频的播放(不包括用户和评论等，没有数据库)
     .state('tab.player', {
       url: '/player/:vid',
       views: {

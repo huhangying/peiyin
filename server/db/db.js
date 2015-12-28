@@ -35,6 +35,7 @@ global.mongoose.connect('mongodb://182.92.230.67:27017/chang');
 var Video = require('./control/video');
 var Config = require('./control/config');
 var Comment = require('./control/comment');
+var User = require('./control/user');
 
 
 var router = express.Router();
@@ -61,12 +62,21 @@ router.route('/config/add/:name/:value')
 router.route('/config/update/:name/:value')
   .get(Config.Update);
 
+router.route('/user')
+  .get(User.GetAll);
+router.route('/user/:uid')
+  .get(User.Get);
+router.route('/user/add/:name/:password/:icon')
+  .get(User.Add);
+
 router.route('/comment')
-  .get(Comment.GetAll);
+  .get(Comment.GetAll)
+  .post(urlencodedParser, Comment.Add);
 router.route('/comment/:vid')
   .get(Comment.Get);
-router.route('/comment/add/:vid/:title/:content')
-  .get(Comment.Add);
+//router.route('/comment/add/:vid/:uid/:content')
+//  .get(Comment.Add);
+
 
 
 

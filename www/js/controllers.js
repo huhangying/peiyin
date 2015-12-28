@@ -75,15 +75,66 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
     };
   })
 
-  .controller('PlayerCtrl', function($scope, $stateParams) {
+  .controller('VideoCtrl', function($scope, $stateParams, Videos) {
     $scope.videoid = $stateParams.vid;
 
-    //$scope.output_video = 'http://101.200.81.99:8080/ciwen/server/output/' + $stateParams.vid + '.mp4';
-    //$scope.$apply();
+    $scope.loadVideoByid = function (id) {
 
-    //alert($scope.videoid)
+      Videos.get(id).then(function (data) {
+        $scope.myvideo = data[0];
+
+        $scope.myplayer.src({type: 'video/mp4', src: 'http://101.200.81.99:8080/ciwen/assets/' +  $scope.myvideo.url +'.mp4'});
+        //$scope.myplayer.src({type: 'video/mp4', src: 'http://101.200.81.99:8080/ciwen/server/output/' +  $scope.myvideo.url +'.mp4'});
+        $scope.myplayer.play();
+      });
+
+      Videos.getCommentsByVid(id).then(function (data) {
+        $scope.comments = data;
+      });
+
+      $scope.$apply();
+    }
+
+    $scope.loadVideoByid($scope.videoid);
 
 
+    $scope.$on('ngRenderFinished', function (scope, element, attrs) {
+      // render完成后执行的js
+      $scope.myplayer = videojs( $scope.videoid);
+
+      $scope.loadVideoByid( $scope.videoid);
+
+    });
+
+    $scope.playIt = function(){
+      $scope.myplayer.play();
+    }
+
+
+    $scope.sendMyComment = function(){
+      var comment ={
+        video: $scope.videoid,
+        author: '568104f9d91f31f76ea027bb', // for test, add it later
+        comment: $scope.$root.myComment
+        };
+
+      Videos.addComment(comment).then(function(data){
+      });
+
+      //????
+      // 更新 comments
+      Videos.getCommentsByVid($scope.videoid).then(function (data) {
+        $scope.comments = data;
+        $scope.$apply();
+      });
+
+      $scope.$root.myComment = '';
+    }
+
+  })
+
+  .controller('PlayerCtrl', function($scope, $stateParams) {
+    $scope.videoid = $stateParams.vid;
 
     $scope.$on('ngRenderFinished', function (scope, element, attrs) {
       // render完成后执行的js
@@ -297,16 +348,6 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
         default :
           return '';
       }
-    }
-
-    $scope.getVideo = function(id){
-      $http.get('http://182.92.230.67:33445/video/' + id).then(function(response) {
-        if (response.data.return == 'empty') {
-          //$cordovaToast.showShortCenter('视频不存在');
-          return null;
-        }
-        return response.data[0];
-      });
     }
 
     $scope.loadVideoByid = function(id){

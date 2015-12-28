@@ -2437,7 +2437,7 @@ function publishExternalAPI(angular) {
             ngSwitchDefault: ngSwitchDefaultDirective,
             ngOptions: ngOptionsDirective,
             ngTransclude: ngTranscludeDirective,
-            ngModel: ngModelDirective,
+            gModel: ngModelDirective,
             ngList: ngListDirective,
             ngChange: ngChangeDirective,
             pattern: patternDirective,

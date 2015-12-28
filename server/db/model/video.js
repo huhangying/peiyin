@@ -14,8 +14,8 @@ var _Video = Schema({
   poster: String,
   icon: String,
   datetime: {type : Date, default: Date.now},
-  from: String,
-  author: String,
+  //from: String,
+  author: {type: Schema.Types.ObjectId, ref: 'user' },
   vote: Number,
   tags: { type: [String], index: true },
   comments: [{type: Schema.Types.ObjectId, ref: 'comment' }], //comment model定义的名字，跟数据库表名相关

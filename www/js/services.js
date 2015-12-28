@@ -31,8 +31,35 @@ angular.module('starter.services', [])
           deferred.reject(data);   // 声明执行失败，即服务器返回错误
         });
       return deferred.promise;   // 返回承诺，这里并不是最终数据，而是访问最终数据的API
-    }
+    },
 
+    getCommentsByVid: function (vid){
+
+      var deferred = $q.defer(); // 声明延后执行，表示要去监控后面的执行
+      $http.get('http://182.92.230.67:33445/comment/' + vid)
+        .success(function(data, status, headers, config){
+          deferred.resolve(data);  // 声明执行成功，即http请求数据成功，可以返回数据了
+        })
+        .error(function(data, status, headers, config){
+          deferred.reject(data);   // 声明执行失败，即服务器返回错误
+        });
+      return deferred.promise;   // 返回承诺，这里并不是最终数据，而是访问最终数据的API
+    },
+
+    addComment: function (comment){
+      var deferred = $q.defer(); // 声明延后执行，表示要去监控后面的执行
+      $http.post('http://182.92.230.67:33445/comment',Object.toParams(comment), {
+          dataType: 'json',
+          headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+        })
+        .success(function(data, status, headers, config){
+          deferred.resolve(data);  // 声明执行成功，即http请求数据成功，可以返回数据了
+        })
+        .error(function(data,status, headers, config){
+          deferred.reject(data);   // 声明执行失败，即服务器返回错误
+        });
+      return deferred.promise;   // 返回承诺，这里并不是最终数据，而是访问最终数据的API
+    }
   }
 })
 
@@ -94,3 +121,11 @@ angular.module('starter.services', [])
     }
   };
 });
+
+Object.toParams = function ObjecttoParams(obj) {
+  var p = [];
+  for (var key in obj) {
+    p.push(key + '=' + encodeURIComponent(obj[key]));
+  }
+  return p.join('&');
+};

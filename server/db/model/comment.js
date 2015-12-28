@@ -5,10 +5,9 @@
 var Schema = global.mongoose.Schema;
 
 var _Comment = new Schema({
-  //video_id: {type: Schema.Types.ObjectId, ref: 'Video' },
-  user_id: String,
-  parent_comment_id: String,
-  title: String,
+  video: {type: Schema.Types.ObjectId, ref: 'video' },
+  author: {type: Schema.Types.ObjectId, ref: 'user' },
+  at_friend: {type: Schema.Types.ObjectId, ref: 'user' },   //@好友
   comment: String,
   created: {type : Date, default: Date.now},
 });
