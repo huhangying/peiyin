@@ -32,6 +32,7 @@ var jsonParser = bodyParser.json()
 
 var Uploader = require('./uploader');
 var Player = require('./player');
+var Video = require('./control/video');
 
 // 设置URL路由
 
@@ -48,9 +49,10 @@ router.route('/upload')
 router.route('/uploaded')
   .post(urlencodedParser, Uploader.uploaded);
 router.route('/player/:vid')
-  .get(Player.videoTemplate);
-router.route('/video/:vid')
   .get(Player.videoPlayer);
+router.route('/video/:vid')
+  //.get(Video.getOne);
+  .get(Video.Add);
 
 
 app.use('/', router);
@@ -60,6 +62,3 @@ app.use('/', router);
 http.createServer(app).listen(8888,function(){
   console.log("CIWEN媒体处理及上传服务器开启. 监听端口: 8888...")
 });
-
-
-
