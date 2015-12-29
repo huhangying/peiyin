@@ -1,7 +1,7 @@
 <ion-view view-title="视频列表">
   <ion-content>
     <ion-list>
-      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="video in videos" type="item-text-wrap" href="#/tab/cats/{{video._id}}">
+      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="video in videos" type="item-text-wrap" href="#/tab/record/{{video._id}}">
         <img ng-src="{{video.poster}}">
         <h2>{{video.name}}</h2>
         <p>{{video.desc}}</p>

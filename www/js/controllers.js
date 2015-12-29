@@ -1,4 +1,5 @@
 var SITE_API_URL = "http://182.92.230.67:33445";
+var VIDEO_URL_ROOT = "http://101.200.81.99:8080/ciwen/";
 
 angular.module('starter.controllers', ['ngCordova','ngSanitize'])
 
@@ -8,7 +9,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
     $scope.getVideos = function() {
 
 
-      $http.get(SITE_API_URL + '/video').then(function(response){
+      $http.get(SITE_API_URL + '/videos/0').then(function(response){
 
         if (response.data.return == 'empty'){
           $scope.videos = [];
@@ -65,13 +66,13 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
 
   })
 
-  .controller('FocusCtrl', function($scope,$rootScope,$http,$cordovaToast) {
+  .controller('FocusCtrl', function($scope,$rootScope,$http,$cordovaToast, Videos) {
 
   })
 
   .controller('CatsCtrl', function($scope, $http,$q, Videos) {
 
-    Videos.all().then(function(data){
+    Videos.all(1).then(function(data){
       $scope.videos = data;
     });
     $scope.remove = function(video) {
@@ -87,7 +88,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
       Videos.get(id).then(function (data) {
         $scope.myvideo = data[0];
 
-        $scope.myplayer.src({type: 'video/mp4', src: 'http://101.200.81.99:8080/ciwen/assets/' +  $scope.myvideo.url +'.mp4'});
+        $scope.myplayer.src({type: 'video/mp4', src: VIDEO_URL_ROOT + 'server/output/' +  $scope.myvideo.url +'.mp4'});
         //$scope.myplayer.src({type: 'video/mp4', src: 'http://101.200.81.99:8080/ciwen/server/output/' +  $scope.myvideo.url +'.mp4'});
         $scope.myplayer.play();
 
@@ -101,6 +102,11 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
 
     $scope.loadVideoByid($scope.videoid);
 
+    $scope.vote = function(){
+      Videos.vote($scope.myvideo._id);
+      $scope.myvideo.vote++;
+      $scope.$apply();
+    }
 
     $scope.$on('ngRenderFinished', function (scope, element, attrs) {
       // render完成后执行的js
@@ -159,7 +165,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
     });
 
     $scope.playIt = function(){
-      $scope.play();
+      $scope.myplayer.play();
     }
 
     $scope.doRefresh = function(){
@@ -172,15 +178,14 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
 
   })
 
-  //
-  .controller('CatDetailCtrl', function($scope,$sce, $rootScope,$stateParams, Videos,$cordovaMedia, $cordovaFile,$cordovaFileTransfer,$ionicLoading,$http,$state) {
+  // 录音控制器
+  .controller('RecordCtrl', function($scope,$sce, $rootScope,$stateParams, Videos,$cordovaMedia, $cordovaFile,$cordovaFileTransfer,$ionicLoading,$http,$state) {
 
     // 录音前要求先登录
     if (window.localStorage['authorized'] != 'yes'){
       $state.go('signin');
       return;
     }
-
 
     Videos.all().then(function(data){
       $scope.videos = data;
@@ -381,7 +386,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
 
         $scope.file_no_ext = $scope.myvideo.url;
         //alert($scope.myvideo.url)
-        $scope.my_player.src({type: "video/mp4", src:'http://101.200.81.99:8080/ciwen/assets/' + $scope.myvideo.url + '.mp4'});
+        $scope.my_player.src({type: "video/mp4", src:VIDEO_URL_ROOT + 'assets/' + $scope.file_no_ext + '.mp4'});
         $scope.my_player.load();
 
         //alert( $scope.myvideo.name)
@@ -566,8 +571,13 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
               $ionicLoading.hide();
             }
             else {
+              var perc = (progress.loaded / progress.total).toFixed(2);
+              if (perc ==  1){
+                $ionicLoading.hide();
+                return;
+              }
               $ionicLoading.show({
-                template: (progress.loaded / progress.total).toFixed(2) * 100 + '%上传'
+                template: perc * 100 + '%上传'
               });
             }
 
@@ -585,18 +595,9 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
       for (var i=0; i< $scope.info.length; i++){
         $scope.upload($scope.info[i].name);
       }
-
-      $scope.step = 3; // 可以分享
-
     }
 
-    Object.toParams = function ObjecttoParams(obj) {
-      var p = [];
-      for (var key in obj) {
-        p.push(key + '=' + encodeURIComponent(obj[key]));
-      }
-      return p.join('&');
-    };
+
 
 
     $scope.uploaded = function(){
@@ -611,10 +612,31 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
             return;
           }
 
+
+          // 创建一个视频，默认发布！
+          var myvideo = {
+            type: 0,
+            name: $scope.myvideo.name,
+            desc: $scope.myvideo.desc,
+            url: data.return,                      // 在output目录下, file name with no mp4 ext.
+            poster: $scope.myvideo.poster,
+            icon: $scope.myvideo.icon,
+            tags: $scope.myvideo.tags,
+            vote: 0
+          };
+
+          Videos.add(myvideo).then(function(v){
+            //alert(JSON.stringify(v));
+            $scope.output_video = v._id;
+
+            $scope.step = 3; // 可以分享
+            $scope.$apply();
+
+          });
           //
           //$scope.output_video = UPLOAD_URL + '/player/' + data.return;
-          $scope.output_video = data.return;
-          $scope.$apply();
+          //$scope.output_video = data.return;
+          //$scope.$apply();
           //alert($scope.output_video)
         })
         .error(function(data,status, headers, config){
@@ -677,3 +699,14 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
     };
   });
 
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// 公用函数
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Object.toParams = function ObjecttoParams(obj) {
+  var p = [];
+  for (var key in obj) {
+    p.push(key + '=' + encodeURIComponent(obj[key]));
+  }
+  return p.join('&');
+};

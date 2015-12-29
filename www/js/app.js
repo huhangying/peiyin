@@ -84,12 +84,13 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
         }
       }
     })
-    .state('tab.cat-detail', {
-      url: '/cats/:catId',
+
+    .state('tab.record', {
+      url: '/record/:catId',
       views: {
         'tab-cats': {
-          templateUrl: 'templates/cat-detail.html',
-          controller: 'CatDetailCtrl'
+          templateUrl: 'templates/record.html',
+          controller: 'RecordCtrl'
         }
       }
     })
@@ -109,7 +110,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
     .state('tab.player', {
       url: '/player/:vid',
       views: {
-        'tab-player': {
+        'tab-noshow': {
           templateUrl: 'templates/player.html',
           controller: 'PlayerCtrl'
         }

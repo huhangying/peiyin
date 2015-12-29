@@ -23,7 +23,10 @@ module.exports = {
     }
   },
   getAll: function(req, res){
-    Video.find()
+    var type = '';
+    if (req.params)
+      type = req.params.type;
+    Video.find({type: type})
       .populate('author')
       .exec(function (err, videos) {
         if (!videos)
@@ -32,15 +35,18 @@ module.exports = {
       });
   },
   Add: function(req, res){
-    var vid = '';
-    if (req.params)
-      vid = req.params.vid;
-    var obj = {cat_id: '111',name: '1', desc: 'desc', url: vid};
-    //console.log(JSON.stringify(obj));
-    Video.create(obj);
-    //var video = new Video(obj);
+    var video = req.body;
+    //console.log(JSON.stringify(video));
+    if (!video) return res.sendStatus(400);
 
-    //video.save();
+    Video.create(video, function(err, data){
+        if (err){
+          res.send('error');
+          return console.error(err);
+        }
+        res.json(data);
+      });
+
   },
   Update: function(req, res){
     var vid = '';
@@ -65,7 +71,20 @@ module.exports = {
         return console.error(err);
       res.send('removed url=' + vid);
     });
-
+  },
+  Vote : function(req, res){
+    var vid = '';
+    if (req.params)
+      vid = req.params.vid;
+    var conditions = {_id : vid};
+    var fields     = {$inc: { vote: 1 }};
+    var options    = {upsert : true};
+    //res.send(Video.getTest());
+    //Video.update(conditions, update);
+    Video.update(conditions, fields, options,function (err, raw) {
+      if (err) return console.error(err);
+      res.send('vote success: ', raw);
+    });
   },
   AddComment: function(req, res){
     var vid = '', cid = '';

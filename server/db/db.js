@@ -40,18 +40,22 @@ var User = require('./control/user');
 
 var router = express.Router();
 // REST API
-router.route('/video')
+router.route('/videos/:type')
   .get(Video.getAll);
+router.route('/video')
+  .post(urlencodedParser, Video.Add);
 router.route('/video/:vid')
   .get(Video.getOne);
-router.route('/video/add/:vid')
-  .get(Video.Add);
+//router.route('/video/add/:vid')
+//  .get(Video.Add);
 router.route('/video/update/:vid')
   .get(Video.Update);
 router.route('/video/delete/:vid')
   .get(Video.Delete);
 router.route('/video/addcomment/:vid/:cid')
   .get(Video.AddComment);
+router.route('/vote/:vid')
+  .get(Video.Vote);
 
 router.route('/config')
   .get(Config.GetAll);
