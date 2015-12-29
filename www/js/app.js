@@ -65,6 +65,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
     }
   })
 
+    .state('tab.focus', {
+      url: '/focus',
+      views: {
+        'tab-focus': {
+          templateUrl: 'templates/tab-focus.html',
+          controller: 'FocusCtrl'
+        }
+      }
+    })
+
   .state('tab.cats', {
       url: '/cats',
       views: {

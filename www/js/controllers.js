@@ -65,6 +65,10 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
 
   })
 
+  .controller('FocusCtrl', function($scope,$rootScope,$http,$cordovaToast) {
+
+  })
+
   .controller('CatsCtrl', function($scope, $http,$q, Videos) {
 
     Videos.all().then(function(data){
@@ -86,13 +90,13 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
         $scope.myplayer.src({type: 'video/mp4', src: 'http://101.200.81.99:8080/ciwen/assets/' +  $scope.myvideo.url +'.mp4'});
         //$scope.myplayer.src({type: 'video/mp4', src: 'http://101.200.81.99:8080/ciwen/server/output/' +  $scope.myvideo.url +'.mp4'});
         $scope.myplayer.play();
-      });
 
-      Videos.getCommentsByVid(id).then(function (data) {
-        $scope.comments = data;
-      });
+        Videos.getCommentsByVid(id).then(function (data) {
+          $scope.comments = data;
+        });
 
-      $scope.$apply();
+        $scope.$apply();
+      });
     }
 
     $scope.loadVideoByid($scope.videoid);
@@ -125,7 +129,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
 
       var comment ={
         video: $scope.videoid,
-        author: '568104f9d91f31f76ea027bb', // for test, add it later
+        author:window.localStorage['uid'], // for test, add it later
         comment: $scope.$root.myComment
         };
 
@@ -634,6 +638,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
     if (!localStorage['cell'])
       $scope.user_name = '我未登录';
     else{
+      $scope.icon = localStorage['icon'];
       $scope.user_name = localStorage['name'];
       $scope.cell == '(' + localStorage['cell'] + ')';
     }

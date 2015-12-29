@@ -40,6 +40,7 @@ angular.module('starter.register', ['ngCordova'])
           localStorage['uid'] = users[0]._id;
           localStorage['cell'] = user.cell;
           localStorage['name'] = users[0].name;
+          localStorage['icon'] = users[0].icon;
           localStorage['authorized'] = 'yes';
 
           // 如果状态是播放视频页，改到视频分类页（因为视频页带参数）
@@ -102,6 +103,7 @@ angular.module('starter.register', ['ngCordova'])
             localStorage['uid'] = data[0]._id;
             localStorage['cell'] = user.cell;
             localStorage['name'] = user.name;
+            localStorage['icon'] = data[0].icon;
             localStorage['authorized'] = 'yes';
 
             $state.go($rootScope.previousState != '' ? $rootScope.previousState : 'tab.home'); // 回到要求鉴权的页面
