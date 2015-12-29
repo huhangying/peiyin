@@ -14,24 +14,40 @@ module.exports = {
   },
 
   Get: function (req, res) {
-    if (req.params && req.params.uid) {
-      var result = User.find({name: req.params.uid});
+    if (req.params && req.params.cell) {
+      var result = User.find({cell: req.params.cell, apply: true});
       res.send(result);
     }
   },
 
   Add: function(req, res){
-    var name = '', password = '',icon='';
-    if (req.params){
-      name = req.params.name;
-      password = req.params.password;
-      icon = req.params.icon;
+    // 获取user数据（json）
+    var user = req.body;
+    if (!user) return res.sendStatus(400);
+
+    //验证手机号码
+    if (!user.cell){
+      res.send('error');
+      return;
     }
 
-    User.create({name: name, password: password, icon: icon}, function (err, raw) {
-      if (err) return console.error(err);
-      res.send('add user success: ', raw);
-    });
+    User.find({cell: user.cell, apply: true}) // check if registered
+      .exec(function(err, users){
+        if (err) {
+          res.send('error');
+          return;
+        }
+        if (users && users.length > 0){
+          res.send('existed');
+          return;
+        }
+
+        User.create({cell: user.cell, name: user.name, password: user.password}, function (err, raw) {
+          if (err) return console.error(err);
+          res.send(raw);
+        });
+
+      });
   },
 
   Update: function(req, res){
@@ -45,9 +61,10 @@ module.exports = {
     var fields     = {value : value};
     var options    = {};
 
-    User.update(conditions, fields, options,function (err, raw) {
+    User.update(conditions, fields, options, function (err, raw) {
       if (err) return console.error(err);
       res.send('update user success: ', raw);
     });
   },
 }
+

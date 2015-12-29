@@ -11,7 +11,7 @@ module.exports = {
 
   getOne: function(req, res){
     if (req.params && req.params.vid){
-      var result = Video.find({name: req.params.vid});
+      var result = Video.find({name: req.params.vid, apply: true});
       Video.find({_id: req.params.vid})
         //.populate('comments')
         .populate('author')

@@ -75,7 +75,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
     };
   })
 
-  .controller('VideoCtrl', function($scope, $stateParams, Videos) {
+  .controller('VideoCtrl', function($scope, $stateParams, Videos, $cordovaToast,$state) {
     $scope.videoid = $stateParams.vid;
 
     $scope.loadVideoByid = function (id) {
@@ -112,6 +112,17 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
 
 
     $scope.sendMyComment = function(){
+      if ($scope.$root.myComment == '' || !$scope.$root.myComment){
+        $cordovaToast.showShortCenter('评论内容不能为空');
+        return;
+      }
+
+      // 评论前要求先登录
+      if (window.localStorage['authorized'] != 'yes'){
+        $state.go('signin');
+        return;
+      }
+
       var comment ={
         video: $scope.videoid,
         author: '568104f9d91f31f76ea027bb', // for test, add it later
@@ -158,7 +169,14 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
   })
 
   //
-  .controller('CatDetailCtrl', function($scope,$sce, $rootScope,$stateParams, Videos,$cordovaMedia, $cordovaFile,$cordovaFileTransfer,$ionicLoading,$http) {
+  .controller('CatDetailCtrl', function($scope,$sce, $rootScope,$stateParams, Videos,$cordovaMedia, $cordovaFile,$cordovaFileTransfer,$ionicLoading,$http,$state) {
+
+    // 录音前要求先登录
+    if (window.localStorage['authorized'] != 'yes'){
+      $state.go('signin');
+      return;
+    }
+
 
     Videos.all().then(function(data){
       $scope.videos = data;
@@ -603,12 +621,36 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
 
   //============================================================================================================
 
-  .controller('AccountCtrl', function($scope) {
+  // 用户账号管理
+  .controller('AccountCtrl', function($scope,$state,$rootScope,$http,$cordovaToast) {
+
+    // 如果没有登录，去登录
+    if (!localStorage['authorized'] || localStorage['authorized'] != 'yes'){
+      $state.go('signin');
+      return;
+    }
+
+    $scope.cell = '';
+    if (!localStorage['cell'])
+      $scope.user_name = '我未登录';
+    else{
+      $scope.user_name = localStorage['name'];
+      $scope.cell == '(' + localStorage['cell'] + ')';
+    }
+
+    $scope.logout = function(){
+      localStorage['cell'] = '';
+      localStorage['name'] = '';
+      localStorage['authorized'] = '';
+      $rootScope.previousState = '';
+      $state.go('tab.home');
+    }
+
+    // MUTED related!
     if (window.localStorage.getItem('muted') ==  null){
       $scope.muted = true; //default
       window.localStorage.setItem('muted',true);
     }
-
 
     $scope.muted = ('true' == window.localStorage.getItem('muted'));
 

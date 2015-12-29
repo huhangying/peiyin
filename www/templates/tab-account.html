@@ -1,9 +1,24 @@
-<ion-view view-title="我的">
+<ion-view cache-view="false" view-title="我的">
   <ion-content>
+    <ion-list>
+      <ion-item class="item-remove-animate item-avatar">
+        <!--<ion-item class="item-remove-animate item-avatar item-icon-right">-->
+        <img ng-src="img/ben.png">
+        <div class="text-right" style="display:block;float:right;">
+          <a class="button button-light button-small" href="#">修改密码</a>
+        </div>
+        <h2>{{user_name}}</h2>
+        <p>{{cell}}</p>
+      </ion-item>
+    </ion-list>
     <ion-list>
     <ion-toggle  ng-model="muted" ng-change="updateMuted()">
         配音时视频静音
     </ion-toggle>
     </ion-list>
+
+    <div class="text-center" ng-click="logout()">
+      <i class="button button-balanced button-full">退出登录&nbsp;&nbsp;</i>
+    </div>
   </ion-content>
 </ion-view>

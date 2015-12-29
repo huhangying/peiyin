@@ -63,8 +63,10 @@ router.route('/config/update/:name/:value')
   .get(Config.Update);
 
 router.route('/user')
-  .get(User.GetAll);
-router.route('/user/:uid')
+  .get(User.GetAll)
+  .post(urlencodedParser,User.Add)
+  .put(User.Update);
+router.route('/user/:cell')
   .get(User.Get);
 router.route('/user/add/:name/:password/:icon')
   .get(User.Add);

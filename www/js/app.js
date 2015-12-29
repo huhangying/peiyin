@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','ngCordova'])
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','ngCordova', 'starter.register'])
 
 .run(function($ionicPlatform,$cordovaMedia, $rootScope) {
   $ionicPlatform.ready(function() {
@@ -27,6 +27,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
       $rootScope.rootDir = cordova.file.documentsDirectory;
     }
   });
+
+  // 记住上一页
+  $rootScope.$on('$stateChangeSuccess', function (ev, to, toParams, from, fromParams) {
+    if (to.name == 'signin' && to.name != 'register' && to.name != 'forgotpassword')
+      $rootScope.previousState = from.name; // 记住要求鉴权的页面
+    else
+      $rootScope.previousState = '';
+  });
+
 })
 
 .config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
@@ -105,7 +114,24 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
         controller: 'AccountCtrl'
       }
     }
-  });
+  })
+
+
+  // 用户注册相关
+    .state('signin', {
+      url: '/sign-in',
+      templateUrl: 'templates/register/sign-in.html',
+      controller: 'SignInCtrl'
+    })
+    .state('register', {
+      url: '/register',
+      templateUrl: 'templates/register/register.html',
+      controller: 'RegisterCtrl'
+    })
+    .state('forgotpassword', {
+      url: '/forgot-password',
+      templateUrl: 'templates/register/forgot-password.html'
+    });
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/tab/cats');
