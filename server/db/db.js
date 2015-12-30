@@ -36,6 +36,7 @@ var Video = require('./control/video');
 var Config = require('./control/config');
 var Comment = require('./control/comment');
 var User = require('./control/user');
+var Interest = require('./control/interest');
 
 
 var router = express.Router();
@@ -83,6 +84,14 @@ router.route('/comment/:vid')
 //router.route('/comment/add/:vid/:uid/:content')
 //  .get(Comment.Add);
 
+router.route('/interest')
+  .get(Interest.GetAll)
+  .post(urlencodedParser, Interest.Add);
+router.route('/interest/:uid')
+  .get(Interest.Get)
+  .delete(Interest.Delete);
+router.route('/interest/add/:uid/:iid')
+  .get(Interest.QueryAdd);
 
 
 

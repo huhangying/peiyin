@@ -13,12 +13,11 @@ module.exports = {
     if (req.params && req.params.vid){
       var result = Video.find({name: req.params.vid, apply: true});
       Video.find({_id: req.params.vid})
-        //.populate('comments')
         .populate('author')
         .exec(function (err, videos) {
           if (!videos)
             return res.send('null');
-          res.json(videos);
+          res.json(videos[0]);
         });
     }
   },

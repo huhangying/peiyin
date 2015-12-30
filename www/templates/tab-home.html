@@ -7,30 +7,38 @@
         text-decoration:none;
         color:white;
       }
-      .img-fixed{height:140px;width:100%}
-      .move-up-text{margin:-30px 0 10px 0;padding-left:8px;font-size: smaller;}
+      .img-fixed{height:140px;width:100%;z-index:2;}
+      .move-up-note{margin:-40px 0 0 0;padding:0 0 4px 6px; font-size: smaller;
+        background-image: url('img/bar_back.png');
+        background-repeat: repeat-x;
+        background-position: bottom;
+        z-index: 1;
+      }
+      .move-up-note img{ border-radius:50%; height:30px}
     </style>
-    <video  class="video-js vjs-default-skin vjs-big-play-centered" on-finish-render ng-repeat="video in videos | limitTo:1"
-            controls preload="auto" style="width: 100%" height="200" id="main_video{{videoid}}"
-            poster="{{video.poster}}">
-      <source src="http://101.200.81.99:8080/ciwen/test2x.mp4" type='video/mp4'>
-    </video>
+    <!--<video  class="video-js vjs-default-skin vjs-big-play-centered" on-finish-render ng-repeat="video in videos | limitTo:1"-->
+            <!--controls preload="auto" style="width: 100%" height="200" id="main_video{{videoid}}"-->
+            <!--poster="{{video.poster}}">-->
+      <!--<source src="http://101.200.81.99:8080/ciwen/test2x.mp4" type='video/mp4'>-->
+    <!--</video>-->
 
 
     <div class="row row-no-padding" ng-repeat="video in videos" ng-if="$index % 2 === 0">
       <div class="col col-50" ng-if="$index < videos.length">
         <a href="#/tab/video/{{videos[$index]._id}}">
           <img src="{{videos[$index].poster}}" class="img-fixed" />
-          <p class="move-up-text">
-            {{videos[$index].name}}<br/>
-          </p>
+          <div class="move-up-note">
+            <img ng-src="{{videos[$index].author.icon}}">
+            {{videos[$index].name}}
+          </div>
         </a>
       </div>
       <div class="col col-50" ng-if="$index + 1 < videos.length">
         <a href="#/tab/video/{{videos[$index+1]._id}}">
           <img src="{{videos[$index+1].poster}}" class="img-fixed" />
-          <p class="move-up-text">
-            {{videos[$index+1].name}}<br/>
+          <p class="move-up-note">
+            <img ng-src="{{videos[$index].author.icon}}">
+            {{videos[$index+1].name}}
           </p>
         </a>
       </div>

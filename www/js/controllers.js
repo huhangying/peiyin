@@ -32,30 +32,17 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
 
     $scope.getVideos();
 
-    $scope.$on('ngRenderFinished', function (ngRenderFinishedEvent) {
-      // render完成后执行的js
-      $scope.player = videojs("main_video"+ $scope.videoid);
-      $scope.player.src({type: 'video/mp4', src: 'http://101.200.81.99:8080/ciwen/assets/' +  $scope.video.url +'.mp4'});
-      //$scope.player.src({type: 'video/mp4', src: 'http://101.200.81.99:8080/ciwen/assets/' +  $scope.video.url +'.mp4'});
-    });
+    //$scope.$on('ngRenderFinished', function (ngRenderFinishedEvent) {
+    //  // render完成后执行的js
+    //  $scope.player = videojs("main_video"+ $scope.videoid);
+    //  $scope.player.src({type: 'video/mp4', src: 'http://101.200.81.99:8080/ciwen/assets/' +  $scope.video.url +'.mp4'});
+    //  //$scope.player.src({type: 'video/mp4', src: 'http://101.200.81.99:8080/ciwen/assets/' +  $scope.video.url +'.mp4'});
+    //});
     $scope.$on('$ionicView.unloaded', function () {
       // render完成后执行的js
-      $scope.player.destroy();
+      //$scope.player.destroy();
       $ionicHistory.clearCache();
     });
-
-    $scope.videoHeight = function(){
-      var winWidth = 0;
-      if (window.innerWidth)
-        winWidth = window.innerWidth;
-      else if ((document.body) && (document.body.clientWidth))
-        winWidth = document.body.clientWidth;
-      if (document.documentElement && document.documentElement.clientHeight && document.documentElement.clientWidth)
-      {
-        winWidth = document.documentElement.clientWidth;
-      }
-      return winWidth * 9 / 16;
-    }
 
     $scope.doRefresh = function(){
       this.getVideos();
@@ -66,8 +53,10 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
 
   })
 
-  .controller('FocusCtrl', function($scope,$rootScope,$http,$cordovaToast, Videos) {
-
+  .controller('FocusCtrl', function($scope,$rootScope,$http,$cordovaToast, Users) {
+    Users.all().then(function(data){
+      $scope.users = data;
+    });
   })
 
   .controller('CatsCtrl', function($scope, $http,$q, Videos) {
@@ -81,26 +70,23 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
   })
 
   .controller('VideoCtrl', function($scope, $stateParams, Videos, $cordovaToast,$state) {
-    $scope.videoid = $stateParams.vid;
+    $scope.$root.videoid = $stateParams.vid;
 
-    $scope.loadVideoByid = function (id) {
+    $scope.loadVideoByid = function () {
 
-      Videos.get(id).then(function (data) {
-        $scope.myvideo = data[0];
-
+      Videos.get($stateParams.vid).then(function (data) {
+        $scope.myvideo = data;
+        //alert(JSON.stringify($scope.myvideo))
         $scope.myplayer.src({type: 'video/mp4', src: VIDEO_URL_ROOT + 'server/output/' +  $scope.myvideo.url +'.mp4'});
-        //$scope.myplayer.src({type: 'video/mp4', src: 'http://101.200.81.99:8080/ciwen/server/output/' +  $scope.myvideo.url +'.mp4'});
         $scope.myplayer.play();
-
-        Videos.getCommentsByVid(id).then(function (data) {
-          $scope.comments = data;
-        });
-
-        $scope.$apply();
       });
     }
 
-    $scope.loadVideoByid($scope.videoid);
+    //$scope.loadVideoByid();
+    Videos.getCommentsByVid($stateParams.vid).then(function (data) {
+      $scope.comments = data;
+    });
+    $scope.$apply();
 
     $scope.vote = function(){
       Videos.vote($scope.myvideo._id);
@@ -110,10 +96,8 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
 
     $scope.$on('ngRenderFinished', function (scope, element, attrs) {
       // render完成后执行的js
-      $scope.myplayer = videojs( $scope.videoid);
-
-      $scope.loadVideoByid( $scope.videoid);
-
+      $scope.myplayer = videojs($stateParams.vid);
+      $scope.loadVideoByid();
     });
 
     $scope.playIt = function(){
@@ -134,8 +118,8 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
       }
 
       var comment ={
-        video: $scope.videoid,
-        author:window.localStorage['uid'], // for test, add it later
+        video: $scope.$root.videoid,
+        author:window.localStorage['uid'],
         comment: $scope.$root.myComment
         };
 
@@ -144,7 +128,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
 
       //????
       // 更新 comments
-      Videos.getCommentsByVid($scope.videoid).then(function (data) {
+      Videos.getCommentsByVid($scope.$root.videoid).then(function (data) {
         $scope.comments = data;
         $scope.$apply();
       });
@@ -381,8 +365,8 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
 
       //alert(id)
       Videos.get(id).then(function(data){
-        $scope.myvideo = data[0];
-        //alert(JSON.stringify($scope.myvideo))
+        $scope.myvideo = data;
+        //alert(JSON.stringify(data))
 
         $scope.file_no_ext = $scope.myvideo.url;
         //alert($scope.myvideo.url)
@@ -621,6 +605,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
             url: data.return,                      // 在output目录下, file name with no mp4 ext.
             poster: $scope.myvideo.poster,
             icon: $scope.myvideo.icon,
+            author: window.localStorage['uid'],
             tags: $scope.myvideo.tags,
             vote: 0
           };
