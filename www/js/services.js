@@ -114,6 +114,61 @@ angular.module('starter.services', [])
           });
         return deferred.promise;   // 返回承诺，这里并不是最终数据，而是访问最终数据的API
       },
+
+      checkFocus: function(uid, authorId){
+        //alert(uid + ':' +authorId)
+        var deferred = $q.defer(); // 声明延后执行，表示要去监控后面的执行
+        $http.get('http://182.92.230.67:33445/interest/' + uid + '/' +authorId)
+          .success(function (data, status, headers, config) {
+            deferred.resolve(data);  // 声明执行成功，即http请求数据成功，可以返回数据了
+          })
+          .error(function (data, status, headers, config) {
+            deferred.reject(data);   // 声明执行失败，即服务器返回错误
+          });
+        return deferred.promise;   // 返回承诺，这里并不是最终数据，而是访问最终数据的API
+      },
+
+      getUserInterests: function(uid){
+        var deferred = $q.defer(); // 声明延后执行，表示要去监控后面的执行
+        $http.get('http://182.92.230.67:33445/interest/' + uid)
+          .success(function (data, status, headers, config) {
+            deferred.resolve(data);  // 声明执行成功，即http请求数据成功，可以返回数据了
+          })
+          .error(function (data, status, headers, config) {
+            deferred.reject(data);   // 声明执行失败，即服务器返回错误
+          });
+        return deferred.promise;   // 返回承诺，这里并不是最终数据，而是访问最终数据的API
+      },
+
+      addInterest: function (interest){
+        var deferred = $q.defer(); // 声明延后执行，表示要去监控后面的执行
+        $http.post('http://182.92.230.67:33445/interest',Object.toParams(interest), {
+            dataType: 'json',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+          })
+          .success(function(data, status, headers, config){
+            deferred.resolve(data);  // 声明执行成功，即http请求数据成功，可以返回数据了
+          })
+          .error(function(data,status, headers, config){
+            deferred.reject(data);   // 声明执行失败，即服务器返回错误
+          });
+        return deferred.promise;   // 返回承诺，这里并不是最终数据，而是访问最终数据的API
+      },
+
+      removeInterest: function (interest){
+        var deferred = $q.defer(); // 声明延后执行，表示要去监控后面的执行
+        $http.post('http://182.92.230.67:33445/interest/delete',Object.toParams(interest), {
+            dataType: 'json',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+          })
+          .success(function(data, status, headers, config){
+            deferred.resolve(data);  // 声明执行成功，即http请求数据成功，可以返回数据了
+          })
+          .error(function(data,status, headers, config){
+            deferred.reject(data);   // 声明执行失败，即服务器返回错误
+          });
+        return deferred.promise;   // 返回承诺，这里并不是最终数据，而是访问最终数据的API
+      },
     }
   })
 

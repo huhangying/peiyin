@@ -53,10 +53,104 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
 
   })
 
-  .controller('FocusCtrl', function($scope,$rootScope,$http,$cordovaToast, Users) {
+  .controller('FocusCtrl', function($scope, Users, $state, Videos) {
+    var uid = window.localStorage['uid'];
+
+    $scope.getVideos = function() {
+
+      Videos.all(0).then(function(videos){
+
+        if (videos== 'null'){
+          $scope.videos = [];
+          $cordovaToast.showShortCenter('没有视频');
+          return;
+        }
+
+        $scope.videos = [];
+
+        videos.forEach(function(video){
+
+          if (video.author){
+            // 视频有主，并且并关注
+            //alert(video.author._id)
+            Users.checkFocus(window.localStorage['uid'], video.author._id)
+              .then(function(data){
+                if (data == 'true' || data == true)
+                  $scope.videos.push(video);
+              })
+          }
+        });
+      });
+    };
+
+    Users.getUserInterests(uid)
+      .then(function(data){
+        //alert(JSON.stringify(data))
+        if (!data || data.length < 1){
+          // go and add more interest
+          $state.go('tab.focusAdd');
+          return;
+        }
+        $scope.getVideos();
+      });
+  })
+
+  .controller('FocusAddCtrl', function($scope,$rootScope,$http,$cordovaToast, Users,$state) {
+
+    $scope.user_interests = [];
+    Users.getUserInterests(window.localStorage['uid'])
+      .then(function(data){
+        $scope.user_interests = data[0].interests;
+        //alert(JSON.stringify($scope.user_interests))
+      });
+
     Users.all().then(function(data){
       $scope.users = data;
+      var length = $scope.users.length;
+      for (var i=0; i<length; i++){
+        $scope.users[i].checked = $scope.checkIfFocus($scope.users[i]._id);
+      }
+      //alert(JSON.stringify($scope.users));
     });
+
+
+
+    $scope.checkIfFocus = function(authorId){
+      //alert(JSON.stringify($scope.user_interests) + ':' + authorId)
+      //alert(($scope.user_interests.indexOf(authorId) > -1))
+      return ($scope.user_interests.indexOf(authorId) > -1);
+    }
+
+    $scope.modifyInteres = function(){
+      var _interests = [];
+      $scope.users.forEach(function(usr){
+        if (usr.checked){
+          _interests.push(usr._id);
+        }
+      });
+
+      var interest = {
+        uid: window.localStorage["uid"],
+        interests: _interests
+      };
+
+      Users.addInterest(interest)
+        .then(function(data){
+          if (data && data != 'error'){
+            $state.go('tab.focus')
+            $cordovaToast.showShortCenter('成功的增加关注');
+          }
+          else {
+            $cordovaToast.showShortCenter('请选择关注，然后添加')
+          }
+        });
+
+    }
+
+    $scope.InterestChanged = function(index, authorId){
+      //alert(index + ':' + $scope.users[index].checked)
+      $scope.users[index].checked = !$scope.users[index].checked;
+    }
   })
 
   .controller('CatsCtrl', function($scope, $http,$q, Videos) {
@@ -69,13 +163,39 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
     };
   })
 
-  .controller('VideoCtrl', function($scope, $stateParams, Videos, $cordovaToast,$state) {
+  .controller('VideoCtrl', function($scope, $stateParams, Videos, $cordovaToast,$state, Users) {
     $scope.$root.videoid = $stateParams.vid;
+    $scope.showFocus = false; // 加关注
 
     $scope.loadVideoByid = function () {
 
       Videos.get($stateParams.vid).then(function (data) {
         $scope.myvideo = data;
+
+        // 根据情况添加关注
+        if ($scope.myvideo.author){
+          // 不能关注自己
+          if ( $scope.myvideo.author._id != window.localStorage["uid"]){
+            $scope.showFocus = false;
+          }
+          else { // 关注别人
+            $scope.showFocus = true;
+            // check if focus already
+            var isFocus = Users.checkFocus(window.localStorage["uid"], $scope.myvideo.author._id)
+              .then(function(data){
+                if (data == true){
+                  $scope.noFocus = false;
+                }
+                else{
+                  $scope.noFocus = true;
+                }
+                $scope.$apply();
+              });
+          }
+
+        }
+
+
         //alert(JSON.stringify($scope.myvideo))
         $scope.myplayer.src({type: 'video/mp4', src: VIDEO_URL_ROOT + 'server/output/' +  $scope.myvideo.url +'.mp4'});
         $scope.myplayer.play();
@@ -134,6 +254,36 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
       });
 
       $scope.$root.myComment = '';
+    }
+
+    $scope.modifyInterest = function(noFocus){
+      var interest = {
+        uid: window.localStorage["uid"],
+        interests: $scope.myvideo.author._id.split(',')
+      };
+      $scope.noFocus = !noFocus;
+
+      if (noFocus){
+        Users.addInterest(interest)
+          .success(function(data){
+            alert('added: ' + data)
+          })
+          .error(function(data){
+            alert('error: ' + data)
+          });
+      }
+      else{
+        //alert(JSON.stringify(interest))
+        Users.removeInterest(interest)
+          .success(function(data){
+            alert('removed: ' + data)
+          })
+          .error(function(data){
+            alert('error: ' + data)
+          });
+      }
+
+      $scope.$apply();
     }
 
   })

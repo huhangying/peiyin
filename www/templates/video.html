@@ -3,14 +3,14 @@
   <ion-content class="text-centerd row-no-padding">
 
 
-      <div style="float:right; padding: 21px 10px 0 0">
-        <span class="button button-light button-small button-balanced item-button-right">关注</span>
+      <div style="float:right; padding: 21px 10px 0 0; font-size: x-small" ng-show="showFocus">
+        <span class="icon {{noFocus ? 'ion-ios-plus-outline' : 'ion-ios-minus-outline'}}" ng-click="modifyInterest(noFocus)">关注</span>
       </div>
       <div class="item-avatar" style="margin: -10px 0 -10px 0;">
         <img src="{{myvideo.author.icon}}" />
         <div style="padding-top:15px;">
           <div>{{myvideo.author.name}}</div>
-          <div>{{myvideo.author.name}}</div>
+          <div>{{myvideo.datetime | date:'yyyy-MM-dd HH:mm'}}</div>
         </div>
 
       </div>
@@ -23,7 +23,7 @@
       <source src="" type='video/mp4'>
       <!--<source src="http://101.200.81.99:8080/ciwen/server/output/ffpv5ksf7e2qc8o2s7.mp4" type='video/mp4'>-->
     </video>
-    <p>
+    <p style="padding: 8px 10px 0 0">
       <i>{{myvideo.desc}} / {{myvideo.name}}</i>
       <i style="float:right" class="button button-light button-small icon ion-android-favorite" ng-click="vote()">{{myvideo.vote}}</i>
     </p>

@@ -90,6 +90,10 @@ router.route('/interest')
 router.route('/interest/:uid')
   .get(Interest.Get)
   .delete(Interest.Delete);
+router.route('/interest/delete')
+  .post(urlencodedParser, Interest.DeleteInterests);
+router.route('/interest/:uid/:authorid')
+  .get(Interest.CheckIfFocus);
 router.route('/interest/add/:uid/:iid')
   .get(Interest.QueryAdd);
 
