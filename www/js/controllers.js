@@ -59,14 +59,13 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
     $scope.getVideos = function() {
 
       Videos.all(0).then(function(videos){
+        $scope.videos = [];
 
         if (videos== 'null'){
-          $scope.videos = [];
+          $state.go('tab.focusAdd')
           $cordovaToast.showShortCenter('没有视频');
           return;
         }
-
-        $scope.videos = [];
 
         videos.forEach(function(video){
 
@@ -80,6 +79,11 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
               })
           }
         });
+
+        if (!$scope.videos || $scope.videos.length < 1){
+          $state.go('tab.focusAdd');
+          $cordovaToast.showShortCenter('没有视频');
+        }
       });
     };
 
