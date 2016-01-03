@@ -74,18 +74,23 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
             //alert(video.author._id)
             Users.checkFocus(window.localStorage['uid'], video.author._id)
               .then(function(data){
-                if (data == 'true' || data == true)
+                if (data == 'true' || data == true){
                   $scope.videos.push(video);
-              })
+                }
+              });
           }
         });
 
+        //alert(JSON.stringify($scope.videos))
+
         if (!$scope.videos || $scope.videos.length < 1){
+
           $state.go('tab.focusAdd');
           $cordovaToast.showShortCenter('没有视频');
         }
+
       });
-    };
+    }
 
     Users.getUserInterests(uid)
       .then(function(data){
