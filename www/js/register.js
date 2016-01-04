@@ -106,6 +106,11 @@ angular.module('starter.register', ['ngCordova'])
             localStorage['icon'] = data[0].icon;
             localStorage['authorized'] = 'yes';
 
+            // 特殊处理
+            if ($rootScope.previousState == 'tab.record'){
+              $rootScope.previousState = 'tab.cats';
+            }
+
             $state.go($rootScope.previousState != '' ? $rootScope.previousState : 'tab.home'); // 回到要求鉴权的页面
           }
         })
