@@ -53,15 +53,17 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
 
   })
 
-  .controller('FocusCtrl', function($scope, Users, $state, Videos) {
+  .controller('FocusCtrl', function($scope, Users, $state, Videos, $stateParams) {
     var uid = window.localStorage['uid'];
+    var author_id = $stateParams.author;
 
-    $scope.getVideos = function() {
+    $scope.videos = [];
+    $scope.getAllFocusVideos = function() {
 
       Videos.all(0).then(function(videos){
         $scope.videos = [];
 
-        if (videos== 'null'){
+        if (videos == 'null'){
           $state.go('tab.focusAdd')
           $cordovaToast.showShortCenter('没有视频');
           return;
@@ -72,36 +74,56 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
           if (video.author){
             // 视频有主，并且并关注
             //alert(video.author._id)
-            Users.checkFocus(window.localStorage['uid'], video.author._id)
+            Users.checkFocus(uid, video.author._id)
               .then(function(data){
                 if (data == 'true' || data == true){
                   $scope.videos.push(video);
                 }
+
+                if (!$scope.videos || $scope.videos.length < 1){
+                  //$state.go('tab.focusAdd');
+                  //$cordovaToast.showShortCenter('没有关注视频，请先关注');
+                }
+
               });
           }
         });
 
-        //alert(JSON.stringify($scope.videos))
-
-        if (!$scope.videos || $scope.videos.length < 1){
-
-          $state.go('tab.focusAdd');
-          $cordovaToast.showShortCenter('没有视频');
-        }
-
       });
     }
 
-    Users.getUserInterests(uid)
-      .then(function(data){
-        //alert(JSON.stringify(data))
-        if (!data || data.length < 1){
-          // go and add more interest
-          $state.go('tab.focusAdd');
+    if (!author_id || author_id == ''){
+      // 没有设置 author， 则显示全部关注的视频
+      Users.getUserInterests(uid)
+        .then(function(data){
+          //alert(JSON.stringify(data))
+          if (!data || data.length < 1){
+            // go and add more interest
+            $state.go('tab.focusAdd');
+            return;
+          }
+          $scope.getAllFocusVideos();
+        });
+    }
+    else{
+      // 设置 author， 则显示全部author相关的视频
+      Videos.getAuthorVideos(author_id).then(function(videos){
+        $scope.videos = [];
+
+        if (videos== 'null'){
+          //$state.go('tab.focusAdd')
+          $cordovaToast.showShortCenter('没有发现该该作者相关的视频');
           return;
         }
-        $scope.getVideos();
+
+        $scope.videos = videos;
       });
+    }
+
+    $scope.goCurrentAuthorUrl = function(){
+      alert('dd')
+      $location.path('/tab/focus/'+ uid);
+    }
   })
 
   .controller('FocusAddCtrl', function($scope,$rootScope,$http,$cordovaToast, Users,$state) {
@@ -184,7 +206,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
         // 根据情况添加关注
         if ($scope.myvideo.author){
           // 不能关注自己
-          if ( $scope.myvideo.author._id != window.localStorage["uid"]){
+          if ( $scope.myvideo.author._id == window.localStorage["uid"]){
             $scope.showFocus = false;
           }
           else { // 关注别人
@@ -330,7 +352,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
       return;
     }
 
-    Videos.all().then(function(data){
+    Videos.all(1).then(function(data){
       $scope.videos = data;
       $scope.$apply();
     });

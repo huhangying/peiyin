@@ -13,6 +13,7 @@
         background-repeat: repeat-x;
         background-position: bottom;
         z-index: 1;
+        color:white;
       }
       .move-up-note img{ border-radius:50%; height:30px}
     </style>
@@ -27,20 +28,24 @@
       <div class="col col-50" ng-if="$index < videos.length">
         <a href="#/tab/video/{{videos[$index]._id}}">
           <img src="{{videos[$index].poster}}" class="img-fixed" />
-          <div class="move-up-note">
-            <img ng-src="{{videos[$index].author.icon}}">
-            {{videos[$index].name}}
-          </div>
         </a>
+        <div class="move-up-note">
+          <a href="#/tab/focus/{{videos[$index].author._id}}">
+            <img ng-src="{{videos[$index].author.icon}}">
+          </a>
+          {{videos[$index].name}}
+        </div>
       </div>
       <div class="col col-50" ng-if="$index + 1 < videos.length">
         <a href="#/tab/video/{{videos[$index+1]._id}}">
           <img src="{{videos[$index+1].poster}}" class="img-fixed" />
-          <p class="move-up-note">
-            <img ng-src="{{videos[$index].author.icon}}">
-            {{videos[$index+1].name}}
-          </p>
         </a>
+        <div class="move-up-note">
+          <a href="#/tab/focus/{{videos[$index+1].author._id}}">
+            <img ng-src="{{videos[$index+1].author.icon}}">
+          </a>
+          {{videos[$index+1].name}}
+        </div>
       </div>
     </div>
 

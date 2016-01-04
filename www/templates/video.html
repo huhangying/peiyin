@@ -6,15 +6,15 @@
       <div style="float:right; padding: 21px 10px 0 0; font-size: x-small" ng-show="showFocus">
         <span class="icon {{noFocus ? 'ion-ios-plus-outline' : 'ion-ios-minus-outline'}}" ng-click="modifyInterest(noFocus)">关注</span>
       </div>
+    <a  href="#/tab/focus/{{myvideo.author._id}}" style="text-decoration: none;color:black;">
       <div class="item-avatar" style="margin: -10px 0 -10px 0;">
         <img src="{{myvideo.author.icon}}" />
         <div style="padding-top:15px;">
           <div>{{myvideo.author.name}}</div>
           <div>{{myvideo.datetime | date:'yyyy-MM-dd HH:mm'}}</div>
         </div>
-
       </div>
-
+    </a>
 
     <video class="video-js vjs-default-skin vjs-big-play-centered" on-finish-render ng-repeat="video in ['']"
            controls preload="true" style="width:100%;" height="200" id="{{$root.videoid}}"
@@ -27,6 +27,17 @@
       <i>{{myvideo.desc}} / {{myvideo.name}}</i>
       <i style="float:right" class="button button-light button-small icon ion-android-favorite" ng-click="vote()">{{myvideo.vote}}</i>
     </p>
+
+    <!--<ion-scroll direction="x" >-->
+      <!--<ul id="hlist" >-->
+        <!--<li ng-repeat="c in videos">-->
+          <!--<i class = "item item-avatar" ng-click='loadVideoByid(c._id)'>-->
+            <!--<img src="{{c.poster}}">-->
+          <!--</i>-->
+        <!--</li>-->
+      <!--</ul>-->
+    <!--</ion-scroll>-->
+
     {{comments.length}}条评论
     <div class="list">
       <i class="item item-avatar"  ng-repeat="comment in comments">

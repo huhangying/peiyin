@@ -43,6 +43,8 @@ var router = express.Router();
 // REST API
 router.route('/videos/:type')
   .get(Video.getAll);
+router.route('/videos/author/:uid')
+  .get(Video.getAuthorVideos);
 router.route('/video')
   .post(urlencodedParser, Video.Add);
 router.route('/video/:vid')
@@ -101,6 +103,13 @@ router.route('/interest/add/:uid/:iid')
 
 app.use('/', router);
 
-http.createServer(app).listen(33445, function(){
+var server = http.createServer(app).listen(33445, function(){
   console.log("DB服务器开启. 监听端口: 33445...")
 });
+
+//var server = http.createServer(app);
+//server.on('listening',function(){
+//  console.log("DB服务器开启. 监听端口: 33445...")
+//});
+//
+//server.listen(33445);

@@ -66,7 +66,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
   })
 
     .state('tab.focus', {
-      url: '/focus',
+      url: '/focus/:author',
       views: {
         'tab-focus': {
           templateUrl: 'templates/tab-focus.html',
@@ -76,7 +76,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
     })
 
     .state('tab.focusAdd', {
-      url: '/focus/add',
+      url: '/focus/add/interests',
       views: {
         'tab-focus': {
           templateUrl: 'templates/tab-focus-add.html',

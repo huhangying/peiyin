@@ -33,6 +33,20 @@ module.exports = {
         res.json(videos);
       });
   },
+
+  getAuthorVideos: function(req, res){
+    var uid = '';
+    if (req.params)
+      uid = req.params.uid;
+    Video.find({author: uid, type: 0})  // 非源视频
+      .populate('author')
+      .exec(function (err, videos) {
+        if (!videos)
+          return res.send('null');
+        res.json(videos);
+      });
+  },
+
   Add: function(req, res){
     var video = req.body;
     //console.log(JSON.stringify(video));
@@ -71,6 +85,7 @@ module.exports = {
       res.send('removed url=' + vid);
     });
   },
+
   Vote : function(req, res){
     var vid = '';
     if (req.params)
