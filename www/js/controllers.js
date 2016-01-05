@@ -120,10 +120,6 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
       });
     }
 
-    $scope.goCurrentAuthorUrl = function(){
-      alert('dd')
-      $location.path('/tab/focus/'+ uid);
-    }
   })
 
   .controller('FocusAddCtrl', function($scope,$rootScope,$http,$cordovaToast, Users,$state) {
@@ -194,9 +190,12 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
     };
   })
 
-  .controller('VideoCtrl', function($scope, $stateParams, Videos, $cordovaToast,$state, Users) {
-    $scope.$root.videoid = $stateParams.vid;
-    $scope.showFocus = false; // 加关注
+  .controller('VideoCtrl', function($scope, $stateParams, Videos, $cordovaToast,$state, Users,$ionicNavBarDelegate,$ionicHistory) {
+    $scope.init = function(){
+      $scope.videoid = Object.randomId();
+      $scope.showFocus = false; // 加关注
+      //$scope.$apply();
+    }
 
     $scope.loadVideoByid = function () {
 
@@ -247,8 +246,16 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
 
     $scope.$on('ngRenderFinished', function (scope, element, attrs) {
       // render完成后执行的js
-      $scope.myplayer = videojs($stateParams.vid);
+      $scope.myplayer = videojs($scope.videoid);
       $scope.loadVideoByid();
+    });
+
+    $scope.$on('$ionicView.unloaded', function () {
+      $ionicHistory.clearCache();
+      $ionicHistory.clearHistory();
+      if ($scope.myplayer){
+        $scope.myplayer.dispose();
+      }
     });
 
     $scope.playIt = function(){
@@ -269,7 +276,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
       }
 
       var comment ={
-        video: $scope.$root.videoid,
+        video: $stateParams.vid,
         author:window.localStorage['uid'],
         comment: $scope.$root.myComment
         };
@@ -279,7 +286,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
 
       //????
       // 更新 comments
-      Videos.getCommentsByVid($scope.$root.videoid).then(function (data) {
+      Videos.getCommentsByVid($stateParams.vid).then(function (data) {
         $scope.comments = data;
         $scope.$apply();
       });
@@ -315,6 +322,10 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
       }
 
       $scope.$apply();
+    }
+
+    $scope.goBack = function(){
+      $ionicNavBarDelegate.back();
     }
 
   })
@@ -698,9 +709,8 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
     });
 
     $scope.$on('$ionicView.unloaded', function () {
-      // render完成后执行的js
-      $scope.my_player.destroy();
 
+      $scope.my_player.dispose();
     });
 
     $scope.uploaded_count = 0;
@@ -876,3 +886,14 @@ Object.toParams = function ObjecttoParams(obj) {
   }
   return p.join('&');
 };
+
+Object.randomId = function(){
+  // 生成随机码
+  var token = '';//require('crypto').randomBytes(16);
+  var $chars = 'abcdefghijkmnopqrstuvwxyz0123456789';
+  var maxPos = $chars.length;
+  for (i = 0; i < 16; i++) {
+    token += $chars.charAt(Math.floor(Math.random() * maxPos));
+  }
+  return token;
+}

@@ -1,4 +1,7 @@
 <ion-view cache-view="false" view-title="视频详情">
+  <ion-nav-buttons side="left"> <!-- left -->
+    <button  class="button button-icon icon ion-ios-arrow-back"  ng-click="goBack()"></button>
+  </ion-nav-buttons>
 
   <ion-content class="text-centerd row-no-padding">
 
@@ -16,19 +19,33 @@
       </div>
     </a>
 
-    <video class="video-js vjs-default-skin vjs-big-play-centered" on-finish-render ng-repeat="video in ['']"
-           controls preload="true" style="width:100%;" height="200" id="{{$root.videoid}}"
+    <video class="video-js" ng-init="init()" on-finish-render ng-repeat="video in ['']"
+           controls preload="true" style="width:100%;" height="200" id="{{videoid}}"
            poster="http://video-js.zencoder.com/oceans-clip.png"
            data-setup='{"example_option":true}'>
       <source src="" type='video/mp4'>
       <!--<source src="http://101.200.81.99:8080/ciwen/server/output/ffpv5ksf7e2qc8o2s7.mp4" type='video/mp4'>-->
     </video>
-    <p style="padding: 8px 10px 0 0">
-      <i>{{myvideo.desc}} / {{myvideo.name}}</i>
-      <i style="float:right" class="button button-light button-small icon ion-android-favorite" ng-click="vote()">{{myvideo.vote}}</i>
-    </p>
+    <div>
+      <div class="padding-left">
+        <i class="button button-light button-small energized-bg">{{myvideo.name}}</i>
+        <span style="padding:8px 10px 0 10px;">他们也在演:</span>
 
-    <!--<ion-scroll direction="x" >-->
+      </div>
+      <div class="row">
+        <div class="col col-80"><i class="icon ion-android-favorite" ng-click="vote()">&nbsp; {{myvideo.vote}}</i></div>
+        <div class="col"></div>
+      </div>
+      <div class="row text-center">
+        <div class="col col-33 item-divider-ios"><i class="icon ion-android-favorite" ng-click="vote()">&nbsp; {{myvideo.vote}}</i></div>
+        <div class="col item-divider-ios"><i class="icon ion-ios-redo-outline">&nbsp;</i>分享</div>
+        <div class="col item-divider-ios"><i class="icon ion-ios-more">&nbsp;</i> 更多</div>
+      </div>
+    </div>
+
+
+    <!--<ion-scroll>-->
+
       <!--<ul id="hlist" >-->
         <!--<li ng-repeat="c in videos">-->
           <!--<i class = "item item-avatar" ng-click='loadVideoByid(c._id)'>-->
@@ -38,8 +55,8 @@
       <!--</ul>-->
     <!--</ion-scroll>-->
 
-    {{comments.length}}条评论
-    <div class="list">
+    <i class="padding-left">{{comments.length}}条评论</i>
+    <div class="list" style="clear:both;">
       <i class="item item-avatar"  ng-repeat="comment in comments">
         <img src="{{comment.author.icon}}" />
         <div style="float:right">{{comment.created | date:'MM-dd HH:mm'}}</div>
@@ -52,7 +69,7 @@
   <!-- align to the bottom of the page -->
   <div class="login-form" style="position: absolute; bottom: 0px; width: 100%">
 
-    <div class="list list-borderless" style="padding-bottom: 46px">
+    <div class="list list-borderless">
       <div class="row-no-padding">
         <span class="item item-input">
           <i class="icon ion-at placeholder-icon"></i>
