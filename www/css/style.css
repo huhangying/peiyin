@@ -4,3 +4,28 @@
   /*  overflow-x: scroll; /*
   /*  -webkit-overflow-scrolling: touch;  */
 }
+
+/* 所有class为menu的div中的ul样式 */
+.hlist ul
+{
+  list-style:none; /* 去掉ul前面的符号 */
+  margin: 0px; /* 与外界元素的距离为0 */
+  padding: 0px; /* 与内部元素的距离为0 */
+  width: 600px; /* 宽度根据元素内容调整 */
+}
+/* 所有class为menu的div中的ul中的li样式 */
+.hlist ul li
+{
+  float:left; /* 向左漂移，将竖排变为横排 */
+  width:56px;
+}
+.hlist .item{
+  border: none;
+  min-height: 58px;
+  margin-left:-8px;
+  padding: 0px;/*16px*/
+}
+
+.tab_selected{
+  border-bottom: 3px solid #e6b500;
+}

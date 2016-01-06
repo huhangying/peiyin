@@ -37,6 +37,7 @@ var Config = require('./control/config');
 var Comment = require('./control/comment');
 var User = require('./control/user');
 var Interest = require('./control/interest');
+var Vote = require('./control/vote');
 
 
 var router = express.Router();
@@ -45,6 +46,10 @@ router.route('/videos/:type')
   .get(Video.getAll);
 router.route('/videos/author/:uid')
   .get(Video.getAuthorVideos);
+router.route('/videos/voted/:uid')
+  .get(Video.getAuthorVotedVideos);
+router.route('/videos/parent/:vid')
+  .get(Video.getBrotherVideos);
 router.route('/video')
   .post(urlencodedParser, Video.Add);
 router.route('/video/:vid')
@@ -57,8 +62,10 @@ router.route('/video/delete/:vid')
   .get(Video.Delete);
 router.route('/video/addcomment/:vid/:cid')
   .get(Video.AddComment);
-router.route('/vote/:vid')
+router.route('/vote/:vid/:uid')
   .get(Video.Vote);
+router.route('/devote/:vid/:uid')
+  .get(Video.Devote);
 
 router.route('/config')
   .get(Config.GetAll);
@@ -75,6 +82,8 @@ router.route('/user')
   .put(User.Update);
 router.route('/user/:cell')
   .get(User.Get);
+router.route('/userid/:uid')
+  .get(User.GetById);
 router.route('/user/add/:name/:password/:icon')
   .get(User.Add);
 
@@ -83,8 +92,7 @@ router.route('/comment')
   .post(urlencodedParser, Comment.Add);
 router.route('/comment/:vid')
   .get(Comment.Get);
-//router.route('/comment/add/:vid/:uid/:content')
-//  .get(Comment.Add);
+
 
 router.route('/interest')
   .get(Interest.GetAll)
@@ -92,6 +100,8 @@ router.route('/interest')
 router.route('/interest/:uid')
   .get(Interest.Get)
   .delete(Interest.Delete);
+router.route('/fans/:uid')
+  .get(Interest.GetFans)
 router.route('/interest/delete')
   .post(urlencodedParser, Interest.DeleteInterests);
 router.route('/interest/:uid/:authorid')
@@ -99,6 +109,11 @@ router.route('/interest/:uid/:authorid')
 router.route('/interest/add/:uid/:iid')
   .get(Interest.QueryAdd);
 
+//router.route('/vote')
+//  .get(Vote.GetAll)
+//  .post(urlencodedParser, Vote.Update);
+//router.route('/vote/:vid/:uid')
+//  .get(Vote.Get);
 
 
 app.use('/', router);

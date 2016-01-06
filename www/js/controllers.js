@@ -53,9 +53,16 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
 
   })
 
+  // 包含 关注页 和 个人主页
   .controller('FocusCtrl', function($scope, Users, $state, Videos, $stateParams) {
     var uid = window.localStorage['uid'];
     var author_id = $stateParams.author;
+    $scope.isPersonPage = (author_id && author_id != '');
+    $scope.yourVideos = []; // 作品
+    $scope.yourVotedVideos = []; // 喜欢
+    $scope.yourVotedVideos = []; //
+    $scope.fans = []; //
+
 
     $scope.videos = [];
     $scope.getAllFocusVideos = function() {
@@ -92,7 +99,9 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
       });
     }
 
-    if (!author_id || author_id == ''){
+    if (!$scope.isPersonPage){
+      $scope.title = '关注';
+
       // 没有设置 author， 则显示全部关注的视频
       Users.getUserInterests(uid)
         .then(function(data){
@@ -106,41 +115,134 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
         });
     }
     else{
-      // 设置 author， 则显示全部author相关的视频
-      Videos.getAuthorVideos(author_id).then(function(videos){
-        $scope.videos = [];
+      $scope.title = '个人主页';
 
-        if (videos== 'null'){
-          //$state.go('tab.focusAdd')
-          $cordovaToast.showShortCenter('没有发现该该作者相关的视频');
-          return;
+      Users.GetById(author_id).then(function(author){
+        if (author != 'error' && author != 'null'){
+          $scope.author = author;
         }
 
-        $scope.videos = videos;
+        // 该作者的作品
+        Videos.getAuthorVideos(author_id).then(function(videos){
+          if (videos== 'null'){
+            $cordovaToast.showShortCenter('没有发现该作者相关的视频');
+            return;
+          }
+          $scope.yourVideos = videos;
+
+          $scope.setMode(1); // 显示该作者的作品
+        });
+
+        // 该作者点过赞的作品
+        Videos.getVotedVideos(author_id).then(function(videos){
+          if (videos== 'null'){
+            $cordovaToast.showShortCenter('没有发现该作者喜欢的视频');
+            return;
+          }
+          $scope.yourVotedVideos = videos;
+        });
+
+        // 该作者关注的人
+        Users.getUserInterests(uid)
+          .then(function(data){
+            //alert(JSON.stringify(data))
+            if (data && data.length > 0){
+              $scope.authorInterestedUsers = data[0].interests;
+            }
+          });
+
+        // 该作者的粉丝（关注改作者的人）
+        Users.getFans(uid)
+          .then(function(fans){
+            //alert(JSON.stringify(data))
+            if (fans && fans.length > 0){
+              $scope.fans = fans;
+            }
+          });
       });
     }
 
+    $scope.setMode = function(mode){
+      // mode: 1: 作品； 2：喜欢； 3：关注； 4：粉丝
+      $scope.mode = mode;
+      switch(mode){
+        case 1: // 显示该作者的作品
+          $scope.videos = $scope.yourVideos;
+          break;
+        case 2: // 该作者点过赞的作品
+          $scope.videos = $scope.yourVotedVideos;
+          break;
+        case 3: // 该作者关注的人
+          $scope.users = $scope.authorInterestedUsers;
+          //alert(JSON.stringify($scope.users))
+
+          break;
+        case 4: // 该作者的粉丝（关注改作者的人）
+          $scope.users =  $scope.fans;
+          break;
+      }
+      if (mode == 3 || mode ==4){
+        var length = $scope.users.length;
+
+        for (var i=0; i<length; i++) {
+          //$scope.users[i].checked = $scope.checkIfFocus($scope.users[i]._id);
+          $scope.setAuthorVideos(i, $scope.users[i]._id);
+        }
+      }
+      $scope.$apply();
+    }
+
+
+    // 公用的函数
+    $scope.setAuthorVideos = function(index, uid){
+      var author_votes = 0;
+      Videos.getAuthorVideos($scope.users[index]._id)
+        .then(function (author_videos) {
+
+          $scope.users[index].videoNo = author_videos.length;
+          for (var j = 0; j < author_videos.length; j++) {
+            author_votes += author_videos[j].vote;
+          }
+          $scope.users[index].totalVotes = author_votes;
+
+        });
+    }
   })
 
-  .controller('FocusAddCtrl', function($scope,$rootScope,$http,$cordovaToast, Users,$state) {
-
+  .controller('FocusAddCtrl', function($scope,$rootScope,$http,$cordovaToast, Users,$state, Videos) {
+    var uid = window.localStorage['uid'];
     $scope.user_interests = [];
-    Users.getUserInterests(window.localStorage['uid'])
+    Users.getUserInterests(uid)
       .then(function(data){
         $scope.user_interests = data[0].interests;
         //alert(JSON.stringify($scope.user_interests))
       });
 
     Users.all().then(function(data){
+
       $scope.users = data;
       var length = $scope.users.length;
-      for (var i=0; i<length; i++){
+
+      for (var i=0; i<length; i++) {
         $scope.users[i].checked = $scope.checkIfFocus($scope.users[i]._id);
+        $scope.setAuthorVideos(i, $scope.users[i]._id);
       }
-      //alert(JSON.stringify($scope.users));
+
     });
 
+    $scope.setAuthorVideos = function(index, uid){
+      var author_votes = 0;
+      Videos.getAuthorVideos($scope.users[index]._id)
+        .then(function (author_videos) {
 
+          $scope.users[index].videoNo = author_videos.length;
+          for (var j = 0; j < author_videos.length; j++) {
+            author_votes += author_videos[j].vote;
+          }
+          $scope.users[index].totalVotes = author_votes;
+
+        });
+    }
 
     $scope.checkIfFocus = function(authorId){
       //alert(JSON.stringify($scope.user_interests) + ':' + authorId)
@@ -157,7 +259,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
       });
 
       var interest = {
-        uid: window.localStorage["uid"],
+        uid: uid,
         interests: _interests
       };
 
@@ -191,6 +293,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
   })
 
   .controller('VideoCtrl', function($scope, $stateParams, Videos, $cordovaToast,$state, Users,$ionicNavBarDelegate,$ionicHistory) {
+    var uid = window.localStorage["uid"];
     $scope.init = function(){
       $scope.videoid = Object.randomId();
       $scope.showFocus = false; // 加关注
@@ -205,7 +308,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
         // 根据情况添加关注
         if ($scope.myvideo.author){
           // 不能关注自己
-          if ( $scope.myvideo.author._id == window.localStorage["uid"]){
+          if ( $scope.myvideo.author._id == uid){
             $scope.showFocus = false;
           }
           else { // 关注别人
@@ -225,6 +328,15 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
 
         }
 
+        // 加载别人玩的视频
+        if ($scope.myvideo.parent && $scope.myvideo.parent != ''){
+          //
+          Videos.getBrotherVideos($scope.myvideo.parent).then(function(bvideos){
+            //alert(JSON.stringify(bvideos));
+            $scope.brotherVideos = bvideos;
+          });
+        }
+
 
         //alert(JSON.stringify($scope.myvideo))
         $scope.myplayer.src({type: 'video/mp4', src: VIDEO_URL_ROOT + 'server/output/' +  $scope.myvideo.url +'.mp4'});
@@ -238,9 +350,21 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
     });
     $scope.$apply();
 
+    $scope.isVoted = false;
     $scope.vote = function(){
-      Videos.vote($scope.myvideo._id);
-      $scope.myvideo.vote++;
+      $scope.isVoted = !$scope.isVoted;
+
+      if ($scope.isVoted){
+        // if vote
+        Videos.vote($scope.myvideo._id, uid);
+        $scope.myvideo.vote++;
+      }
+      else{
+        // if de-vote
+        Videos.devote($scope.myvideo._id, uid);
+        $scope.myvideo.vote--;
+      }
+
       $scope.$apply();
     }
 
@@ -296,7 +420,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
 
     $scope.modifyInterest = function(noFocus){
       var interest = {
-        uid: window.localStorage["uid"],
+        uid: uid,
         interests: $scope.myvideo.author._id.split(',')
       };
       $scope.noFocus = !noFocus;
@@ -791,6 +915,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
           // 创建一个视频，默认发布！
           var myvideo = {
             type: 0,
+            parent: $scope.myvideo._id,
             name: $scope.myvideo.name,
             desc: $scope.myvideo.desc,
             url: data.return,                      // 在output目录下, file name with no mp4 ext.

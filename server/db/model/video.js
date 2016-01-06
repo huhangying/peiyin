@@ -8,6 +8,7 @@ var Schema = global.mongoose.Schema;
 var _Video = Schema({
   //cat_id: {type: Schema.Types.ObjectId, ref: 'category' },
   type: {type: Number, default: 0},  // 0: 生成以后的视频，供观看和分享。。。； 1：源视频，供配音；
+  parent: {type: Schema.Types.ObjectId},
   name: {type:String, required: true},
   desc: String,
   url: String,

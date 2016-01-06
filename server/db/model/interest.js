@@ -4,7 +4,7 @@
 
 var Schema = global.mongoose.Schema;
 var _Interest = new Schema({
-  uid: {type: Schema.Types.ObjectId},
+  uid: {type: Schema.Types.ObjectId, ref: 'user'},
   interests: [{type: Schema.Types.ObjectId, ref: 'user' }]
 });
 

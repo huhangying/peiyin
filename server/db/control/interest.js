@@ -22,11 +22,39 @@ module.exports = {
   Get: function (req, res) {
     if (req.params && req.params.uid) {
       Interest.find({uid: req.params.uid})
-        //.populate('interests')
+        .populate('interests')
         .exec(function (err, interest) {
           if (!interest)
             return res.send('null');
           res.json(interest);
+        });
+
+    }
+  },
+
+  // Get 的反过程
+  GetFans: function (req, res) {
+    if (req.params && req.params.uid) {
+      Interest.find()
+        //.where('interests').in([req.params.uid])
+        .populate('interests')
+        .populate('uid')
+        .exec(function (err, interests) {
+          var fans = [];
+          // 挨个查看是不是关注了 uid
+          if (!interests)
+            return res.send('null');
+
+          //TODO: 肯定很慢，以后改进
+          interests.forEach(function(interest){
+
+            interest.interests.forEach(function(user){
+              if (user._id == req.params.uid){
+                fans.push(interest.uid);
+              }
+            });
+          });
+          res.json(fans);
         });
 
     }

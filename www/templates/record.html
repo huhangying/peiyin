@@ -20,27 +20,8 @@
       <!--<track kind="Subtitles" src="http://101.200.81.99:8080/ciwen/oceans.vtt" default srclang="zh" label="中文"></track>-->
     </video>
 
-    <style>
-      /* 所有class为menu的div中的ul样式 */
-      ul
-      {
-        list-style:none; /* 去掉ul前面的符号 */
-        margin: 0px; /* 与外界元素的距离为0 */
-        padding: 0px; /* 与内部元素的距离为0 */
-        width: 800px; /* 宽度根据元素内容调整 */
-      }
-      /* 所有class为menu的div中的ul中的li样式 */
-      ul li
-      {
-        float:left; /* 向左漂移，将竖排变为横排 */
-        width:80px;
-      }
-      #hlist .item{
-        border: none;
-      }
-    </style>
-    <ion-scroll direction="x" >
-      <ul id="hlist" >
+    <ion-scroll direction="x" class="hlist">
+      <ul>
         <li ng-repeat="c in videos">
           <i class = "item item-avatar" ng-click='loadVideoByid(c._id)'>
               <img src="{{c.poster}}">

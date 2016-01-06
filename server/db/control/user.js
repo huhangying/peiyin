@@ -20,6 +20,22 @@ module.exports = {
     }
   },
 
+  GetById: function (req, res) {
+    if (req.params && req.params.uid) {
+      User.find({_id: req.params.uid, apply: true})
+        .exec(function(err, users) {
+          if (err) {
+            return res.send('error');
+          }
+          if (!users || users.length < 1) {
+            return res.send('null');
+          }
+          res.send(users[0]);
+        });
+
+    }
+  },
+
   Add: function(req, res){
     // 获取user数据（json）
     var user = req.body;
