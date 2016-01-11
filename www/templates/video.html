@@ -46,16 +46,19 @@
         <div class="col text-center" style="padding-top:22px;">{{brotherVideos.length}}</div>
       </div>
       <div class="row text-center item-divider-ios" style="padding:4px 0">
-        <div class="col col-33 "><i class="icon {{isVoted ? 'ion-android-favorite' : 'ion-android-favorite-outline'}}" ng-click="vote()">&nbsp; {{myvideo.vote}}</i></div>
+        <div class="col col-33"><i class="icon {{isVoted ? 'ion-android-favorite' : 'ion-android-favorite-outline'}}" ng-click="vote()">&nbsp; {{myvideo.vote}}</i></div>
+
         <div class="col"><i class="icon ion-ios-redo-outline">&nbsp;</i>分享</div>
-        <div class="col"><i class="icon ion-ios-more">&nbsp;</i> 更多</div>
+        <div class="col"ng-click="complain()"><i class="icon ion-ios-more">&nbsp;</i> 更多</div>
       </div>
     </div>
 
 
 
 
-    <i class="padding-left">{{comments.length}}条评论</i>
+    <div class="padding">
+      <i>{{comments.length}}条评论</i>
+    </div>
     <div class="list" style="clear:both;">
       <i class="item item-avatar"  ng-repeat="comment in comments">
         <img src="{{comment.author.icon}}" />
@@ -67,16 +70,13 @@
   </ion-content>
 
   <!-- align to the bottom of the page -->
-  <div class="login-form" style="position: absolute; bottom: 0px; width: 100%">
-
-    <div class="list list-borderless">
-      <div class="row-no-padding">
-        <span class="item item-input">
-          <i class="icon ion-at placeholder-icon"></i>
-          <input id="txtMyComment" type="text" placeholder="写评论..." ng-model="$root.myComment">
-          <i class="button button-clear button-positive" ng-click="sendMyComment()">发送</i>
-        </span>
-      </div>
+  <div class="login-form row-no-padding" style="position: absolute; bottom: 0px; width: 100%">
+    <div class="list ">
+       <span class="item item-input" style="padding:0">
+         <i class="icon ion-at placeholder-icon padding-left"></i>
+         <input id="txtMyComment" type="text" placeholder="写评论..." ng-model="$root.myComment">
+         <i class="button button-clear button-positive" ng-click="sendMyComment()">发送</i>
+       </span>
     </div>
   </div>
 </ion-view>

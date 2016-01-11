@@ -122,6 +122,28 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
           $scope.author = author;
         }
 
+        // 根据情况添加关注
+        if ($scope.author){
+          // 不能关注自己
+          if ( $scope.author._id == uid){
+            $scope.showFocus = false;
+          }
+          else { // 关注别人
+            $scope.showFocus = true;
+            // check if focus already
+            var isFocus = Users.checkFocus(uid, $scope.author._id)
+              .then(function(data){
+                if (data == true){
+                  $scope.noFocus = false;
+                }
+                else{
+                  $scope.noFocus = true;
+                }
+                $scope.$apply();
+              });
+          }
+        }
+
         // 该作者的作品
         Videos.getAuthorVideos(author_id).then(function(videos){
           if (videos== 'null'){
@@ -143,23 +165,43 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
         });
 
         // 该作者关注的人
-        Users.getUserInterests(uid)
+        Users.getUserInterests(author_id)
           .then(function(data){
             //alert(JSON.stringify(data))
             if (data && data.length > 0){
               $scope.authorInterestedUsers = data[0].interests;
+              //
+              $scope.setFocus($scope.authorInterestedUsers);
             }
           });
 
         // 该作者的粉丝（关注改作者的人）
-        Users.getFans(uid)
+        Users.getFans(author_id)
           .then(function(fans){
             //alert(JSON.stringify(data))
             if (fans && fans.length > 0){
               $scope.fans = fans;
+              //
+              $scope.setFocus($scope.fans);
             }
           });
       });
+    }
+
+    // set 作者关注的人 or 作者的粉丝 的关注情况
+    $scope.setFocus = function(usrs){
+      for(var i=0; i<usrs.length; i++){
+        // check if focus already
+        var isFocus = Users.checkFocus(uid, usrs[i]._id)
+          .then(function(data){
+            if (data == true){
+              usrs[i].noFocus = false;
+            }
+            else{
+              usrs[i].noFocus = true;
+            }
+          });
+      }
     }
 
     $scope.setMode = function(mode){
@@ -192,6 +234,37 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
       $scope.$apply();
     }
 
+    $scope.modifyInterest = function(noFocus, author_id){
+      var _author_id = $scope.author._id;
+      if (author_id) _author_id = author_id;
+      var interest = {
+        uid: uid,
+        interests:_author_id.split(',')
+      };
+      $scope.noFocus = !noFocus;
+
+      if (noFocus){
+        Users.addInterest(interest)
+          .success(function(data){
+            alert('added: ' + data)
+          })
+          .error(function(data){
+            alert('error: ' + data)
+          });
+      }
+      else{
+        //alert(JSON.stringify(interest))
+        Users.removeInterest(interest)
+          .success(function(data){
+            alert('removed: ' + data)
+          })
+          .error(function(data){
+            alert('error: ' + data)
+          });
+      }
+
+      $scope.$apply();
+    }
 
     // 公用的函数
     $scope.setAuthorVideos = function(index, uid){
@@ -292,7 +365,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
     };
   })
 
-  .controller('VideoCtrl', function($scope, $stateParams, Videos, $cordovaToast,$state, Users,$ionicNavBarDelegate,$ionicHistory) {
+  .controller('VideoCtrl', function($scope, $stateParams, Videos, $cordovaToast,$state, Users,$ionicNavBarDelegate,$ionicHistory,$ionicPopup) {
     var uid = window.localStorage["uid"];
     $scope.init = function(){
       $scope.videoid = Object.randomId();
@@ -314,7 +387,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
           else { // 关注别人
             $scope.showFocus = true;
             // check if focus already
-            var isFocus = Users.checkFocus(window.localStorage["uid"], $scope.myvideo.author._id)
+            var isFocus = Users.checkFocus(uid, $scope.myvideo.author._id)
               .then(function(data){
                 if (data == true){
                   $scope.noFocus = false;
@@ -418,6 +491,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
       $scope.$root.myComment = '';
     }
 
+    //TODO: same as in FocusControl
     $scope.modifyInterest = function(noFocus){
       var interest = {
         uid: uid,
@@ -446,6 +520,25 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
       }
 
       $scope.$apply();
+    }
+
+    // 触发一个按钮点击，或一些其他目标
+    $scope.complain = function() {
+
+      // 一个确认对话框
+      var confirmPopup = $ionicPopup.confirm({
+        title: '举报视频',
+        template: '该视频包含不适宜的内容，确认要举报?',
+        buttons: [
+          { text: '取消' },
+          { text: '确定', type: 'button-positive' }
+          ]
+      });
+      confirmPopup.then(function(res) {
+        if(res) {
+          alert(res)
+        }
+      });
     }
 
     $scope.goBack = function(){
