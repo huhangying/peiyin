@@ -29,3 +29,5 @@
 .tab_selected{
   border-bottom: 3px solid #e6b500;
 }
+.video-js .vjs-fullscreen-control{ display:none; }
+

@@ -8,7 +8,10 @@
           <a class="button button-light button-small" href="#">修改密码</a>
         </div>
         <h2>{{user_name}}</h2>
-        <p>{{cell}}</p>
+        <div class="row row-no-padding">
+          <div class="col col-20"><i class="icon ion-ios-film-outline"> {{usr.videoNo}}</i></div>
+          <div class="col "><i class="icon ion-ios-heart"> {{usr.totalVotes}}</i></div>
+        </div>
       </ion-item>
     </ion-list>
     <ion-list>
@@ -18,7 +21,7 @@
     </ion-list>
 
     <div class="text-center" ng-click="logout()">
-      <i class="button button-balanced button-full">退出登录&nbsp;&nbsp;</i>
+      <i class="button button-balanced button-full button-small">退出登录&nbsp;&nbsp;</i>
     </div>
   </ion-content>
 </ion-view>

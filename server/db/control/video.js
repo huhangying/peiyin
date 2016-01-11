@@ -35,6 +35,21 @@ module.exports = {
       });
   },
 
+  getByTypeTag: function(req, res){
+    var type = '',tag='';
+    if (req.params){
+      type = req.params.type;
+      tag = req.params.tag;
+    }
+
+    Video.find({type: type, tags: tag})
+      .populate('author')
+      .exec(function (err, videos) {
+        if (!videos)
+          return res.send('null');
+        res.json(videos);
+      });
+  },
   getAuthorVideos: function(req, res){
     var uid = '';
     if (req.params)

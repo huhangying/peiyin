@@ -37,13 +37,16 @@ var Config = require('./control/config');
 var Comment = require('./control/comment');
 var User = require('./control/user');
 var Interest = require('./control/interest');
-var Vote = require('./control/vote');
+//var Vote = require('./control/vote');
+var Tag = require('./control/tag');
 
 
 var router = express.Router();
 // REST API
 router.route('/videos/:type')
   .get(Video.getAll);
+router.route('/videos/tag/:type/:tag')
+  .get(Video.getByTypeTag);
 router.route('/videos/author/:uid')
   .get(Video.getAuthorVideos);
 router.route('/videos/voted/:uid')
@@ -109,11 +112,13 @@ router.route('/interest/:uid/:authorid')
 router.route('/interest/add/:uid/:iid')
   .get(Interest.QueryAdd);
 
-//router.route('/vote')
-//  .get(Vote.GetAll)
-//  .post(urlencodedParser, Vote.Update);
-//router.route('/vote/:vid/:uid')
-//  .get(Vote.Get);
+router.route('/tag')
+  .get(Tag.GetAll)
+  .post(urlencodedParser, Tag.Add);
+router.route('/tag/:cat')
+  .get(Tag.Get);
+router.route('/tag/add/:cat/:tag/:order')
+  .get(Tag.AddFake);
 
 
 app.use('/', router);

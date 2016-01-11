@@ -5,10 +5,13 @@
   The Friends service returns an array of friend data
 -->
 <ion-view view-title="{{myvideo.name}}">
+  <ion-nav-buttons side="left"> <!-- left -->
+    <button  class="button button-icon icon ion-ios-arrow-back"  ng-click="goBack()"></button>
+  </ion-nav-buttons>
   <ion-content class="text-center">
 
     <video class="video-js" on-finish-render ng-repeat="video in ['']"
-          controls preload="true"  style="width: 100%" height="200" id="my_video{{videoid}}"
+          controls preload="true"  style="width: 100%" height="206" id="my_video{{videoid}}"
           poster="http://video-js.zencoder.com/oceans-clip.png"
            data-setup='{"example_option":true}' >
       <source src="" type='video/mp4'>
@@ -20,16 +23,12 @@
       <!--<track kind="Subtitles" src="http://101.200.81.99:8080/ciwen/oceans.vtt" default srclang="zh" label="中文"></track>-->
     </video>
 
+    <!--看，还有谁在演-->
     <ion-scroll direction="x" class="hlist">
       <ul>
-        <li ng-repeat="c in videos">
+        <li ng-repeat="c in brotherVideos | filter:excludeSelf | limitTo:8">
           <i class = "item item-avatar" ng-click='loadVideoByid(c._id)'>
-              <img src="{{c.poster}}">
-          </i>
-        </li>
-        <li ng-repeat="c in videos">
-          <i class = "item item-avatar" ng-click='loadVideoByid(c._id)'>
-            <img src="{{c.poster}}">
+              <img src="{{c.author.icon}}">
           </i>
         </li>
       </ul>

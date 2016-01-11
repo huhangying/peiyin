@@ -1,15 +1,18 @@
-<ion-view view-title="视频列表">
+<ion-view view-title="资源库">
   <ion-content>
     <ion-list>
-      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="video in videos" type="item-text-wrap" href="#/tab/record/{{video._id}}">
+      <div class="row text-center item-divider-ios" style="padding:2px 0 0 0; font-size:x-small; line-height: 12px;">
+        <div class="col {{$index == selectedTagIndex ? 'tab_selected':''}}" ng-repeat="tag in tags" ng-click="setContent(tag.tag, $index)">
+          {{tag.tag}}
+        </div>
+      </div>
+    </ion-list>
+    <ion-list>
+      <ion-item class="item-avatar item-icon-right" ng-repeat="video in videos" type="item-text-wrap" href="#/record/{{video._id}}">
         <img ng-src="{{video.poster}}">
         <h2>{{video.name}}</h2>
         <p>{{video.desc}}</p>
         <i class="icon ion-chevron-right icon-accessory"></i>
-
-        <ion-option-button class="button-assertive" ng-click="remove(video)">
-          删除
-        </ion-option-button>
       </ion-item>
     </ion-list>
   </ion-content>

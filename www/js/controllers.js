@@ -284,24 +284,6 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
 
   .controller('FocusAddCtrl', function($scope,$rootScope,$http,$cordovaToast, Users,$state, Videos) {
     var uid = window.localStorage['uid'];
-    $scope.user_interests = [];
-    Users.getUserInterests(uid)
-      .then(function(data){
-        $scope.user_interests = data[0].interests;
-        //alert(JSON.stringify($scope.user_interests))
-      });
-
-    Users.all().then(function(data){
-
-      $scope.users = data;
-      var length = $scope.users.length;
-
-      for (var i=0; i<length; i++) {
-        $scope.users[i].checked = $scope.checkIfFocus($scope.users[i]._id);
-        $scope.setAuthorVideos(i, $scope.users[i]._id);
-      }
-
-    });
 
     $scope.setAuthorVideos = function(index, uid){
       var author_votes = 0;
@@ -320,8 +302,38 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
     $scope.checkIfFocus = function(authorId){
       //alert(JSON.stringify($scope.user_interests) + ':' + authorId)
       //alert(($scope.user_interests.indexOf(authorId) > -1))
-      return ($scope.user_interests.indexOf(authorId) > -1);
+      var len = $scope.user_interests.length;
+      for (var i=0; i<len; i++){
+        if ($scope.user_interests[i]._id == authorId) {
+          //alert(authorId)
+          return true;
+        }
+      }
+      return false;
+
     }
+
+    $scope.user_interests = [];
+    Users.getUserInterests(uid)
+      .then(function(data){
+        $scope.user_interests = data[0].interests;
+        //alert(JSON.stringify($scope.user_interests))
+
+        Users.all().then(function(data){
+
+          $scope.users = data;
+          var length = $scope.users.length;
+
+          for (var i=0; i<length; i++) {
+
+            $scope.setAuthorVideos(i, $scope.users[i]._id);
+            $scope.users[i].checked = $scope.checkIfFocus($scope.users[i]._id);
+          }
+
+        });
+      });
+
+
 
     $scope.modifyInteres = function(){
       var _interests = [];
@@ -355,14 +367,31 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
     }
   })
 
-  .controller('CatsCtrl', function($scope, $http,$q, Videos) {
+  .controller('CatsCtrl', function($scope, $http,$q, Videos, Tags) {
+    $scope.selectedTagIndex = 0;
+    Tags.get('常用').then(function(data){
+      $scope.tags = data;
+    });
 
+
+    // by default
     Videos.all(1).then(function(data){
       $scope.videos = data;
     });
-    $scope.remove = function(video) {
-      Videos.remove(video);
-    };
+
+    $scope.setContent = function(tag, index){
+      $scope.selectedTagIndex = index;
+      if (tag == '排行'){  // 最近更新
+        Videos.all(1).then(function(data){
+          $scope.videos = data;
+        });
+      }
+      else{
+        Videos.getByTag(1, tag).then(function(data){
+          $scope.videos = data;
+        });
+      }
+    }
   })
 
   .controller('VideoCtrl', function($scope, $stateParams, Videos, $cordovaToast,$state, Users,$ionicNavBarDelegate,$ionicHistory,$ionicPopup) {
@@ -541,6 +570,12 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
       });
     }
 
+    // a filter
+    $scope.excludeSelf = function(video){
+      if (video._id != $scope.myvideo._id)
+        return video;
+    }
+
     $scope.goBack = function(){
       $ionicNavBarDelegate.back();
     }
@@ -572,7 +607,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
   })
 
   // 录音控制器
-  .controller('RecordCtrl', function($scope,$sce, $rootScope,$stateParams, Videos,$cordovaMedia, $cordovaFile,$cordovaFileTransfer,$ionicLoading,$http,$state) {
+  .controller('RecordCtrl', function($scope,$sce, $rootScope,$stateParams, Videos,$cordovaMedia, $cordovaFile,$cordovaFileTransfer,$ionicLoading,$http,$state,$ionicNavBarDelegate) {
 
     // 录音前要求先登录
     if (window.localStorage['authorized'] != 'yes'){
@@ -580,10 +615,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
       return;
     }
 
-    Videos.all(1).then(function(data){
-      $scope.videos = data;
-      $scope.$apply();
-    });
+
 
     var UPLOAD_URL = 'http://101.200.81.99:8888'
     $scope.step = 0;
@@ -776,6 +808,12 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
       Videos.get(id).then(function(data){
         $scope.myvideo = data;
         //alert(JSON.stringify(data))
+
+        // 看，还有谁为该视频配音
+        Videos.getBrotherVideos($scope.myvideo._id).then(function(data){
+          // alert($scope.myvideo._id + '/' + data.length)
+          $scope.brotherVideos = data;
+        });
 
         $scope.file_no_ext = $scope.myvideo.url;
         //alert($scope.myvideo.url)
@@ -1037,17 +1075,36 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
           console.log('uploaded ('+$scope.file_no_ext+') error');
         });
     }
+
+    $scope.goBack = function(){
+      $ionicNavBarDelegate.back();
+    }
   })
 
   //============================================================================================================
 
   // 用户账号管理
-  .controller('AccountCtrl', function($scope,$state,$rootScope,$http,$cordovaToast) {
+  .controller('AccountCtrl', function($scope,$state,$rootScope,$http,$cordovaToast,Videos) {
 
     // 如果没有登录，去登录
     if (!localStorage['authorized'] || localStorage['authorized'] != 'yes'){
       $state.go('signin');
       return;
+    }
+
+    // 公用的函数
+    $scope.setAuthorVideos = function(uid){
+      var author_votes = 0;
+      $scope.usr = [];
+      Videos.getAuthorVideos(uid)
+        .then(function (author_videos) {
+          $scope.usr.videoNo = author_videos.length;
+          for (var j = 0; j < author_videos.length; j++) {
+            author_votes += author_videos[j].vote;
+          }
+          $scope.usr.totalVotes = author_votes;
+
+        });
     }
 
     $scope.cell = '';
@@ -1057,12 +1114,15 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
       $scope.icon = localStorage['icon'];
       $scope.user_name = localStorage['name'];
       $scope.cell == '(' + localStorage['cell'] + ')';
+      var uid = window.localStorage["uid"];
+      $scope.setAuthorVideos(uid);
     }
 
     $scope.logout = function(){
       localStorage['cell'] = '';
       localStorage['name'] = '';
       localStorage['authorized'] = '';
+      localStorage['uid'] = '';
       $rootScope.previousState = '';
       $state.go('tab.home');
     }
@@ -1079,6 +1139,9 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize'])
       $scope.muted = !$scope.muted;
       window.localStorage.setItem('muted',$scope.muted);
     }
+
+
+
   })
 
   //--------------------------------------------------------------------------------------------------------------

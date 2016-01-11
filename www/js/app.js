@@ -95,14 +95,10 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
       }
     })
 
-    .state('tab.record', {
+    .state('record', {
       url: '/record/:catId',
-      views: {
-        'tab-cats': {
-          templateUrl: 'templates/record.html',
-          controller: 'RecordCtrl'
-        }
-      }
+      templateUrl: 'templates/record.html',
+      controller: 'RecordCtrl'
     })
 
     //
