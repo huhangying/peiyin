@@ -20,7 +20,6 @@ angular.module('recordCtrl', [])
   $scope.preview_flag = false;
   $scope.preview_inprocess = false;
   $scope.currentRecord = false;
-  $scope.$root.showUploadButton = false;
 
   $scope.mode = '';
   if (!$rootScope.count) $rootScope.count = 0;
@@ -94,7 +93,9 @@ angular.module('recordCtrl', [])
 
   }
 
-  // 支持preview播放
+  /// 支持preview播放
+  // 1: 录制完成后直接进行 preview 播放
+  // 2: preview 的时候不能进行录制，如果回去的话，则放弃当前的录制
   $scope.previewRecord = function() {
     $scope.mode = 'preview';
     $scope.my_player.currentTime(0);
@@ -111,10 +112,10 @@ angular.module('recordCtrl', [])
 
     // 可以review&upload
     $scope.step = 2;
-    $scope.$root.showUploadButton = true;
 
     $scope.$apply();
   }
+
 
   $scope.stopRecording = function(){
     $scope.recordStatus = 4;
@@ -222,7 +223,6 @@ angular.module('recordCtrl', [])
       $scope.currentTime = '';
       $scope.duration = '';
       $scope.step = 0;
-      $scope.$root.showUploadButton = false;
 
       $scope.$apply();
     });
@@ -348,21 +348,27 @@ angular.module('recordCtrl', [])
     $scope.my_player.on("ended", function(a){
       if ($scope.currentRecord){
         $scope.stopRecording();
+
+        // 1: 录制完成后直接进行 preview 播放
+        // 2: preview 的时候不能进行录制，如果回去的话，则放弃当前的录制
+        $scope.previewRecord();
+
       }
       $scope.preview_flag = false;
       $scope.pauseCount = 0; //不能再录了
       $scope.preview_inprocess = false;
 
-      $scope.$apply();// for test
+      $scope.$apply();
 
     });
   });
 
-  $scope.$on('$ionicView.unloaded', function () {
 
-    $scope.my_player.dispose();
-  });
 
+
+  /**
+   * 上传，视频合成等功能
+   **/
   $scope.uploaded_count = 0;
   $scope.upload = function(file_name) {
 
@@ -414,16 +420,13 @@ angular.module('recordCtrl', [])
       });
   }
 
-  $scope.$root.uploads = function() {
+  $scope.uploads = function() {
 
     $scope.uploaded_count = 0;
     for (var i=0; i< $scope.info.length; i++){
       $scope.upload($scope.info[i].name);
     }
   }
-
-
-
 
   $scope.uploaded = function(){
     //alert('uploaded: '+$scope.totalCount)
@@ -470,10 +473,29 @@ angular.module('recordCtrl', [])
         console.log('uploaded ('+$scope.file_no_ext+') error');
       });
   }
+  /**
+   * 上传，视频合成等功能结束！
+   **/
+
+
 
   $scope.goBack = function(){
-    $ionicNavBarDelegate.back();
+    if ($scope.step < 2){
+      $ionicNavBarDelegate.back();
+    }
+    else {
+      $scope.step = 1;
+      $scope.$apply();
+    }
+
   }
+
+
+  $scope.$on('$ionicView.unloaded', function () {
+
+    $scope.my_player.dispose();
+  });
+
 })
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++

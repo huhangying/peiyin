@@ -6,8 +6,10 @@
   <ion-content class="text-centerd row-no-padding">
 
 
-      <div style="float:right; padding: 25px 12px 0 0; font-size: small" ng-show="showFocus">
-        <span class="icon {{noFocus ? 'ion-ios-plus-outline balanced' : 'ion-ios-minus-outline'}}" ng-click="modifyInterest(noFocus)">&nbsp;关注</span>
+      <div style="float:right; padding: 25px 12px 0 0; font-size: small">
+        <span class="icon {{noFocus ? 'ion-ios-plus-outline balanced' : 'ion-ios-minus-outline'}}"
+              ng-click="modifyInterest(noFocus)" ng-show="showFocus">&nbsp;关注</span>
+        <a class="icon ion-ios-redo-outline" style="text-decoration: none" href="#/tab/player/{{myvideo._id}}" ng-show="!showFocus">&nbsp;分享</a>
       </div>
     <a  href="#/tab/focus/{{myvideo.author._id}}" style="text-decoration: none;color:black;">
       <div class="item-avatar" style="margin: -10px 0 -10px 0;">
@@ -33,9 +35,9 @@
       </div>
       <div class="row row-no-padding padding-bottom">
         <div class="col col-80">
-          <ion-scroll direction="x" class="hlist">
+          <ion-scroll direction="x" class="hlistnarrow">
             <ul>
-              <li ng-repeat="c in brotherVideos | filter:excludeSelf">
+              <li ng-repeat="c in brotherVideos | filter:excludeSelf | limitTo:11">
                 <a class = "item item-avatar" ui-sref="video({vid: c._id})">
                   <img src="{{c.author.icon}}">
                   <br/>

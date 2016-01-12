@@ -586,28 +586,30 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize','resourceCtrl','
 
   })
 
-  .controller('PlayerCtrl', function($scope, $stateParams) {
-    $scope.videoid = $stateParams.vid;
+  .controller('PlayerCtrl', function($scope, $stateParams,Videos, $ionicNavBarDelegate) {
+    var id = Object.randomId();
+    $scope.videoid = id;
+
+
 
     $scope.$on('ngRenderFinished', function (scope, element, attrs) {
       // render完成后执行的js
-      $scope.myplayer = videojs( $scope.videoid);
-      $scope.myplayer.src({type: 'video/mp4', src: 'http://101.200.81.99:8080/ciwen/server/output/' +  $scope.videoid +'.mp4'});
-      $scope.myplayer.play();
+      Videos.get($stateParams.vid).then(function(data){
+        $scope.myvideo = data;
+
+        $scope.myplayer = videojs(id);
+        $scope.myplayer.src({type: 'video/mp4', src: 'http://101.200.81.99:8080/ciwen/server/output/' +  $scope.myvideo.url +'.mp4'});
+        $scope.myplayer.play();
+      });
+
     });
 
     $scope.playIt = function(){
       $scope.myplayer.play();
     }
-
-    $scope.doRefresh = function(){
-      $scope.myplayer = videojs( $scope.videoid);
-      $scope.myplayer.src({type: 'video/mp4', src: 'http://101.200.81.99:8080/ciwen/server/output/' +  $scope.videoid +'.mp4'});
-      $scope.myplayer.play();
-      //Stop the ion-refresher from spinning
-      $scope.$broadcast('scroll.refreshComplete');
+    $scope.goBack = function(){
+      $ionicNavBarDelegate.back();
     }
-
   })
 
   //============================================================================================================

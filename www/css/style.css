@@ -6,7 +6,7 @@
 }
 
 /* 所有class为menu的div中的ul样式 */
-.hlist ul
+.hlist ul,.hlistnarrow ul
 {
   list-style:none; /* 去掉ul前面的符号 */
   margin: 0px; /* 与外界元素的距离为0 */
@@ -21,7 +21,14 @@
   text-align: center;
   font-size: .8em;
 }
-.hlist .item{
+.hlistnarrow ul li
+{
+  float:left; /* 向左漂移，将竖排变为横排 */
+  width:56px;
+  text-align: center;
+  font-size: .8em;
+}
+.hlist .item,.hlistnarrow .item{
   border: none;
   min-height: 58px;
   margin-left:-8px;
