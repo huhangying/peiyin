@@ -4,7 +4,7 @@
 
 angular.module('recordCtrl', [])
 // 录音控制器
-.controller('RecordCtrl', function($scope,$sce, $rootScope,$stateParams, Videos,$cordovaMedia, $cordovaFile,$cordovaFileTransfer,$ionicLoading,$http,$state,$ionicNavBarDelegate) {
+.controller('RecordCtrl', function($scope,$sce, $rootScope,$stateParams, Videos,$cordovaMedia, $cordovaFile,$cordovaFileTransfer,$ionicLoading,$http,$state,$ionicNavBarDelegate,$q,$timeout) {
 
   // 录音前要求先登录
   if (window.localStorage['authorized'] != 'yes'){
@@ -138,20 +138,23 @@ angular.module('recordCtrl', [])
 
     if (!$scope.currentRecord){
 
-      // 录制第一个录音，清空先
-      if ($scope.pauseCount == 0){
-        $scope.info = []; //
-      }
+      // 3 秒倒计时
+      countdown(3).then(function(){
+        // 录制第一个录音，清空先
+        if ($scope.pauseCount == 0){
+          $scope.info = []; //
+        }
 
-      $scope.prepare($scope.pauseCount, $scope.my_player.currentTime());
+        $scope.prepare($scope.pauseCount, $scope.my_player.currentTime());
 
-      //$scope.my_player.currentTime(0);
-      $scope.my_player.play();
+        //$scope.my_player.currentTime(0);
+        $scope.my_player.play();
 
-      // Record audio
-      $scope.mediaRec.startRecord();
-      $scope.recordStatus = 1;
+        // Record audio
+        $scope.mediaRec.startRecord();
+        $scope.recordStatus = 1;
 
+      });
     }
     else{
       $scope.my_player.pause();
@@ -235,7 +238,7 @@ angular.module('recordCtrl', [])
 
     $scope.loadVideoByid($stateParams.catId);
 
-    //$scope.my_player.muted('true' == window.localStorage.getItem('muted'));
+
     $ionicLoading.show({
       template: '<i onclick="hideLoading()">视频加载中...</i>',
       noBackdrop:true
@@ -478,6 +481,29 @@ angular.module('recordCtrl', [])
    **/
 
 
+
+  // 倒计时功能 (promise)
+  function countdown(count) {
+    var deferred = $q.defer();
+    var countDowner;
+    countDowner = function() {
+      if (count < 1) {
+        $ionicLoading.hide();
+        deferred.resolve(); // quit
+      }
+      else {
+        $ionicLoading.show({
+          template: '<i style="font-size:80px;padding:20px 0 10px 0;">' + count + '</i>',
+          noBackdrop:true
+        });
+
+        count--; // -1
+        $timeout(countDowner, 1000); // loop it again
+      }
+    };
+    countDowner()
+    return deferred.promise
+  }
 
   $scope.goBack = function(){
     if ($scope.step < 2){
