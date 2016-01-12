@@ -11,13 +11,15 @@
   list-style:none; /* 去掉ul前面的符号 */
   margin: 0px; /* 与外界元素的距离为0 */
   padding: 0px; /* 与内部元素的距离为0 */
-  width: 600px; /* 宽度根据元素内容调整 */
+  width: 666px; /* 宽度根据元素内容调整 */
 }
 /* 所有class为menu的div中的ul中的li样式 */
 .hlist ul li
 {
   float:left; /* 向左漂移，将竖排变为横排 */
-  width:56px;
+  width:74px;
+  text-align: center;
+  font-size: .8em;
 }
 .hlist .item{
   border: none;
@@ -28,6 +30,9 @@
 
 .tab_selected{
   border-bottom: 3px solid #e6b500;
+  color:#e6b500;
 }
 .video-js .vjs-fullscreen-control{ display:none; }
+
+.hlist i img{ border-radius:50%; height:50px; width:50px; margin-top:8px;  cursor: pointer;}
 

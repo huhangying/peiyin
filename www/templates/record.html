@@ -4,7 +4,8 @@
   The FriendsCtrl pulls data from the Friends service (service.js)
   The Friends service returns an array of friend data
 -->
-<ion-view view-title="{{myvideo.name}}">
+<ion-view>
+  <ion-nav-title> {{myvideo.name}}</ion-nav-title>
   <ion-nav-buttons side="left"> <!-- left -->
     <button  class="button button-icon icon ion-ios-arrow-back"  ng-click="goBack()"></button>
   </ion-nav-buttons>
@@ -15,27 +16,27 @@
           poster="http://video-js.zencoder.com/oceans-clip.png"
            data-setup='{"example_option":true}' >
       <source src="" type='video/mp4'>
-      <!--<source src="http://101.200.81.99:8080/ciwen/assets/aOrX3hUkGBenBg8OUulHZQ__.mp4" type='video/mp4'>-->
-      <!--<source src="http://101.200.81.99:8080/ciwen/assets/ocean.mp4" type='video/mp4'>-->
-      <!--<source src="{{videosrc}}" type='video/mp4'>-->
-      <!--<source src="http://101.200.81.99:8080/ciwen/test2x.mp4" type='video/mp4'>-->
-      <!--<source src="http://video-js.zencoder.com/oceans-clip.webm" type='video/webm' />-->
-      <!--<track kind="Subtitles" src="http://101.200.81.99:8080/ciwen/oceans.vtt" default srclang="zh" label="中文"></track>-->
     </video>
 
+    <ion-item style="padding:0">
     <!--看，还有谁在演-->
     <ion-scroll direction="x" class="hlist">
       <ul>
-        <li ng-repeat="c in brotherVideos | filter:excludeSelf | limitTo:8">
-          <i class = "item item-avatar" ng-click='loadVideoByid(c._id)'>
-              <img src="{{c.author.icon}}">
+        <li style="padding-top:12px">
+          <i class="icon ion-videocamera energized" style="font-size:50px;"></i><br>
+          视频库</li>
+        <li ng-repeat="v in tagVideos | filter:excludeSelf | limitTo:8">
+          <i class = "" ng-click='loadVideoByid(v._id)'>
+              <img src="{{v.poster}}"><br>
+              {{v.name}}
           </i>
         </li>
       </ul>
     </ion-scroll>
+    </ion-item>
 
     <ion-list>
-      <ion-item class="text-center">
+      <ion-item class="text-center" ng-hide="true">
         <div class="energized">{{getStatus(recordStatus)}} ({{currentTime}}/{{bufferedTime}}/{{duration}}s)</div>
         <!--<i class="button icon ion-share icon-left button-light">分享</i>-->
         <!--<p>-->
@@ -44,14 +45,14 @@
       </ion-item>
     </ion-list>
     <p class="{{!currentRecord ? 'balanced':'assertive'}} padding">
-      <i class="button-large icon {{currentRecord ? 'ion-pause':'ion-record'}}" ng-show="step>0" ng-click="captureAudio()"></i>
+      <i class="button-large icon {{currentRecord ? 'ion-pause':'ion-record'}}" style="font-size:80px;" ng-show="step>0" ng-click="captureAudio()"></i>
       <i class="button-large icon ion-ios-eye-outline" ng-click="previewRecord()" ng-show="!currentRecord && step>1"></i>
       <!--<i class="button-large icon ion-ios-upload-outline" ng-click="uploads()" ng-show="!currentRecord && step>1"></i>-->
       <a class="button-large icon button-light ion-ios-upload-outline" href="#/tab/video/{{output_video}}"  ng-show="!currentRecord && step>2"></a>
       <!--<a class="button-large icon button-light ion-ios-upload-outline" href="#/tab/player/{{output_video}}"  ng-show="!currentRecord && step>2"></a>-->
       <!--<a class="button-large icon ion-jet" href="{{output_video}}"  ng-show="!currentRecord && step>2"></a>-->
     </p>
-    <ion-list ng-hide="false">
+    <ion-list ng-hide="true">
       <ion-item class="text-left" >
         <p>info: {{info_pause_count}}, {{start_time}}, {{current_time}}</p>
         <p>counts: {{pauseCount}}/{{totalCount}}/{{uploaded_count}}</p>

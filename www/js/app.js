@@ -108,6 +108,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
       controller: 'VideoCtrl'
     })
 
+    .state('resource', {
+      url: '/resource/:vid',
+      templateUrl: 'templates/resource.html',
+      controller: 'ResourceCtrl'
+    })
+
     // 纯单个视频的播放(不包括用户和评论等，没有数据库)
     .state('tab.player', {
       url: '/player/:vid',

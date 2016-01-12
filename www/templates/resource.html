@@ -1,0 +1,65 @@
+<ion-view cache-view="false">
+  <ion-nav-title> {{myvideo.name}}</ion-nav-title>
+  <ion-nav-buttons side="left"> <!-- left -->
+    <button  class="button button-icon icon ion-ios-arrow-back"  ng-click="goBack()"></button>
+  </ion-nav-buttons>
+  <ion-content>
+    <style>
+      .img-fixed{width:100%;height:145px;}
+      .move-up-note{margin:-30px 0 0 0;padding:0 0 0 6px; font-size: x-small;
+        background-image: url('img/bar_back.png');
+        background-repeat: repeat-x;
+        background-position: bottom;
+        color:white;
+      }
+      .move-up-note img{ border-radius:50%; height:30px;margin-top:-15px}
+    </style>
+
+    <ion-list class="text-center">
+      <div class="item">
+        <img src="{{myvideo.poster}}" style="height:80px;width:80px;border-radius:50%;">
+        <div>{{myvideo.desc}}</div>
+        <div class="padding">{{videos.length}} 作品</div>
+        <div><a href="#/record/{{myvideo._id}}" class="button button-small button-light">我来配音</a></div>
+
+      </div>
+      <div class="row text-center item-divider-ios" style="padding:2px 0 0 0; font-size:x-small; line-height: 12px;">
+        <div class="col {{mode==1 ? 'tab_selected':''}}" ng-click="setMode(1)">最赞</div>
+        <div class="col {{mode==2 ? 'tab_selected':''}}" ng-click="setMode(2)">最新</i></div>
+      </div>
+    </ion-list>
+
+
+
+    <div class="row row-no-padding" ng-repeat="video in videos | filter:getFilter()" ng-if="$index % 2 === 0" style="height:145px">
+
+      <div class="col col-50" ng-if="$index < videos.length">
+        <a href="#/video/{{videos[$index]._id}}">
+          <img src="{{videos[$index].poster}}" class="img-fixed" />
+        </a>
+        <div class="move-up-note">
+          <a href="#/tab/focus/{{videos[$index].author._id}}">
+            <img ng-src="{{videos[$index].author.icon}}">
+          </a>
+          {{videos[$index].name}}
+        </div>
+      </div>
+
+      <div class="col col-50" ng-if="$index + 1 < videos.length">
+        <a href="#/video/{{videos[$index+1]._id}}">
+          <img src="{{videos[$index+1].poster}}" class="img-fixed" />
+        </a>
+        <div class="move-up-note">
+          <a href="#/tab/focus/{{videos[$index+1].author._id}}">
+            <img ng-src="{{videos[$index+1].author.icon}}">
+          </a>
+          <span>{{videos[$index+1].name}}</span>
+
+        </div>
+      </div>
+    </div>
+
+    </ion-list>
+
+  </ion-content>
+</ion-view>

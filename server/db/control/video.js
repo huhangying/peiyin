@@ -37,9 +37,11 @@ module.exports = {
 
   getByTypeTag: function(req, res){
     var type = '',tag='';
+    //var type = '',tags=[];
     if (req.params){
       type = req.params.type;
       tag = req.params.tag;
+      //tags = req.params.tag.split(',');
     }
 
     Video.find({type: type, tags: tag})
@@ -87,11 +89,23 @@ module.exports = {
   },
 
   getBrotherVideos: function(req, res){
-    var vid = '';
-    if (req.params)
+    var vid = '',sort = '';
+    if (req.params){
       vid = req.params.vid;
+      sort = req.params.sort;
+    }
+
+    var _sort = {};
+    if (sort == 'datetime'){
+      _sort = {datetime:-1};
+    }
+    else if (sort == 'vote'){
+      _sort = {vote:-1};
+    }
+
     Video.find({type: 0, parent: vid})
       .populate('author')
+      .sort(_sort)
       .exec(function (err, videos) {
         if (!videos)
           return res.send('null');

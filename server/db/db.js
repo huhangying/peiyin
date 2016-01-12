@@ -51,7 +51,7 @@ router.route('/videos/author/:uid')
   .get(Video.getAuthorVideos);
 router.route('/videos/voted/:uid')
   .get(Video.getAuthorVotedVideos);
-router.route('/videos/parent/:vid')
+router.route('/videos/parent/:vid/:sort')
   .get(Video.getBrotherVideos);
 router.route('/video')
   .post(urlencodedParser, Video.Add);
