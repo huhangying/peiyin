@@ -8,11 +8,11 @@
       </div>
     </ion-list>
     <ion-list>
-      <ion-item class="item-avatar item-icon-right" ng-repeat="video in videos" type="item-text-wrap" href="#/resource/{{video._id}}">
+      <ion-item class="item-avatar item-icon-right" ng-repeat="video in videos" type="item-text-wrap" href="#/record/{{video._id}}">
         <img ng-src="{{video.poster}}">
         <h2>{{video.name}}</h2>
         <p>{{video.desc}}</p>
-        <i class="icon ion-chevron-right icon-accessory"></i>
+        <a class="icon ion-chevron-right icon-accessory" href="#/resource/{{video._id}}"></a>
       </ion-item>
     </ion-list>
   </ion-content>

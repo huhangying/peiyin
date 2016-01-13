@@ -45,6 +45,8 @@ var router = express.Router();
 router.route('/upload')
   .get(Uploader.showFileUploadForm)
   .post(Uploader.receiveFile);
+router.route('/uploadicon')
+  .post(Uploader.receiveIconFile);
 router.route('/uploaded')
   .post(urlencodedParser, Uploader.uploaded);
 router.route('/player/:vid')

@@ -85,6 +85,8 @@ router.route('/user')
   .put(User.Update);
 router.route('/user/:cell')
   .get(User.Get);
+router.route('/usericon/:cell')
+  .get(User.UpdateIcon); // icon 的文件文件名就是手机号
 router.route('/userid/:uid')
   .get(User.GetById);
 router.route('/user/add/:name/:password/:icon')

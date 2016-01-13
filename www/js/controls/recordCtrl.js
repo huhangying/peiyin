@@ -493,7 +493,7 @@ angular.module('recordCtrl', [])
       }
       else {
         $ionicLoading.show({
-          template: '<i style="font-size:80px;padding:20px 0 10px 0;">' + count + '</i>',
+          template: '<i style="font-size:60px;">' + count + '</i>',
           noBackdrop:true
         });
 

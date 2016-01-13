@@ -82,5 +82,19 @@ module.exports = {
       res.send('update user success: ', raw);
     });
   },
+
+  UpdateIcon: function (req, res) {
+    if (req.params && req.params.cell) {
+      var query = {cell: req.params.cell};
+      var update = {icon: 'http://101.200.81.99:8080/ciwen/server/icons/' + req.params.cell + '.jpg'};
+      var options = {new: false};
+
+      var result = User.findOneAndUpdate(query, update, options,
+        function(err, usr){
+          if (err) return console.error(err);
+          res.json(usr);
+        });
+    }
+  },
 }
 
