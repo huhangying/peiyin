@@ -3,14 +3,13 @@ var VIDEO_URL_ROOT = "http://101.200.81.99:8080/ciwen/";
 
 angular.module('starter.controllers', ['ngCordova','ngSanitize','resourceCtrl','recordCtrl'])
 
-  .controller('HomeCtrl', function($scope,$rootScope,$http,$cordovaToast,$ionicHistory,$cordovaAppVersion, App,$ionicPopup,$cordovaFileTransfer,$cordovaFileOpener2) {
+  .controller('HomeCtrl', function($scope,$rootScope,$http,$cordovaToast,$ionicHistory,$cordovaAppVersion, App,$ionicPopup,$cordovaFileTransfer,$cordovaFileOpener2,$cordovaLocalNotification,$timeout) {
     $scope.title = '<img src="img/logo.png" alt="首页" height="40px" />'
 
     //var fs =
     /*
      * 更新APP版本
      * */
-
     document.addEventListener("deviceready", function () {
       $cordovaAppVersion.getVersionNumber().then(function (version) {
 //        alert(version)
@@ -63,6 +62,29 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize','resourceCtrl','
 
       });
     }, false);
+
+    // Nofiticatioin, 五分钟检测一次
+    $timeout(function(){
+      App.getNotification().then(function(noti){
+        if (!window.localStorage['notificationid'] || window.localStorage['notificationid'] != noti._id){
+
+          var currentDatetime = new Date().toISOString();
+          if (currentDatetime.localeCompare(noti.updated) >= 0){ //当前时间比设定时间要晚。设定时间已经到了
+            $cordovaLocalNotification.schedule({
+              id: 1,
+              title: noti.title,
+              text: noti.text,
+              //icon:
+            }).then(function (result) {
+              // ...
+              window.localStorage['notificationid'] = noti._id;
+            });
+          }
+
+        }
+      });
+    }, 300000);
+
 
     $scope.getVideos = function() {
 

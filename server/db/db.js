@@ -39,6 +39,7 @@ var User = require('./control/user');
 var Interest = require('./control/interest');
 //var Vote = require('./control/vote');
 var Tag = require('./control/tag');
+var Notification = require('./control/notification');
 
 
 var router = express.Router();
@@ -123,6 +124,12 @@ router.route('/tag/:cat')
   .get(Tag.Get);
 router.route('/tag/add/:cat/:tag/:order')
   .get(Tag.AddFake);
+
+router.route('/noti')
+  .get(Notification.Get)
+  .post(urlencodedParser, Notification.Add);
+router.route('/noti/add/:title/:text')
+  .get(Notification.AddFake);
 
 
 

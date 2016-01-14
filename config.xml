@@ -6,7 +6,7 @@
     </description>
     <author email="hhu@e139.com" href="http://geiliyou.com/">
     北京赞成科技
-  </author>
+    </author>
     <content src="index.html" />
     <access origin="*" />
     <allow-navigation href="http://182.92.230.67/*" />
@@ -15,7 +15,7 @@
     <allow-navigation href="ftp://101.200.81.99/*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="ftp://*/*" />
-  <access origin="*"/>
+    <access origin="*"/>
     <preference name="webviewbounce" value="false" />
     <preference name="UIWebViewBounce" value="false" />
     <preference name="DisallowOverscroll" value="true" />
