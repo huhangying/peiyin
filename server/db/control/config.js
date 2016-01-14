@@ -4,7 +4,7 @@
 
 //require('express-mongoose')
 var Config = require('../model/config.js');
-
+var fs = require('fs'),path = require('path');
 
 module.exports = {
 
@@ -15,8 +15,12 @@ module.exports = {
 
   Get: function (req, res) {
     if (req.params && req.params.name) {
-      var result = Config.find({name: req.params.name});
-      res.send(result);
+      var result = Config.findOne({name: req.params.name})
+        .exec(function (err, data) {
+          if (!data)
+            return res.send('');
+          res.json(data);
+        });
     }
   },
 
@@ -48,5 +52,28 @@ module.exports = {
       if (err) return console.error(err);
       res.send('update config success: ', raw);
     });
+  },
+
+  // 下载文件功能跟config无关，只是暂时放在这里
+
+  DownloadFile: function(req, res){
+    var file = '';
+    if (req.params){
+      file = req.params.file;
+    }
+
+    var filePath = path.join(__dirname, '../versions/' + file);
+    console.log(filePath)
+    var stat = fs.statSync(filePath);
+
+    res.writeHead(200, {
+      'Content-Type': 'binary/octet-stream',
+      'Content-Length': stat.size
+    });
+
+    var readStream = fs.createReadStream(filePath);
+    // We replaced all the event handlers with a simple call to readStream.pipe()
+    readStream.pipe(res);
+
   },
 }

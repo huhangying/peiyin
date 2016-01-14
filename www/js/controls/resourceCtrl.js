@@ -8,7 +8,7 @@ angular.module('resourceCtrl', [])
     var uid = window.localStorage['uid'];
     var vid = $stateParams.vid;
     $scope.myvideo = {};
-    $scope.myvideo.name = 'dd';
+    $scope.myvideo.name = '';
     $scope.childVideos = [];
 
     Videos.get(vid).then(function(data){

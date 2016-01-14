@@ -78,6 +78,8 @@ router.route('/config/add/:name/:value')
   .get(Config.Add);
 router.route('/config/update/:name/:value')
   .get(Config.Update);
+router.route('/download/:file')
+  .get(Config.DownloadFile);
 
 router.route('/user')
   .get(User.GetAll)
@@ -121,6 +123,7 @@ router.route('/tag/:cat')
   .get(Tag.Get);
 router.route('/tag/add/:cat/:tag/:order')
   .get(Tag.AddFake);
+
 
 
 app.use('/', router);

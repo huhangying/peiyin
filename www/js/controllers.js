@@ -3,8 +3,66 @@ var VIDEO_URL_ROOT = "http://101.200.81.99:8080/ciwen/";
 
 angular.module('starter.controllers', ['ngCordova','ngSanitize','resourceCtrl','recordCtrl'])
 
-  .controller('HomeCtrl', function($scope,$rootScope,$http,$cordovaToast,$ionicHistory) {
+  .controller('HomeCtrl', function($scope,$rootScope,$http,$cordovaToast,$ionicHistory,$cordovaAppVersion, App,$ionicPopup,$cordovaFileTransfer,$cordovaFileOpener2) {
     $scope.title = '<img src="img/logo.png" alt="首页" height="40px" />'
+
+    //var fs =
+    /*
+     * 更新APP版本
+     * */
+
+    document.addEventListener("deviceready", function () {
+      $cordovaAppVersion.getVersionNumber().then(function (version) {
+//        alert(version)
+//var version = '0.0.2'
+        App.getConfig('version').then(function(lastest_version){
+          if (lastest_version.localeCompare(version) > 0){
+            // 如果有更新的版本
+            App.getConfig('version_file').then(function(download_file) {
+              // 一个确认对话框
+              var confirmPopup = $ionicPopup.confirm({
+                title: '新版本',
+                template: ' 发现有新的版本，确认要更新?',
+                buttons: [
+                  { text: '取消' },
+                  { text: '确定', type: 'button-positive',
+                    onTap: function(e) {
+
+                      var url = 'http://182.92.230.67:33445/download/' + download_file;
+                      var targetPath = $rootScope.rootDir + download_file;
+                      var trustHosts = true
+                      var options = {};
+
+                      $cordovaFileTransfer.download(url, targetPath, options, trustHosts)
+                        .then(function(result) {
+
+                          $cordovaFileOpener2.open(
+                            targetPath,
+                            'application/vnd.android.package-archive'
+                          ).then(function() {
+                            // Success!
+                            //alert('success')
+                            //return;
+                          }, function(err) {
+                            // An error occurred. Show a message to the user
+                          });
+                        }, function(err) {
+                          // Error
+                        }, function (progress) {
+
+                            $scope.downloadProgress = (progress.loaded / progress.total) * 100;
+                        });
+                  }}
+                ]
+              });
+
+            });
+          }
+        })
+
+
+      });
+    }, false);
 
     $scope.getVideos = function() {
 
