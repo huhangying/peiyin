@@ -9,7 +9,7 @@
     </ion-list>
     <ion-list>
       <ion-item class="item-avatar item-icon-right" ng-repeat="video in videos" type="item-text-wrap" href="#/record/{{video._id}}">
-        <img ng-src="{{video.poster}}">
+        <img ng-src="http://101.200.81.99:808/{{video.poster}}">
         <h2>{{video.name}}</h2>
         <p>{{video.desc}}</p>
         <a class="icon ion-ios-paper-outline icon-accessory" href="#/resource/{{video._id}}"></a>

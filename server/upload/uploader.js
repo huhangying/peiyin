@@ -181,6 +181,57 @@ module.exports = {
 
   },
 
+  extractImages: function(req, res, next){
+    var name = '';
+    if (req.params && req.params.filename){
+      name = req.params.filename;
+    }
+
+    // check 源视频
+    fs.exists('../assets/' + name + '.mp4', function( exists ){
+
+      // 如果 源视频文件不存在，return
+      if (!exists){
+        res.send('{"return": "video not existed"}');
+        return;
+      }
+
+    });
+
+    // check 截图
+    fs.exists('../assets/' + name + '.jpg', function( exists ){
+
+      if (exists){
+        res.send('{"return": "image/icon existed"}');
+        return;
+      }
+
+    });
+
+    // 从视频中截图 （poster）
+    var cmd = sprintf('ffmpeg -ss 00:00:04 -i ../assets/%s.mp4 -vf scale=432:240 -vframes 1 ../assets/%s.jpg', name, name);
+    require('child_process').exec( cmd , function(err, stdout , stderr ) {
+      if (err) {
+        console.log(stderr);
+        res.send('{"return": "error"}');
+        return;
+      }
+
+      // 从截图 （poster）中截取 正方形的 icon
+      cmd = sprintf('ffmpeg -i ../assets/%s.jpg -vf "crop=240:ih:96:0" ../assets/%s.icon.jpg', name, name);
+      require('child_process').exec( cmd , function(err, stdout , stderr ) {
+        if (err) {
+          console.log(stderr);
+          res.send('{"return": "error"}');
+          return;
+        }
+      });
+
+      res.send("you rock!");  // done!
+    });
+
+  },
+
 
   showFileUploadForm: function(req, res){
     // show a file upload form

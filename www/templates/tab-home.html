@@ -28,7 +28,7 @@
       <div class="col col-50" ng-if="$index < videos.length">
         <!--<a href="#/video/{{videos[$index]._id}}">-->
         <a ui-sref="video({vid: videos[$index]._id})">
-          <img src="{{videos[$index].poster}}" class="img-fixed" />
+          <img src="http://101.200.81.99:808/{{videos[$index].poster}}" class="img-fixed" />
         </a>
         <div class="move-up-note person-page-note">
           <a href="#/tab/focus/{{videos[$index].author._id}}">
@@ -40,7 +40,7 @@
       <div class="col col-50" ng-if="$index + 1 < videos.length">
         <!--<a href="#/video/{{videos[$index+1]._id}}">-->
         <a ui-sref="video({vid: videos[$index+1]._id})">
-        <img src="{{videos[$index+1].poster}}" class="img-fixed" />
+        <img src="http://101.200.81.99:808/{{videos[$index+1].poster}}" class="img-fixed" />
         </a>
         <div class="move-up-note">
           <a href="#/tab/focus/{{videos[$index+1].author._id}}">

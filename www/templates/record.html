@@ -27,7 +27,7 @@
           视频库</li>
         <li ng-repeat="v in tagVideos | filter:excludeSelf | limitTo:8">
           <i class = "" ng-click='loadVideoByid(v._id)'>
-              <img src="{{v.poster}}"><br>
+              <img src="http://101.200.81.99:808/{{v.poster}}"><br>
               {{v.name}}
           </i>
         </li>

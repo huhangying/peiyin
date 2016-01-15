@@ -49,8 +49,13 @@ router.route('/uploadicon')
   .post(Uploader.receiveIconFile);
 router.route('/uploaded')
   .post(urlencodedParser, Uploader.uploaded);
+router.route('/extractimg/:filename')
+  .get(Uploader.extractImages);
+
 router.route('/player/:vid')
   .get(Player.videoPlayer);
+
+
 
 
 
