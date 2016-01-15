@@ -45,6 +45,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize','resourceCtrl','
                           }, function(err) {
                             // An error occurred. Show a message to the user
                           });
+
                         }, function(err) {
                           // Error
                         }, function (progress) {
