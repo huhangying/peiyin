@@ -7,7 +7,6 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize','resourceCtrl','
   .controller('HomeCtrl', function($scope,$rootScope,$http,$cordovaToast,$ionicHistory,$cordovaAppVersion, App,$ionicPopup,$cordovaFileTransfer,$cordovaFileOpener2,$cordovaLocalNotification,$timeout) {
     $scope.title = '<img src="img/logo.png" alt="首页" height="40px" />'
 
-    //var fs =
     /*
      * 更新APP版本
      * */
@@ -702,6 +701,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize','resourceCtrl','
       return;
     }
 
+    //alert($scope.volume.video)
     // 公用的函数
     $scope.setAuthorVideos = function(uid){
       var author_votes = 0;

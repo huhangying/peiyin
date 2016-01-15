@@ -44,3 +44,6 @@
 
 .hlist i img{ border-radius:50%; height:50px; width:50px; margin-top:8px;  cursor: pointer;}
 
+.move-up{margin-top:-12px;z-index: 1000;}
+.move-down{margin-bottom:-12px;z-index: 9999;}
+

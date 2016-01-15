@@ -35,8 +35,27 @@
     </ion-scroll>
     </ion-item>
     <ion-item style="padding:0" ng-show="step==2">
-      预览 ....
+      预览 ....<br>
+      <div class="list">
+        <div class="item range range-positive item-input-inset item-borderless">
+          <h6 class="energized">源视频音量</h6>
+          <i class="icon ion-ios-volume-low"></i>
+          <input type="range" name="volume" min="0" max="100" ng-model="volume.video">
+          <i class="icon ion-ios-volume-high"></i>
+          <i class="energized">{{volume.video}} / {{volume.max}}</i>
+        </div>
+
+        <div class="item range range-positive item-input-inset item-borderless" style="z-index: 1;">
+          <h6 class="energized">&nbsp; &nbsp; 录音音量</h6>
+          <i class="icon ion-ios-mic-outline"></i>
+          <input type="range" name="microphone_volume" min="0" max="100" ng-model="volume.microphone">
+          <i class="icon ion-ios-mic"></i>
+          <i class="energized">{{volume.microphone}} / {{volume.max}}</i>
+        </div>
+      </div>
+      <i class="button button-energized button-outline" ng-click="previewRecord()">重播一次</i>
     </ion-item>
+
 
     <ion-list>
       <ion-item class="text-center" ng-hide="true">

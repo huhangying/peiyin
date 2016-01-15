@@ -22,6 +22,12 @@ angular.module('recordCtrl', [])
   $scope.preview_flag = false;
   $scope.preview_inprocess = false;
   $scope.currentRecord = false;
+  $scope.volume = {
+    video : '50',
+    microphone: '100',
+    min: '0',
+    max: '100'
+  };
 
   $scope.mode = '';
   if (!$rootScope.count) $rootScope.count = 0;
@@ -101,7 +107,15 @@ angular.module('recordCtrl', [])
   $scope.previewRecord = function() {
     $scope.mode = 'preview';
     $scope.my_player.currentTime(0);
+    $scope.my_player.muted(false); // 预览时有声音
+    //$scope.my_player.loop(true);    // 预览时不断循环播放
+    $scope.my_player.volume($scope.volume.video);
     $scope.my_player.play();
+
+    if($scope.mediaRec){
+      $scope.mediaRec.stop();
+      $scope.mediaRec.release();
+    }
 
     // 放到“timeupdate”事件触发时播放
     $scope.preview_flag = true;
@@ -233,6 +247,26 @@ angular.module('recordCtrl', [])
     });
   }
 
+  $scope.initBeforeRecord = function(){
+    $scope.step = 1;
+    $scope.mode = '';
+    $scope.totalCount = 0;
+    $scope.currentTime = 0;
+    if ($scope.mediaRec){
+      $scope.mediaRec.stop();
+      $scope.mediaRec.release();
+    }
+    $scope.my_player.pause();
+    $scope.my_player.currentTime(0);
+    $scope.preview_flag = false;
+    $scope.preview_inprocess = false;
+    $scope.recordStatus = 8; //loaded!
+    // 录音是是否静音从设置里取
+    $scope.my_player.muted('true' == window.localStorage.getItem('muted')); // 录制时要不要原声
+    // 设定 loop =  false
+    $scope.$apply();
+  }
+
   var tmp_count=0;
   $scope.$on('ngRenderFinished', function (scope, element, attrs) {
     // render完成后执行的js
@@ -253,7 +287,7 @@ angular.module('recordCtrl', [])
       if ($scope.duration < 1) return;
 
       // 暂停，但下载还在继续
-      $scope.my_player.muted(false);
+      $scope.my_player.muted(true); // 加载时静音
       $scope.my_player.play()
       //$scope.my_player.pause()
 
@@ -276,14 +310,8 @@ angular.module('recordCtrl', [])
         }
 
         // 全部下载，all buffered
-        $scope.step = 1; //可以开始了
-        $scope.recordStatus = 8; //loaded!
         $ionicLoading.hide();
-        $scope.my_player.pause()
-        $scope.my_player.currentTime(0)
-        $scope.$apply();
-
-        $scope.my_player.muted('true' == window.localStorage.getItem('muted')); // 录制时要不要原声
+        $scope.initBeforeRecord();
 
         clearInterval(timer)
       }, 1000)
@@ -337,8 +365,13 @@ angular.module('recordCtrl', [])
 
       // 以下是更新信息
       $scope.currentTime = parseInt(current_time);
-      if (tmp_count !=  $scope.currentTime)
-        $scope.$apply();
+      if (tmp_count !=  $scope.currentTime){
+        if ($scope.my_player)
+          $scope.my_player.volume($scope.volume.video);
+        if ($scope.mediaRec)
+          $scope.mediaRec.setVolume($scope.volume.microphone);
+        //$scope.$apply();
+      }
       tmp_count = $scope.currentTime;
 
     });
@@ -368,8 +401,6 @@ angular.module('recordCtrl', [])
       $scope.$apply();
     });
   });
-
-
 
 
   /**
@@ -521,25 +552,20 @@ angular.module('recordCtrl', [])
     }
     else {
       // prepare environment for beginning to record!
-      $scope.step = 1;
-      $scope.mode = '';
-      $scope.totalCount = 0;
-      $scope.currentTime = 0;
-      $scope.mediaRec.stop();
-      $scope.mediaRec.release();
-      $scope.my_player.pause();
-      $scope.my_player.currentTime(0);
-      $scope.preview_flag = false;
-      $scope.preview_inprocess = false;
-      $scope.$apply();
+      $scope.initBeforeRecord();
     }
 
   }
 
 
-  $scope.$on('$ionicView.unloaded', function () {
 
-    $scope.my_player.dispose();
+  $scope.$on('$ionicView.leave', function () {
+    if ($scope.my_player){
+      $scope.my_player.dispose();
+    }
+    if ($scope.mediaRec){
+      $scope.mediaRec.release();
+    }
   });
 
 })
