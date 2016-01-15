@@ -1,5 +1,6 @@
 var SITE_API_URL = "http://182.92.230.67:33445";
-var VIDEO_URL_ROOT = "http://101.200.81.99:8080/ciwen/";
+var VIDEO_URL_ROOT = "http://101.200.81.99:808";
+var UPLOAD_URL = 'http://101.200.81.99:8888';
 
 angular.module('starter.controllers', ['ngCordova','ngSanitize','resourceCtrl','recordCtrl'])
 
@@ -115,8 +116,6 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize','resourceCtrl','
     //$scope.$on('ngRenderFinished', function (ngRenderFinishedEvent) {
     //  // render完成后执行的js
     //  $scope.player = videojs("main_video"+ $scope.videoid);
-    //  $scope.player.src({type: 'video/mp4', src: 'http://101.200.81.99:8080/ciwen/assets/' +  $scope.video.url +'.mp4'});
-    //  //$scope.player.src({type: 'video/mp4', src: 'http://101.200.81.99:8080/ciwen/assets/' +  $scope.video.url +'.mp4'});
     //});
     $scope.$on('$ionicView.unloaded', function () {
       // render完成后执行的js
@@ -525,7 +524,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize','resourceCtrl','
 
 
         //alert(JSON.stringify($scope.myvideo))
-        $scope.myplayer.src({type: 'video/mp4', src: VIDEO_URL_ROOT + 'server/output/' +  $scope.myvideo.url +'.mp4'});
+        $scope.myplayer.src({type: 'video/mp4', src: VIDEO_URL_ROOT + '/server/output/' +  $scope.myvideo.url +'.mp4'});
         $scope.myplayer.play();
       });
     }
@@ -678,7 +677,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize','resourceCtrl','
         $scope.myvideo = data;
 
         $scope.myplayer = videojs(id);
-        $scope.myplayer.src({type: 'video/mp4', src: 'http://101.200.81.99:8080/ciwen/server/output/' +  $scope.myvideo.url +'.mp4'});
+        $scope.myplayer.src({type: 'video/mp4', src: VIDEO_URL_ROOT + '/server/output/' +  $scope.myvideo.url +'.mp4'});
         $scope.myplayer.play();
       });
 
@@ -826,7 +825,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize','resourceCtrl','
         mimeType: "image/jpg",
         httpMethod: "post"
       };
-      $cordovaFileTransfer.upload( "http://101.200.81.99:8888/uploadicon",path, options, true)
+      $cordovaFileTransfer.upload(UPLOAD_URL + "/uploadicon",path, options, true)
         .then(function(result) {
 
           // update the database

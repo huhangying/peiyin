@@ -2,6 +2,9 @@
  * Created by hhu on 2016/1/12.
  */
 
+var UPLOAD_URL = 'http://101.200.81.99:8888';
+var VIDEO_URL_ROOT = "http://101.200.81.99:808";
+
 angular.module('recordCtrl', [])
 // 录音控制器
 .controller('RecordCtrl', function($scope,$sce, $rootScope,$stateParams, Videos,$cordovaMedia, $cordovaFile,$cordovaFileTransfer,$ionicLoading,$http,$state,$ionicNavBarDelegate,$q,$timeout) {
@@ -12,7 +15,6 @@ angular.module('recordCtrl', [])
     return;
   }
 
-  var UPLOAD_URL = 'http://101.200.81.99:8888'
   $scope.step = 0;
   $scope.pauseCount = 0;
   $scope.totalCount = 0;
@@ -132,7 +134,7 @@ angular.module('recordCtrl', [])
     $scope.step = 2; // 可以review&upload
   }
 
-  //Media 不支持在录制过程中暂停，所以暂停其实是停止录制. 继续录制其实是开始录制
+  //Media 不支持在录制过程中暂停，所以暂停其实是停止录制. 继续录制其实是开始新的一个录制
   $scope.captureAudio = function() {
     $scope.mode = 'record';
 
@@ -216,7 +218,7 @@ angular.module('recordCtrl', [])
 
       $scope.file_no_ext = $scope.myvideo.url;
       //alert($scope.myvideo.url)
-      $scope.my_player.src({type: "video/mp4", src:VIDEO_URL_ROOT + 'assets/' + $scope.file_no_ext + '.mp4'});
+      $scope.my_player.src({type: "video/mp4", src:VIDEO_URL_ROOT + '/assets/' + $scope.file_no_ext + '.mp4'});
       $scope.my_player.load();
 
       //alert( $scope.myvideo.name)
@@ -349,6 +351,11 @@ angular.module('recordCtrl', [])
     }
 
     $scope.my_player.on("ended", function(a){
+
+      $scope.preview_flag = false;
+      $scope.pauseCount = 0; //不能再录了
+      $scope.preview_inprocess = false;
+
       if ($scope.currentRecord){
         $scope.stopRecording();
 
@@ -357,12 +364,8 @@ angular.module('recordCtrl', [])
         $scope.previewRecord();
 
       }
-      $scope.preview_flag = false;
-      $scope.pauseCount = 0; //不能再录了
-      $scope.preview_inprocess = false;
 
       $scope.$apply();
-
     });
   });
 
@@ -383,49 +386,56 @@ angular.module('recordCtrl', [])
     };
 
     //$cordovaFileTransfer.upload( "http://182.92.230.67:8888/upload",$rootScope.rootDir + options.fileName, options, true)
-    $cordovaFileTransfer.upload( "http://101.200.81.99:8888/upload",$rootScope.rootDir + options.fileName, options, true)
+    $cordovaFileTransfer.upload( UPLOAD_URL + "/upload", $rootScope.rootDir + options.fileName, options, true)
       .then(function(result) {
-        $ionicLoading.hide();
+        //$ionicLoading.hide();
 
         $scope.uploaded_count++; // 成功的上传个数
 
         // 判断一下，如果全部传完，给服务器发个消息，要求进行音频的组合以及同视频的合成
         if ($scope.uploaded_count == $scope.totalCount){
+
+          $ionicLoading.hide(); //去除上传提示消息
           $scope.uploaded();
           $scope.getStatus = 10;
           $scope.$apply();
         }
-      }, function(err) {
+      },
+        function(err) {
         $ionicLoading.hide(); // hide it in case
-        alert("ERROR: " + JSON.stringify(err));
-      }, function (progress) {
+        //alert("ERROR: " + JSON.stringify(err));
+      },
+        function (progress) {
         // constant progress updates
-        if (progress.lengthComputable) {
-          if (progress.loaded == progress.total){
-            $ionicLoading.hide();
-          }
-          else {
-            var perc = (progress.loaded / progress.total).toFixed(2);
-            if (perc ==  1){
-              $ionicLoading.hide();
-              return;
-            }
-            $ionicLoading.show({
-              template: perc * 100 + '%上传'
-            });
-          }
-
-        } else {
-          $ionicLoading.show({
-            template: '上传中...'
-          });
-        }
+        //if (progress.lengthComputable) {
+        //  if (progress.loaded == progress.total){
+        //    $ionicLoading.hide();
+        //  }
+        //  else {
+        //    var perc = (progress.loaded / progress.total).toFixed(2);
+        //    if (perc ==  1){
+        //      $ionicLoading.hide();
+        //      return;
+        //    }
+        //    $ionicLoading.show({
+        //      template: perc * 100 + '%上传'
+        //    });
+        //  }
+        //
+        //} else {
+        //  $ionicLoading.show({
+        //    template: '上传中...'
+        //  });
+        //}
       });
   }
 
   $scope.uploads = function() {
 
     $scope.uploaded_count = 0;
+    $ionicLoading.show({
+      template: '配音上传中，请稍等...'
+    });
     for (var i=0; i< $scope.info.length; i++){
       $scope.upload($scope.info[i].name);
     }
@@ -433,7 +443,7 @@ angular.module('recordCtrl', [])
 
   $scope.uploaded = function(){
     //alert('uploaded: '+$scope.totalCount)
-    $http.post('http://101.200.81.99:8888/uploaded',Object.toParams({name:$scope.file_no_ext, count: $scope.totalCount}), {
+    $http.post(UPLOAD_URL + '/uploaded',Object.toParams({name:$scope.file_no_ext, count: $scope.totalCount}), {
         dataType: 'json',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
       })
@@ -498,7 +508,7 @@ angular.module('recordCtrl', [])
         });
 
         count--; // -1
-        $timeout(countDowner, 1000); // loop it again
+        $timeout(countDowner, 500); // loop it again
       }
     };
     countDowner()
@@ -510,7 +520,17 @@ angular.module('recordCtrl', [])
       $ionicNavBarDelegate.back();
     }
     else {
+      // prepare environment for beginning to record!
       $scope.step = 1;
+      $scope.mode = '';
+      $scope.totalCount = 0;
+      $scope.currentTime = 0;
+      $scope.mediaRec.stop();
+      $scope.mediaRec.release();
+      $scope.my_player.pause();
+      $scope.my_player.currentTime(0);
+      $scope.preview_flag = false;
+      $scope.preview_inprocess = false;
       $scope.$apply();
     }
 

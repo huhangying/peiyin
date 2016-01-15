@@ -10,8 +10,7 @@
     <content src="index.html" />
     <access origin="*" />
     <allow-navigation href="http://182.92.230.67/*" />
-    <allow-navigation href="http://101.200.81.99:8080/*" />
-    <allow-navigation href="http://video-js.zencoder.com/*" />
+    <allow-navigation href="http://101.200.81.99:808/*" />
     <allow-navigation href="ftp://101.200.81.99/*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="ftp://*/*" />

@@ -40,6 +40,7 @@
   color:#e6b500;
 }
 .video-js .vjs-fullscreen-control{ display:none; }
+.video-js .vjs-big-play-button{display:none;}
 
 .hlist i img{ border-radius:50%; height:50px; width:50px; margin-top:8px;  cursor: pointer;}
 

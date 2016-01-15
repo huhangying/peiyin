@@ -86,7 +86,7 @@ module.exports = {
   UpdateIcon: function (req, res) {
     if (req.params && req.params.cell) {
       var query = {cell: req.params.cell};
-      var update = {icon: 'http://101.200.81.99:8080/ciwen/server/icons/' + req.params.cell + '.jpg'};
+      var update = {icon: 'http://101.200.81.99:808/server/icons/' + req.params.cell + '.jpg'};
       var options = {new: false};
 
       var result = User.findOneAndUpdate(query, update, options,
