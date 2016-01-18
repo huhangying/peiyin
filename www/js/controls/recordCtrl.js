@@ -5,9 +5,9 @@
 var UPLOAD_URL = 'http://101.200.81.99:8888';
 var VIDEO_URL_ROOT = "http://101.200.81.99:808";
 
-angular.module('recordCtrl', [])
+angular.module('recordCtrl', ['util'])
 // 录音控制器
-.controller('RecordCtrl', function($scope,$sce, $rootScope,$stateParams, Videos,$cordovaMedia, $cordovaFile,$cordovaFileTransfer,$ionicLoading,$http,$state,$ionicNavBarDelegate,$q,$timeout) {
+.controller('RecordCtrl', function($scope,$sce, $rootScope,$stateParams, Videos,$cordovaMedia, $cordovaFile,$cordovaFileTransfer,$ionicLoading,$http,$state,$ionicNavBarDelegate,$q,$timeout, Util) {
 
   // 录音前要求先登录
   if (window.localStorage['authorized'] != 'yes'){
@@ -33,6 +33,7 @@ angular.module('recordCtrl', [])
   if (!$rootScope.count) $rootScope.count = 0;
   $rootScope.count++;
   $scope.videoid = $rootScope.count;
+  $scope.videoheight = Util.videoHeight();
 
 
   //音量改变时

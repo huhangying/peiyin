@@ -12,7 +12,7 @@
   <ion-content class="text-center">
 
     <video class="video-js" on-finish-render ng-repeat="video in ['']"
-          controls preload="true"  style="width: 100%" height="206" id="my_video{{videoid}}"
+          controls preload="true" webkit-playsinline style="width: 100%" height="{{videoheight}}" id="my_video{{videoid}}"
           poster="http://video-js.zencoder.com/oceans-clip.png"
            data-setup='{"example_option":true}' >
       <source src="" type='video/mp4'>

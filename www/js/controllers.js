@@ -2,7 +2,7 @@ var SITE_API_URL = "http://182.92.230.67:33445";
 var VIDEO_URL_ROOT = "http://101.200.81.99:808";
 var UPLOAD_URL = 'http://101.200.81.99:8888';
 
-angular.module('starter.controllers', ['ngCordova','ngSanitize','resourceCtrl','recordCtrl'])
+angular.module('starter.controllers', ['ngCordova','ngSanitize','resourceCtrl','recordCtrl','util'])
 
   .controller('HomeCtrl', function($scope,$rootScope,$http,$cordovaToast,$ionicHistory,$cordovaAppVersion, App,$ionicPopup,$cordovaFileTransfer,$cordovaFileOpener2,$cordovaLocalNotification,$timeout) {
     $scope.title = '<img src="img/logo.png" alt="首页" height="40px" />'
@@ -477,10 +477,11 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize','resourceCtrl','
     }
   })
 
-  .controller('VideoCtrl', function($scope, $stateParams, Videos, $cordovaToast,$state, Users,$ionicNavBarDelegate,$ionicHistory,$ionicPopup) {
+  .controller('VideoCtrl', function($scope, $stateParams, Videos, $cordovaToast,$state, Users,$ionicNavBarDelegate,$ionicHistory,$ionicPopup,Util) {
     var uid = window.localStorage["uid"];
     $scope.init = function(){
       $scope.videoid = Object.randomId();
+      $scope.videoheight = Util.videoHeight();
       $scope.showFocus = false; // 加关注
       //$scope.$apply();
     }
@@ -665,9 +666,10 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize','resourceCtrl','
 
   })
 
-  .controller('PlayerCtrl', function($scope, $stateParams,Videos, $ionicNavBarDelegate) {
+  .controller('PlayerCtrl', function($scope, $stateParams,Videos, $ionicNavBarDelegate,Util) {
     var id = Object.randomId();
     $scope.videoid = id;
+    $scope.videoheight = Util.videoHeight();
 
 
 
