@@ -526,6 +526,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize','resourceCtrl','
 
         //alert(JSON.stringify($scope.myvideo))
         $scope.myplayer.src({type: 'video/mp4', src: VIDEO_URL_ROOT + '/server/output/' +  $scope.myvideo.url +'.mp4'});
+        //$scope.myplayer.setAttribute('webkit-playsinline', true); // for IOS
         $scope.myplayer.play();
       });
     }
@@ -680,6 +681,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize','resourceCtrl','
 
         $scope.myplayer = videojs(id);
         $scope.myplayer.src({type: 'video/mp4', src: VIDEO_URL_ROOT + '/server/output/' +  $scope.myvideo.url +'.mp4'});
+        //$scope.myplayer.setAttribute('webkit-playsinline', 'true'); // for IOS
         $scope.myplayer.play();
       });
 
