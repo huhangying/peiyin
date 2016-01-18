@@ -526,7 +526,6 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize','resourceCtrl','
 
         //alert(JSON.stringify($scope.myvideo))
         $scope.myplayer.src({type: 'video/mp4', src: VIDEO_URL_ROOT + '/server/output/' +  $scope.myvideo.url +'.mp4'});
-        //$scope.myplayer.setAttribute('webkit-playsinline', true); // for IOS
         $scope.myplayer.play();
       });
     }
@@ -681,7 +680,6 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize','resourceCtrl','
 
         $scope.myplayer = videojs(id);
         $scope.myplayer.src({type: 'video/mp4', src: VIDEO_URL_ROOT + '/server/output/' +  $scope.myvideo.url +'.mp4'});
-        //$scope.myplayer.setAttribute('webkit-playsinline', 'true'); // for IOS
         $scope.myplayer.play();
       });
 
@@ -817,6 +815,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize','resourceCtrl','
       $cordovaCamera.getPicture(options).then(function (imagePath) {
         $scope.icon = imagePath;
         var new_file_name = $scope.cell + '.jpg';
+        alert(imagePath + '>>' +  new_file_name)
         $scope.uploadMyIcon(imagePath, new_file_name);
       }, function (err) {
         // An error occured. Show a message to the user
