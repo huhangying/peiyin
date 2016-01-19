@@ -4,7 +4,7 @@
   The FriendsCtrl pulls data from the Friends service (service.js)
   The Friends service returns an array of friend data
 -->
-<ion-view>
+<ion-view cache-view="false">
   <ion-nav-title> {{myvideo.name}}</ion-nav-title>
   <ion-nav-buttons side="left"> <!-- left -->
     <button  class="button button-icon icon {{step < 2 ? 'ion-ios-arrow-back' : 'ion-ios-close-empty'}}"  ng-click="goBack()"></button>
@@ -76,9 +76,9 @@
     <div class="text-center" ng-show="!currentRecord && step==3">
       <a href="#/tab/player/{{output_video}}" class="button button-energized button-full icon ion-android-upload">&nbsp; 分享 </a>
     </div>
-    <ion-list ng-hide="true">
+    <ion-list ng-hide="false">
       <ion-item class="text-left" >
-        <p>info: {{info_pause_count}}, {{start_time}}, {{current_time}}</p>
+        <p>info: {{start_time}}, {{current_time}}</p>
         <p>counts: {{pauseCount}}/{{totalCount}}/{{uploaded_count}}</p>
         <p>preview_flag: {{preview_flag}}</p>
         <p>preview_inprocess: {{preview_inprocess}}</p>

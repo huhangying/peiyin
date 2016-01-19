@@ -63,9 +63,11 @@ module.exports = {
 
     var name = req.body.name;
     var count = req.body.count;
+    var audio_type = req.body.type;
+    console.log(JSON.stringify(req.body));
 
     // 如果源视频没有相应的分离出来的单声道音频文件存在，则先生成
-    fs.exists('../assets/' + name + '.mp3', function( exists ){
+    fs.exists('../assets/' + name + audio_type, function( exists ){
       //console.log( exists );
 
       // 如果单声道的音频文件不存在，从视频中提取音频
@@ -116,7 +118,7 @@ module.exports = {
         // 音频合成
     cmd = sprintf('ffmpeg %s -filter_complex concat=n=%s:v=0:a=1 -vn -ac 1 -y upload/%s.m4a', multi_audios, count, name);
 
-    console.log(cmd);
+    //console.log(cmd);
     require('child_process').exec( cmd , function(err, stdout , stderr ) {
       if (err) {
         console.log(stderr);
@@ -127,7 +129,7 @@ module.exports = {
       cmd = sprintf('ffmpeg -i ../assets/%s.mp3 -i upload/%s.m4a -filter_complex "[0:a][1:a]amerge=inputs=2[aout]" -map "[aout]" -y upload/%s.mp3',
         name, name, name);
 
-      console.log(cmd);
+      //console.log(cmd);
       require('child_process').exec( cmd , function(err, stdout , stderr ) {
         if (err) {
           console.log( stderr );
@@ -151,7 +153,7 @@ module.exports = {
 
         //转码成手机播放的视频格式
         //cmd += sprintf('\nFormatFactory "-> Mobile Device" "iPhone&iPad 240p AVC" "FormatFactory "-> Mobile Device" "iPhone&iPad 240p AVC" "C:\\Inetpub\\ftproot\\ciwen\\server\\output\\%s.mp4" "C:\\Inetpub\\ftproot\\ciwen\\server\\output\\ff%s.mp4" /hide', token, token);
-        console.log(cmd);
+        //console.log(cmd);
         require('child_process').exec( cmd , function(err, stdout , stderr ) {
           if (err) {
             console.log(stderr);
@@ -160,7 +162,7 @@ module.exports = {
           }
           //转码成手机播放的视频格式
           cmd = sprintf('FormatFactory "-> Mobile Device" "iPhone&iPad 240p AVC" "C:\\Inetpub\\ftproot\\ciwen\\server\\output\\%s.mp4" "C:\\Inetpub\\ftproot\\ciwen\\server\\output\\ff%s.mp4" /hide', token, token);
-          console.log(cmd);
+          //console.log(cmd);
           //sleep(1000);
           require('child_process').exec( cmd , function(err, stdout , stderr ) {
             //sleep(5000);

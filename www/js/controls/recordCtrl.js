@@ -22,6 +22,7 @@ angular.module('recordCtrl', ['util'])
   $scope.preview_flag = false;
   $scope.preview_inprocess = false;
   $scope.currentRecord = false;
+  $scope.audio_type = '.mp3';
   $scope.volume = {
     video : '50',
     microphone: '100',
@@ -61,11 +62,22 @@ angular.module('recordCtrl', ['util'])
   };
 
   $scope.prepare = function(pause_count,time){
-    //$scope.currentTime = 0;
-    //$scope.volume = my_player.volume();
 
-    $scope.myRecord = $scope.file_no_ext + pause_count + '.mp3';
+    if (ionic.Platform.isIOS()){ // default id .mp3
+      $scope.audio_type = '.wav';
+    }
+
+    $scope.myRecord = $scope.file_no_ext + pause_count + $scope.audio_type;
     $scope.prepareAudiofile();
+
+    if (!$scope.preview_flag){
+      var _info = {
+        count: pause_count,
+        start_time: time,
+        name: $scope.myRecord
+      };
+      $scope.info.push(_info);
+    }
 
     $scope.mediaRec = new Media($rootScope.rootDir + $scope.myRecord,
       // success callback
@@ -88,18 +100,7 @@ angular.module('recordCtrl', ['util'])
         $scope.recordStatus = -1;
         $scope.$apply();
       }
-      ,function(status){
-      }
     );
-
-    if (!$scope.preview_flag){
-      var _info = {
-        count: pause_count,
-        start_time: time,
-        name: $scope.myRecord
-      };
-      $scope.info.push(_info);
-    }
 
   }
 
@@ -122,8 +123,6 @@ angular.module('recordCtrl', ['util'])
     // 放到“timeupdate”事件触发时播放
     $scope.preview_flag = true;
     $scope.preview_inprocess = false;
-    //$scope.totalCount = $scope.pauseCount;
-    $scope.pauseCount = 0; //不能再录了
 
     $scope.currentRecord = false;
     $scope.recordStatus = 7;
@@ -147,6 +146,7 @@ angular.module('recordCtrl', ['util'])
     $scope.currentRecord = false;
     $scope.pauseCount++;
     $scope.totalCount = $scope.pauseCount;
+    $scope.pauseCount = 0;
     $scope.step = 2; // 可以review&upload
   }
 
@@ -181,7 +181,7 @@ angular.module('recordCtrl', ['util'])
       $scope.mode = '';
       $scope.recordStatus = 3; // 暂停
       $scope.pauseCount++;
-      $scope.totalCount = $scope.pauseCount;
+      //$scope.totalCount = $scope.pauseCount;
       $scope.step = 1; // 可以review&upload?
     }
     $scope.currentRecord = !$scope.currentRecord;
@@ -237,8 +237,6 @@ angular.module('recordCtrl', ['util'])
       $scope.my_player.src({type: "video/mp4", src:VIDEO_URL_ROOT + '/assets/' + $scope.file_no_ext + '.mp4'});
       $scope.my_player.load();
 
-      //alert( $scope.myvideo.name)
-
       // clear the environment
       $scope.recordStatus = '';
       $scope.currentTime = '';
@@ -252,7 +250,8 @@ angular.module('recordCtrl', ['util'])
   $scope.initBeforeRecord = function(){
     $scope.step = 1;
     $scope.mode = '';
-    $scope.totalCount = 0;
+    //$scope.totalCount = 0; //一定不能有！
+    //$scope.uploaded_count = 0;
     $scope.currentTime = 0;
     if ($scope.mediaRec){
       $scope.mediaRec.stop();
@@ -311,9 +310,11 @@ angular.module('recordCtrl', ['util'])
           return
         }
 
+
         // 全部下载，all buffered
         $ionicLoading.hide();
         $scope.initBeforeRecord();
+
 
         clearInterval(timer)
       }, 1000)
@@ -346,11 +347,8 @@ angular.module('recordCtrl', ['util'])
           if ($scope.info[i].start_time <= current_time){ // 如果current_time到达或过了 start_time，则开始播放
             $scope.start_time = $scope.info[i].start_time;
             $scope.current_time = current_time
-            $scope.info_pause_count = $scope.info[i].count;
-
             $scope.pauseCount = $scope.info[i].count;
             $scope.preview_inprocess = true;
-
 
             // 获取录音文件和开始播放时间
             $scope.mediaRec = new Media($rootScope.rootDir + $scope.info[i].name, null, null, $scope.mediaStatusCallback);
@@ -388,7 +386,6 @@ angular.module('recordCtrl', ['util'])
     $scope.my_player.on("ended", function(a){
 
       $scope.preview_flag = false;
-      $scope.pauseCount = 0; //不能再录了
       $scope.preview_inprocess = false;
 
       if ($scope.currentRecord){
@@ -411,10 +408,14 @@ angular.module('recordCtrl', ['util'])
   $scope.uploaded_count = 0;
   $scope.upload = function(file_name) {
 
+    var mime_type = "audio/mpeg";
+    if ($scope.audio_type == '.wav'){
+      mime_type = "audio/x-wav";
+    }
     var options = {
       fileName: file_name,
       chunkedMode: false,
-      mimeType: "audio/mpeg",
+      mimeType: mime_type,
       httpMethod: "post"
     };
 
@@ -429,7 +430,7 @@ angular.module('recordCtrl', ['util'])
         if ($scope.uploaded_count == $scope.totalCount){
 
           $ionicLoading.hide(); //去除上传提示消息
-          $scope.uploaded();
+          $scope.uploaded($scope.uploaded_count);
           $scope.getStatus = 10;
           $scope.$apply();
         }
@@ -474,9 +475,9 @@ angular.module('recordCtrl', ['util'])
     }
   }
 
-  $scope.uploaded = function(){
-    //alert('uploaded: '+$scope.totalCount)
-    $http.post(UPLOAD_URL + '/uploaded',Util.object2Params({name:$scope.file_no_ext, count: $scope.totalCount}), {
+  $scope.uploaded = function(total_count){
+
+    $http.post(UPLOAD_URL + '/uploaded',Util.object2Params({name:$scope.file_no_ext, count: total_count, type: $scope.audio_type}), {
         dataType: 'json',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
       })
