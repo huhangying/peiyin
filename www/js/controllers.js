@@ -480,7 +480,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize','resourceCtrl','
   .controller('VideoCtrl', function($scope, $stateParams, Videos, $cordovaToast,$state, Users,$ionicNavBarDelegate,$ionicHistory,$ionicPopup,Util) {
     var uid = window.localStorage["uid"];
     $scope.init = function(){
-      $scope.videoid = Object.randomId();
+      $scope.videoid = Util.object2Params();
       $scope.videoheight = Util.videoHeight();
       $scope.showFocus = false; // 加关注
       //$scope.$apply();
@@ -855,18 +855,3 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize','resourceCtrl','
     };
   });
 
-
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// 公用函数
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-Object.randomId = function(){
-  // 生成随机码
-  var token = '';//require('crypto').randomBytes(16);
-  var $chars = 'abcdefghijkmnopqrstuvwxyz0123456789';
-  var maxPos = $chars.length;
-  for (i = 0; i < 16; i++) {
-    token += $chars.charAt(Math.floor(Math.random() * maxPos));
-  }
-  return token;
-}

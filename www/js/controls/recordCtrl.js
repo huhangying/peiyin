@@ -83,7 +83,8 @@ angular.module('recordCtrl', ['util'])
       },
       // error callback
       function(err) {
-        alert("录音失败: "+ err.code);
+        //alert("录音失败: "+ err.code);
+        alert("录音失败: "+ JSON.stringify(err) + '>>' + $rootScope.rootDir + $scope.myRecord);
         $scope.recordStatus = -1;
         $scope.$apply();
       }
@@ -475,7 +476,7 @@ angular.module('recordCtrl', ['util'])
 
   $scope.uploaded = function(){
     //alert('uploaded: '+$scope.totalCount)
-    $http.post(UPLOAD_URL + '/uploaded',Object.toParams({name:$scope.file_no_ext, count: $scope.totalCount}), {
+    $http.post(UPLOAD_URL + '/uploaded',Util.object2Params({name:$scope.file_no_ext, count: $scope.totalCount}), {
         dataType: 'json',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
       })
@@ -571,13 +572,3 @@ angular.module('recordCtrl', ['util'])
 
 })
 
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// 公用函数
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Object.toParams = function ObjecttoParams(obj) {
-  var p = [];
-  for (var key in obj) {
-    p.push(key + '=' + encodeURIComponent(obj[key]));
-  }
-  return p.join('&');
-};

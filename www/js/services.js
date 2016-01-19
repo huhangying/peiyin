@@ -1,6 +1,6 @@
 angular.module('starter.services', [])
 
-.factory('Videos', function($http, $q){
+  .factory('Videos', function($http, $q){
   var videos = [];
 
   return {
@@ -155,6 +155,7 @@ angular.module('starter.services', [])
 
   }
 })
+
   .factory('Users', function($http, $q) {
     var users = [];
 
@@ -347,6 +348,4 @@ angular.module('starter.services', [])
 });
 
 
-
-// FUNCTIONS
 

@@ -64,7 +64,7 @@ angular.module('starter.register', ['ngCordova'])
   })
 
   // 注册 控制模块
-  .controller('RegisterCtrl', function($scope, $state, $http, $cordovaToast,$rootScope) {
+  .controller('RegisterCtrl', function($scope, $state, $http, $cordovaToast,$rootScope,Util) {
     //初始化 手机号和密码 for test
     $scope.user ={cell: "15601811217", password: "111111", name: 'test'};
 
@@ -88,7 +88,7 @@ angular.module('starter.register', ['ngCordova'])
         return;
       }
 
-      $http.post(SITE_API_URL + '/user',Object.toParams(user), {
+      $http.post(SITE_API_URL + '/user',Util.object2Params(user), {
           dataType: 'json',
           headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         })
@@ -122,10 +122,3 @@ angular.module('starter.register', ['ngCordova'])
     }
   });
 
-Object.toParams = function ObjecttoParams(obj) {
-  var p = [];
-  for (var key in obj) {
-    p.push(key + '=' + encodeURIComponent(obj[key]));
-  }
-  return p.join('&');
-};

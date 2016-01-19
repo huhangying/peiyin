@@ -7,7 +7,7 @@
         text-decoration:none;
         color:white;
       }
-      .img-fixed{height:140px;width:100%;z-index:2;}
+      .img-fixed{height:120px;width:100%;z-index:2;}
       .move-up-note{margin:-25px 0 0 0;padding:0 0 0 6px; font-size: smaller;
         background-image: url('img/bar_back.png');
         background-repeat: repeat-x;
@@ -24,7 +24,7 @@
     <!--</video>-->
 
 
-    <div class="row row-no-padding" ng-repeat="video in videos" ng-if="$index % 2 === 0" style="height:145px">
+    <div class="row row-no-padding" ng-repeat="video in videos" ng-if="$index % 2 === 0" style="height:125px">
       <div class="col col-50" ng-if="$index < videos.length">
         <!--<a href="#/video/{{videos[$index]._id}}">-->
         <a ui-sref="video({vid: videos[$index]._id})">
