@@ -69,6 +69,7 @@ angular.module('recordCtrl', ['util'])
 
     if (ionic.Platform.isIOS()){ // default id .mp3
       $scope.audio_type = '.wav';
+      $rootScope.rootDir  = 'documents://';
     }
 
     $scope.myRecord = $scope.file_no_ext + pause_count + $scope.audio_type;
@@ -586,6 +587,48 @@ angular.module('recordCtrl', ['util'])
       $scope.mediaRec.release();
     }
   });
+
+  //====================================================
+  // for test belows
+  //====================================================
+  $scope.recRecord = function(){
+    if (ionic.Platform.isIOS()){ // default id .mp3
+      $scope.audio_type = '.wav';
+      $rootScope.rootDir  = 'documents://';
+    }
+
+    $scope.mediaRec = new Media($rootScope.rootDir + 'test' + $scope.audio_type,
+      // success callback
+      function() {
+        console.log('create rec success');
+
+        $scope.mediaRec.startRecord();
+        console.log('start rec success');
+
+      },
+      // error callback
+      function(err) {
+        alert("录音失败: "+ JSON.stringify(err) + '>>' + $rootScope.rootDir + 'test' + $scope.audio_type);
+      }
+    );
+
+
+
+  }
+
+  $scope.recStop = function(){
+    $scope.mediaRec.stopRecord();
+    console.log('stop rec success');
+
+  }
+
+  $scope.recPlay = function(){
+    $scope.mediaRec = new Media($rootScope.rootDir + 'test' + $scope.audio_type);
+    $scope.mediaRec.seekTo(0);
+    $scope.mediaRec.play();
+    console.log('play rec success');
+
+  }
 
 })
 
