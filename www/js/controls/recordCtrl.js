@@ -597,21 +597,29 @@ angular.module('recordCtrl', ['util'])
       $rootScope.rootDir  = 'documents://';
     }
 
-    $scope.mediaRec = new Media($rootScope.rootDir + 'test' + $scope.audio_type,
-      // success callback
-      function() {
-        console.log('create rec success');
-
-        $scope.mediaRec.startRecord();
-        console.log('start rec success');
-
-      },
-      // error callback
-      function(err) {
-        alert("录音失败: "+ JSON.stringify(err) + '>>' + $rootScope.rootDir + 'test' + $scope.audio_type);
+    $scope.myRecord = 'test' + $scope.audio_type;
+    $scope.prepareAudiofile().then(function(response) {
+      if (response == 'error') {
+        alert('创建文件失败');
+        return;
       }
-    );
 
+      $scope.mediaRec = new Media($rootScope.rootDir + $scope.myRecord,
+        // success callback
+        function () {
+          console.log('create rec success');
+
+          $scope.mediaRec.startRecord();
+          console.log('start rec success');
+
+        },
+        // error callback
+        function (err) {
+          alert("录音失败: " + JSON.stringify(err) + '>>' + $rootScope.rootDir + $scope.myRecord);
+        }
+      );
+
+    });
 
 
   }
@@ -623,7 +631,7 @@ angular.module('recordCtrl', ['util'])
   }
 
   $scope.recPlay = function(){
-    $scope.mediaRec = new Media($rootScope.rootDir + 'test' + $scope.audio_type);
+    $scope.mediaRec = new Media($rootScope.rootDir + $scope.myRecord);
     $scope.mediaRec.seekTo(0);
     $scope.mediaRec.play();
     console.log('play rec success');
