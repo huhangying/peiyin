@@ -78,9 +78,9 @@ angular.module('recordCtrl', ['util'])
         return;
       }
 
-      if($scope.mediaRec){
-        $scope.mediaRec.release();
-      }
+      //if($scope.mediaRec){
+      //  $scope.mediaRec.release();
+      //}
 
       $scope.mediaRec = new Media($rootScope.rootDir + $scope.myRecord,
         // success callback
@@ -96,15 +96,6 @@ angular.module('recordCtrl', ['util'])
             //  $scope.my_player.pause();
           }
 
-          if (!$scope.preview_flag){
-            var _info = {
-              count: pause_count,
-              start_time: time,
-              name: $scope.myRecord
-            };
-            $scope.info.push(_info);
-          }
-
         },
         // error callback
         function(err) {
@@ -114,6 +105,15 @@ angular.module('recordCtrl', ['util'])
           $scope.$apply(); //for test
         }
       );
+
+      if (!$scope.preview_flag){
+        var _info = {
+          count: pause_count,
+          start_time: time,
+          name: $scope.myRecord
+        };
+        $scope.info.push(_info);
+      }
     });
 
   }
