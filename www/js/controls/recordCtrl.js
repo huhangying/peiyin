@@ -66,6 +66,7 @@ angular.module('recordCtrl', ['util'])
   };
 
   $scope.prepare = function(pause_count,time){
+    var deferred = $q.defer(); // 声明延后执行，表示要去监控后面的执行
 
     if (ionic.Platform.isIOS()){ // default id .mp3
       $scope.audio_type = '.wav';
@@ -75,7 +76,11 @@ angular.module('recordCtrl', ['util'])
     $scope.prepareAudiofile().then(function(response){
       if (response == 'error'){
         alert('创建文件失败');
-        return;
+        deferred.reject('error');   // 声明执行失败，返回错误
+      }
+
+      if($scope.mediaRec){
+        $scope.mediaRec.release();
       }
 
       $scope.mediaRec = new Media($rootScope.rootDir + $scope.myRecord,
@@ -91,27 +96,31 @@ angular.module('recordCtrl', ['util'])
             //if ($scope.my_player)
             //  $scope.my_player.pause();
           }
+
+          if (!$scope.preview_flag){
+            var _info = {
+              count: pause_count,
+              start_time: time,
+              name: $scope.myRecord
+            };
+            $scope.info.push(_info);
+          }
+
+          deferred.resolve('success');  // 声明执行成功
         },
         // error callback
         function(err) {
           //alert("录音失败: "+ err.code);
           alert("录音失败: "+ JSON.stringify(err) + '>>' + $rootScope.rootDir + $scope.myRecord);
           $scope.recordStatus = -1;
-          $scope.$apply();
+          //$scope.$apply(); //for test
+          deferred.reject('error');   // 声明执行失败，返回错误
         }
       );
     });
 
-    if (!$scope.preview_flag){
-      var _info = {
-        count: pause_count,
-        start_time: time,
-        name: $scope.myRecord
-      };
-      $scope.info.push(_info);
-    }
 
-
+    return deferred.promise;   // 返回承诺，这里并不是最终数据，而是访问最终数据的API
   }
 
   /// 支持preview播放
@@ -173,14 +182,18 @@ angular.module('recordCtrl', ['util'])
           $scope.info = []; //
         }
 
-        $scope.prepare($scope.pauseCount, $scope.my_player.currentTime());
+        $scope.prepare($scope.pauseCount, $scope.my_player.currentTime())
+          .then(function(response){
+            if (response != 'error'){
+              //$scope.my_player.currentTime(0);
+              $scope.my_player.play();
 
-        //$scope.my_player.currentTime(0);
-        $scope.my_player.play();
+              // Record audio
+              $scope.mediaRec.startRecord();
+              $scope.recordStatus = 1;
+            }
 
-        // Record audio
-        $scope.mediaRec.startRecord();
-        $scope.recordStatus = 1;
+          });
 
       });
     }
