@@ -23,6 +23,10 @@ angular.module('recordCtrl', ['util'])
   $scope.preview_inprocess = false;
   $scope.currentRecord = false;
   $scope.audio_type = '.mp3';
+  if (ionic.Platform.isIOS()){ // default id .mp3
+    $scope.audio_type = '.wav';
+    $rootScope.rootDir  = 'documents://';
+  }
   $scope.volume = {
     video : '50',
     microphone: '100',
@@ -44,6 +48,7 @@ angular.module('recordCtrl', ['util'])
   //$scope.output_video = '9pigu4mbfi6auhhn'; // for test
 
   $scope.prepareAudiofile = function(){
+
     $cordovaFile.checkFile($rootScope.rootDir, $scope.myRecord)
       .then(function (success) {
         // success
@@ -52,7 +57,7 @@ angular.module('recordCtrl', ['util'])
         $cordovaFile.createFile($rootScope.rootDir, $scope.myRecord, true)
           .then(function (success) {
             // success
-            //alert('创建文件成功');
+            console.log('创建文件成功');
           }, function (error) {
             // error
             //alert('创建文件失败');
@@ -61,11 +66,6 @@ angular.module('recordCtrl', ['util'])
   };
 
   $scope.prepare = function(pause_count,time){
-
-    if (ionic.Platform.isIOS()){ // default id .mp3
-      $scope.audio_type = '.wav';
-      $rootScope.rootDir  = 'documents://';
-    }
 
     $scope.myRecord = $scope.file_no_ext + pause_count + $scope.audio_type;
     $scope.prepareAudiofile();
@@ -81,6 +81,7 @@ angular.module('recordCtrl', ['util'])
 
     if($scope.mediaRec){
       $scope.mediaRec.stopRecord();
+      $scope.mediaRec.release();
     }
 
     $scope.mediaRec = new Media($rootScope.rootDir + $scope.myRecord,
@@ -93,8 +94,8 @@ angular.module('recordCtrl', ['util'])
         else if ($scope.mode == 'preview'){ //播完
           //alert("录音播放完成");
           $scope.recordStatus = 6;
-          //if ($scope.my_player)
-          //  $scope.my_player.pause();
+          if ($scope.my_player)
+            $scope.my_player.pause();
         }
 
       },
@@ -172,6 +173,7 @@ angular.module('recordCtrl', ['util'])
 
 
         $timeout(function(){
+          console.log('try to play video at ' + $scope.my_player.currentTime()); //for test
           $scope.my_player.play();
 
           // Record audio
@@ -582,10 +584,6 @@ angular.module('recordCtrl', ['util'])
   // for test belows
   //====================================================
   $scope.recRecord = function(){
-    if (ionic.Platform.isIOS()){ // default id .mp3
-      $scope.audio_type = '.wav';
-      $rootScope.rootDir  = 'documents://';
-    }
 
     $scope.file_no_ext = 'test';
     $scope.prepare($scope.pauseCount, $scope.my_player.currentTime());
@@ -628,6 +626,7 @@ angular.module('recordCtrl', ['util'])
     $scope.mediaRec.seekTo(0);
     $scope.mediaRec.play();
 
+    $scope.my_player.currentTime(0);
     $scope.my_player.play();
 
     console.log('play rec success');
