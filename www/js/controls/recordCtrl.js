@@ -79,9 +79,9 @@ angular.module('recordCtrl', ['util'])
       $scope.info.push(_info);
     }
 
-    //if($scope.mediaRec){
-    //  $scope.mediaRec.release();
-    //}
+    if($scope.mediaRec){
+      $scope.mediaRec.stopRecord();
+    }
 
     $scope.mediaRec = new Media($rootScope.rootDir + $scope.myRecord,
       // success callback
@@ -184,7 +184,7 @@ angular.module('recordCtrl', ['util'])
     else{
       $scope.my_player.pause();
       $scope.mediaRec.stopRecord();
-      $scope.mediaRec.release();
+      //$scope.mediaRec.release();
       $scope.mode = '';
       $scope.recordStatus = 3; // 暂停
       $scope.pauseCount++;
@@ -587,14 +587,15 @@ angular.module('recordCtrl', ['util'])
       $rootScope.rootDir  = 'documents://';
     }
 
-    $scope.myRecord = 'test' + $scope.audio_type;
-    $scope.prepareAudiofile().then(function(response) {
-      if (response == 'error') {
-        alert('创建文件失败');
-        return;
-      }
+    $scope.file_no_ext = 'test';
+    $scope.prepare($scope.pauseCount, $scope.my_player.currentTime());
 
-    });
+    $timeout(function(){
+      $scope.my_player.play();
+
+      // Record audio
+      $scope.mediaRec.startRecord();
+    },500);
 
 
     $scope.mediaRec = new Media($rootScope.rootDir + $scope.myRecord,
@@ -616,6 +617,7 @@ angular.module('recordCtrl', ['util'])
   }
 
   $scope.recStop = function(){
+    $scope.my_player.pause();
     $scope.mediaRec.stopRecord();
     console.log('stop rec success');
 
@@ -625,6 +627,9 @@ angular.module('recordCtrl', ['util'])
     $scope.mediaRec = new Media($rootScope.rootDir + $scope.myRecord);
     $scope.mediaRec.seekTo(0);
     $scope.mediaRec.play();
+
+    $scope.my_player.play();
+
     console.log('play rec success');
 
   }
