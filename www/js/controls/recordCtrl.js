@@ -7,7 +7,7 @@ var VIDEO_URL_ROOT = "http://101.200.81.99:808";
 
 angular.module('recordCtrl', ['util'])
 // 录音控制器
-.controller('RecordCtrl', function($scope,$sce, $rootScope,$stateParams, Videos,$cordovaMedia, $cordovaFile,$cordovaFileTransfer,$ionicLoading,$http,$state,$ionicNavBarDelegate,$q,$timeout, Util) {
+.controller('RecordCtrl', function($scope,$sce, $rootScope,$stateParams, Videos,$cordovaMedia, $cordovaFile,$cordovaFileTransfer,$ionicLoading,$http,$state,$ionicNavBarDelegate,$q,$timeout, Util, $q) {
 
   // 录音前要求先登录
   if (window.localStorage['authorized'] != 'yes'){
@@ -44,21 +44,25 @@ angular.module('recordCtrl', ['util'])
   //$scope.output_video = '9pigu4mbfi6auhhn'; // for test
 
   $scope.prepareAudiofile = function(){
-
+    var deferred = $q.defer(); // 声明延后执行，表示要去监控后面的执行
     $cordovaFile.checkFile($rootScope.rootDir, $scope.myRecord)
       .then(function (success) {
         // success
+        deferred.resolve(success);  // 声明执行成功
       }, function (error) {
         // error
         $cordovaFile.createFile($rootScope.rootDir, $scope.myRecord, true)
           .then(function (success) {
             // success
+            deferred.resolve(success);  // 声明执行成功
             //alert('创建文件成功');
           }, function (error) {
             // error
-            alert('创建文件失败');
+            //alert('创建文件失败');
+            deferred.reject('error');   // 声明执行失败，返回错误
           });
       });
+    return deferred.promise;   // 返回承诺，这里并不是最终数据，而是访问最终数据的API
   };
 
   $scope.prepare = function(pause_count,time){
@@ -68,7 +72,35 @@ angular.module('recordCtrl', ['util'])
     }
 
     $scope.myRecord = $scope.file_no_ext + pause_count + $scope.audio_type;
-    $scope.prepareAudiofile();
+    $scope.prepareAudiofile().then(function(response){
+      if (response == 'error'){
+        alert('创建文件失败');
+        return;
+      }
+
+      $scope.mediaRec = new Media($rootScope.rootDir + $scope.myRecord,
+        // success callback
+        function() {
+          if ($scope.mode == 'record'){ //录完
+            //alert("录音完成");
+            $scope.recordStatus = 5;
+          }
+          else if ($scope.mode == 'preview'){ //播完
+            //alert("录音播放完成");
+            $scope.recordStatus = 6;
+            //if ($scope.my_player)
+            //  $scope.my_player.pause();
+          }
+        },
+        // error callback
+        function(err) {
+          //alert("录音失败: "+ err.code);
+          alert("录音失败: "+ JSON.stringify(err) + '>>' + $rootScope.rootDir + $scope.myRecord);
+          $scope.recordStatus = -1;
+          $scope.$apply();
+        }
+      );
+    });
 
     if (!$scope.preview_flag){
       var _info = {
@@ -79,28 +111,6 @@ angular.module('recordCtrl', ['util'])
       $scope.info.push(_info);
     }
 
-    $scope.mediaRec = new Media($rootScope.rootDir + $scope.myRecord,
-      // success callback
-      function() {
-        if ($scope.mode == 'record'){ //录完
-          //alert("录音完成");
-          $scope.recordStatus = 5;
-        }
-        else if ($scope.mode == 'preview'){ //播完
-          //alert("录音播放完成");
-          $scope.recordStatus = 6;
-          //if ($scope.my_player)
-          //  $scope.my_player.pause();
-        }
-      },
-      // error callback
-      function(err) {
-        //alert("录音失败: "+ err.code);
-        alert("录音失败: "+ JSON.stringify(err) + '>>' + $rootScope.rootDir + $scope.myRecord);
-        $scope.recordStatus = -1;
-        $scope.$apply();
-      }
-    );
 
   }
 
