@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.geiliyou.chang417506" version="0.0.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>我来配音</name>
+    <name>Bub</name>
     <description>
         赞成正在进行的项目。
     </description>
@@ -26,9 +26,9 @@
     <feature name="StatusBar">
         <param name="ios-package" onload="true" value="CDVStatusBar" />
     </feature>
-  <feature name="Media">
-    <param name="ios-package" onload="true" value="CDVSound" />
-  </feature>
+    <feature name="Media">
+      <param name="ios-package" value="CDVSound" />
+    </feature>
     <platform name="android">
         <icon density="ldpi" src="resources/android/icon/drawable-ldpi-icon.png" />
         <icon density="mdpi" src="resources/android/icon/drawable-mdpi-icon.png" />
