@@ -16,47 +16,50 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize','resourceCtrl','
 //var version = '0.0.2'
         App.getConfig('version').then(function(lastest_version){
           if (lastest_version.localeCompare(version) > 0){
-            // 如果有更新的版本
-            App.getConfig('version_file').then(function(download_file) {
-              // 一个确认对话框
-              var confirmPopup = $ionicPopup.confirm({
-                title: '新版本',
-                template: ' 发现有新的版本，确认要更新?',
-                buttons: [
-                  { text: '取消' },
-                  { text: '确定', type: 'button-positive',
-                    onTap: function(e) {
+            // 如果有更新的版本, for Android
+            if (ionic.Platform.isAndroid()){
+              App.getConfig('version_file').then(function(download_file) {
+                // 一个确认对话框
+                var confirmPopup = $ionicPopup.confirm({
+                  title: '新版本',
+                  template: ' 发现有新的版本，确认要更新?',
+                  buttons: [
+                    { text: '取消' },
+                    { text: '确定', type: 'button-positive',
+                      onTap: function(e) {
 
-                      var url = 'http://182.92.230.67:33445/download/' + download_file;
-                      var targetPath = $rootScope.rootDir + download_file;
-                      var trustHosts = true
-                      var options = {};
+                        var url = 'http://182.92.230.67:33445/download/' + download_file;
+                        var targetPath = $rootScope.rootDir + download_file;
+                        var trustHosts = true
+                        var options = {};
 
-                      $cordovaFileTransfer.download(url, targetPath, options, trustHosts)
-                        .then(function(result) {
+                        $cordovaFileTransfer.download(url, targetPath, options, trustHosts)
+                          .then(function(result) {
 
-                          $cordovaFileOpener2.open(
-                            targetPath,
-                            'application/vnd.android.package-archive'
-                          ).then(function() {
-                            // Success!
-                            //alert('success')
-                            //return;
+                            $cordovaFileOpener2.open(
+                              targetPath,
+                              'application/vnd.android.package-archive'
+                            ).then(function() {
+                              // Success!
+                              //alert('success')
+                              //return;
+                            }, function(err) {
+                              // An error occurred. Show a message to the user
+                            });
+
                           }, function(err) {
-                            // An error occurred. Show a message to the user
-                          });
-
-                        }, function(err) {
-                          // Error
-                        }, function (progress) {
+                            // Error
+                          }, function (progress) {
 
                             $scope.downloadProgress = (progress.loaded / progress.total) * 100;
-                        });
-                  }}
-                ]
-              });
+                          });
+                      }}
+                  ]
+                });
 
-            });
+              });
+            }
+
           }
         })
 
@@ -480,7 +483,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize','resourceCtrl','
   .controller('VideoCtrl', function($scope, $stateParams, Videos, $cordovaToast,$state, Users,$ionicNavBarDelegate,$ionicHistory,$ionicPopup,Util) {
     var uid = window.localStorage["uid"];
     $scope.init = function(){
-      $scope.videoid = Util.object2Params();
+      $scope.videoid = Util.randomId();
       $scope.videoheight = Util.videoHeight();
       $scope.showFocus = false; // 加关注
       //$scope.$apply();

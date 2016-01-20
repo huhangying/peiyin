@@ -66,7 +66,6 @@ angular.module('recordCtrl', ['util'])
   };
 
   $scope.prepare = function(pause_count,time){
-    var deferred = $q.defer(); // 声明延后执行，表示要去监控后面的执行
 
     if (ionic.Platform.isIOS()){ // default id .mp3
       $scope.audio_type = '.wav';
@@ -76,7 +75,7 @@ angular.module('recordCtrl', ['util'])
     $scope.prepareAudiofile().then(function(response){
       if (response == 'error'){
         alert('创建文件失败');
-        deferred.reject('error');   // 声明执行失败，返回错误
+        return;
       }
 
       if($scope.mediaRec){
@@ -106,21 +105,17 @@ angular.module('recordCtrl', ['util'])
             $scope.info.push(_info);
           }
 
-          deferred.resolve('success');  // 声明执行成功
         },
         // error callback
         function(err) {
           //alert("录音失败: "+ err.code);
           alert("录音失败: "+ JSON.stringify(err) + '>>' + $rootScope.rootDir + $scope.myRecord);
           $scope.recordStatus = -1;
-          //$scope.$apply(); //for test
-          deferred.reject('error');   // 声明执行失败，返回错误
+          $scope.$apply(); //for test
         }
       );
     });
 
-
-    return deferred.promise;   // 返回承诺，这里并不是最终数据，而是访问最终数据的API
   }
 
   /// 支持preview播放
@@ -182,18 +177,16 @@ angular.module('recordCtrl', ['util'])
           $scope.info = []; //
         }
 
-        $scope.prepare($scope.pauseCount, $scope.my_player.currentTime())
-          .then(function(response){
-            if (response != 'error'){
-              //$scope.my_player.currentTime(0);
-              $scope.my_player.play();
+        $scope.prepare($scope.pauseCount, $scope.my_player.currentTime());
 
-              // Record audio
-              $scope.mediaRec.startRecord();
-              $scope.recordStatus = 1;
-            }
 
-          });
+        $timeout(function(){
+          $scope.my_player.play();
+
+          // Record audio
+          $scope.mediaRec.startRecord();
+          $scope.recordStatus = 1;
+        },500);
 
       });
     }
@@ -340,7 +333,7 @@ angular.module('recordCtrl', ['util'])
 
 
         clearInterval(timer)
-      }, 1000)
+      }, 500)
     });
 
     $scope.my_player.on("error", function(a) {
@@ -560,7 +553,7 @@ angular.module('recordCtrl', ['util'])
       }
       else {
         $ionicLoading.show({
-          template: '<i style="font-size:60px;">' + count + '</i>',
+          template: '<i style="font-size:50px;">' + count + '</i>',
           noBackdrop:true
         });
 
