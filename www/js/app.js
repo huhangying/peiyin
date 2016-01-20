@@ -24,7 +24,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
       $rootScope.rootDir = cordova.file.externalDataDirectory;
     }
     else if (ionic.Platform.isIOS()){
-      $rootScope.rootDir = cordova.file.documentsDirectory;
+      $rootScope.rootDir = cordova.file.tempDirectory;
     }
   });
 

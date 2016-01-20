@@ -26,6 +26,10 @@ angular.module('recordCtrl', ['util'])
   if (ionic.Platform.isIOS()){ // default id .mp3
     $scope.audio_type = '.wav';
     $rootScope.rootDir  = 'documents://';
+    $cordovaFile.checkDir($rootScope.rootDir, '').then(function(fileSystem){
+      $rootScope.rootFullPath = fileSystem.fullPath;
+      alert($rootScope.rootFullPath)
+    });
   }
   $scope.volume = {
     video : '50',
@@ -86,26 +90,13 @@ angular.module('recordCtrl', ['util'])
 
     $scope.mediaRec = new Media($rootScope.rootDir + $scope.myRecord,
       // success callback
-      function() {
-        if ($scope.mode == 'record'){ //录完
-          //alert("录音完成");
-          $scope.recordStatus = 5;
-        }
-        else if ($scope.mode == 'preview'){ //播完
-          //alert("录音播放完成");
-          $scope.recordStatus = 6;
-          //if ($scope.my_player){
-          //  $scope.my_player.pause();
-          //}
-        }
-
-      },
+      null,
       // error callback
       function(err) {
         //alert("录音失败: "+ err.code);
         alert("录音失败: "+ JSON.stringify(err) + '>>' + $rootScope.rootDir + $scope.myRecord);
         $scope.recordStatus = -1;
-        $scope.$apply(); //for test
+        //$scope.$apply(); //for test
       }
     );
 
@@ -188,7 +179,7 @@ angular.module('recordCtrl', ['util'])
       console.log('try to pause video at ' + $scope.my_player.currentTime()); //for test
       $scope.my_player.pause();
       $scope.mediaRec.stopRecord();
-      //$scope.mediaRec.release();
+      $scope.mediaRec.release();
       $scope.mode = '';
       $scope.recordStatus = 3; // 暂停
       $scope.pauseCount++;
@@ -196,6 +187,7 @@ angular.module('recordCtrl', ['util'])
       $scope.step = 1; // 可以review&upload?
     }
     $scope.currentRecord = !$scope.currentRecord;
+    $scope.$apply();
   }
 
   $scope.getStatus = function(id){
@@ -431,7 +423,7 @@ angular.module('recordCtrl', ['util'])
       httpMethod: "post"
     };
 
-    //$cordovaFileTransfer.upload( "http://182.92.230.67:8888/upload",$rootScope.rootDir + options.fileName, options, true)
+
     $cordovaFileTransfer.upload( UPLOAD_URL + "/upload", $rootScope.rootDir + options.fileName, options, true)
       .then(function(result) {
         //$ionicLoading.hide();
