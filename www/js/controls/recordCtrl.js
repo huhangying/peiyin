@@ -94,8 +94,9 @@ angular.module('recordCtrl', ['util'])
         else if ($scope.mode == 'preview'){ //播完
           //alert("录音播放完成");
           $scope.recordStatus = 6;
-          if ($scope.my_player)
-            $scope.my_player.pause();
+          //if ($scope.my_player){
+          //  $scope.my_player.pause();
+          //}
         }
 
       },
@@ -118,7 +119,7 @@ angular.module('recordCtrl', ['util'])
     $scope.my_player.currentTime(0);
     $scope.my_player.muted(false); // 预览时有声音
     //$scope.my_player.loop(true);    // 预览时不断循环播放
-    $scope.my_player.volume($scope.volume.video);
+    $scope.my_player.volume($scope.volume.video/100);
     $scope.my_player.play();
 
     if($scope.mediaRec){
@@ -184,6 +185,7 @@ angular.module('recordCtrl', ['util'])
       });
     }
     else{
+      console.log('try to pause video at ' + $scope.my_player.currentTime()); //for test
       $scope.my_player.pause();
       $scope.mediaRec.stopRecord();
       //$scope.mediaRec.release();
@@ -376,9 +378,10 @@ angular.module('recordCtrl', ['util'])
       $scope.currentTime = parseInt(current_time);
       if (tmp_count !=  $scope.currentTime){
         if ($scope.my_player)
-          $scope.my_player.volume($scope.volume.video);
+          $scope.my_player.volume($scope.volume.video/100);
         if ($scope.mediaRec)
           $scope.mediaRec.setVolume($scope.volume.microphone);
+
         //$scope.$apply();
       }
       tmp_count = $scope.currentTime;
