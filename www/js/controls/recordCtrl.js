@@ -26,10 +26,17 @@ angular.module('recordCtrl', ['util'])
   if (ionic.Platform.isIOS()){ // default id .mp3
     $scope.audio_type = '.wav';
     $rootScope.rootDir  = 'documents://';
-    $cordovaFile.checkDir($rootScope.rootDir, '').then(function(fileSystem){
-      $rootScope.rootFullPath = fileSystem.fullPath;
-      alert($rootScope.rootFullPath)
-    });
+    window.requestFileSystem(LocalFileSystem.TEMPORARY, 0,
+      function(fileSystem){ //gotFS
+        fileSystem.root.getFile("iOSRecording.wav",{create:true},function(fileEntry) {
+          $rootScope.rootFullPath = fileEntry.fullPath;
+          console.log('Created file at' + $rootScope.rootFullPath);
+        });
+      },
+      function(){//fsFail
+
+      });
+
   }
   $scope.volume = {
     video : '50',
