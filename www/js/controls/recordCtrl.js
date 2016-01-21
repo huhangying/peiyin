@@ -22,22 +22,6 @@ angular.module('recordCtrl', ['util'])
   $scope.preview_flag = false;
   $scope.preview_inprocess = false;
   $scope.currentRecord = false;
-  $scope.audio_type = '.mp3';
-  if (ionic.Platform.isIOS()){ // default id .mp3
-    $scope.audio_type = '.wav';
-    $rootScope.rootDir  = 'documents://';
-    window.requestFileSystem(LocalFileSystem.TEMPORARY, 0,
-      function(fileSystem){ //gotFS
-        fileSystem.root.getFile("iOSRecording.wav",{create:true},function(fileEntry) {
-          $rootScope.rootFullPath = fileEntry.fullPath;
-          console.log('Created file at' + $rootScope.rootFullPath);
-        });
-      },
-      function(){//fsFail
-
-      });
-
-  }
   $scope.volume = {
     video : '50',
     microphone: '100',
@@ -78,7 +62,7 @@ angular.module('recordCtrl', ['util'])
 
   $scope.prepare = function(pause_count,time){
 
-    $scope.myRecord = $scope.file_no_ext + pause_count + $scope.audio_type;
+    $scope.myRecord = $scope.file_no_ext + pause_count + $rootScope.audioType;
     $scope.prepareAudiofile();
 
     if (!$scope.preview_flag){
@@ -420,7 +404,7 @@ angular.module('recordCtrl', ['util'])
   $scope.upload = function(file_name) {
 
     var mime_type = "audio/mpeg";
-    if ($scope.audio_type == '.wav'){
+    if ($rootScope.audioType == '.wav'){
       mime_type = "audio/x-wav";
     }
     var options = {
@@ -431,7 +415,7 @@ angular.module('recordCtrl', ['util'])
     };
 
 
-    $cordovaFileTransfer.upload( UPLOAD_URL + "/upload", $rootScope.rootDir + options.fileName, options, true)
+    $cordovaFileTransfer.upload( UPLOAD_URL + "/upload", $rootScope.rootFullDir + options.fileName, options, true)
       .then(function(result) {
         //$ionicLoading.hide();
 
@@ -488,7 +472,7 @@ angular.module('recordCtrl', ['util'])
 
   $scope.uploaded = function(total_count){
 
-    $http.post(UPLOAD_URL + '/uploaded',Util.object2Params({name:$scope.file_no_ext, count: total_count, type: $scope.audio_type}), {
+    $http.post(UPLOAD_URL + '/uploaded',Util.object2Params({name:$scope.file_no_ext, count: total_count, type: $rootScope.audioType}), {
         dataType: 'json',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
       })

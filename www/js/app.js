@@ -21,10 +21,14 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
       StatusBar.styleDefault();
     }
     if (ionic.Platform.isAndroid()) {
+      $rootScope.audioType = '.mp3';
       $rootScope.rootDir = cordova.file.externalDataDirectory;
+      $rootScope.rootFullDir = cordova.file.externalDataDirectory;
     }
     else if (ionic.Platform.isIOS()){
-      $rootScope.rootDir = cordova.file.tempDirectory;
+      $rootScope.audioType = '.wav';
+      $rootScope.rootDir = "documents://";
+      $rootScope.rootFullDir = cordova.file.documentsDirectory;
     }
   });
 
