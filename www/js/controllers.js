@@ -670,10 +670,8 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize','resourceCtrl','
   })
 
   .controller('PlayerCtrl', function($scope, $stateParams,Videos, $ionicNavBarDelegate,Util) {
-    var id = Object.randomId();
-    $scope.videoid = id;
+    $scope.videoid = Util.randomId();
     $scope.videoheight = Util.videoHeight();
-
 
 
     $scope.$on('ngRenderFinished', function (scope, element, attrs) {
@@ -681,7 +679,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize','resourceCtrl','
       Videos.get($stateParams.vid).then(function(data){
         $scope.myvideo = data;
 
-        $scope.myplayer = videojs(id);
+        $scope.myplayer = videojs($scope.videoid);
         $scope.myplayer.src({type: 'video/mp4', src: VIDEO_URL_ROOT + '/server/output/' +  $scope.myvideo.url +'.mp4'});
         $scope.myplayer.play();
       });

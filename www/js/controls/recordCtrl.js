@@ -156,19 +156,20 @@ angular.module('recordCtrl', ['util'])
 
 
         $timeout(function(){
-          console.log('try to play video at ' + $scope.my_player.currentTime()); //for test
           $scope.my_player.play();
+          //console.log('try to play video at ' + $scope.my_player.currentTime()); //for test
 
           // Record audio
           $scope.mediaRec.startRecord();
           $scope.recordStatus = 1;
+          $scope.currentRecord = !$scope.currentRecord;
         },500);
 
       });
     }
     else{
-      console.log('try to pause video at ' + $scope.my_player.currentTime()); //for test
       $scope.my_player.pause();
+      //console.log('try to pause video at ' + $scope.my_player.currentTime()); //for test
       $scope.mediaRec.stopRecord();
       $scope.mediaRec.release();
       $scope.mode = '';
@@ -176,9 +177,8 @@ angular.module('recordCtrl', ['util'])
       $scope.pauseCount++;
       //$scope.totalCount = $scope.pauseCount;
       $scope.step = 1; // 可以review&upload?
+      $scope.currentRecord = !$scope.currentRecord;
     }
-    $scope.currentRecord = !$scope.currentRecord;
-    $scope.$apply();
   }
 
   $scope.getStatus = function(id){
@@ -566,58 +566,4 @@ angular.module('recordCtrl', ['util'])
     }
   });
 
-  //====================================================
-  // for test belows
-  //====================================================
-  $scope.recRecord = function(){
-
-    $scope.file_no_ext = 'test';
-    $scope.prepare($scope.pauseCount, $scope.my_player.currentTime());
-
-    $timeout(function(){
-      $scope.my_player.play();
-
-      // Record audio
-      $scope.mediaRec.startRecord();
-    },500);
-
-
-    $scope.mediaRec = new Media($rootScope.rootDir + $scope.myRecord,
-      // success callback
-      function () {
-        console.log('create rec success');
-
-        $scope.mediaRec.startRecord();
-        console.log('start rec success');
-
-      },
-      // error callback
-      function (err) {
-        alert("录音失败: " + JSON.stringify(err) + '>>' + $rootScope.rootDir + $scope.myRecord);
-      }
-    );
-
-
-  }
-
-  $scope.recStop = function(){
-    $scope.my_player.pause();
-    $scope.mediaRec.stopRecord();
-    console.log('stop rec success');
-
-  }
-
-  $scope.recPlay = function(){
-    $scope.mediaRec = new Media($rootScope.rootDir + $scope.myRecord);
-    $scope.mediaRec.seekTo(0);
-    $scope.mediaRec.play();
-
-    $scope.my_player.currentTime(0);
-    $scope.my_player.play();
-
-    console.log('play rec success');
-
-  }
-
 })
-

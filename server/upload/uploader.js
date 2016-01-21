@@ -90,7 +90,7 @@ module.exports = {
 
     var multi_audios = '';
     for (var i=0; i<count; i++){
-      multi_audios += '-i upload/' + name + i + '.mp3 ';
+      multi_audios += '-i upload/' + name + i + audio_type + ' ';
     }
     //// 生成随机码
     //var token = '';//require('crypto').randomBytes(16);
