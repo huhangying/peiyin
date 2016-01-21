@@ -1,0 +1,61 @@
+<ion-view cache-view="false" view-title="设置">
+  <ion-nav-buttons side="left"> <!-- left -->
+    <a class="button button-icon icon ion-ios-arrow-back" href="#/tab/account"></a>
+  </ion-nav-buttons>
+  <ion-content style="background-color: snow">
+<br>
+    <div class="list list-borderless">
+      <div class="item row row-no-padding">
+        <div class="with-bottom-border mytext">
+          <ion-toggle  ng-model="muted" ng-change="updateMuted()">
+            配音时视频静音（默认）
+          </ion-toggle>
+        </div>
+      </div>
+      <div class="item row row-no-padding">
+        <div class="with-no-bottom-border mytext">
+          <ion-toggle  ng-model="muted" ng-change="updateMuted()">
+            配音时视频静音（默认）
+          </ion-toggle>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="list list-borderless row-no-padding">
+      <div class="item row ">
+        <div class="col col-10 text-center"><i class="icon ion-ios-people-outline"></i></div>
+        <div class="col col-90 with-bottom-border item-icon-right mytext">
+          意见反馈
+          <a class="icon ion-chevron-right icon-accessory" href="#"></a>
+        </div>
+      </div>
+      <div class="item row ">
+        <div class="col col-10 text-center"><i class="icon ion-ios-heart-outline"></i></div>
+        <div class="col col-90 with-no-bottom-border item-icon-right mytext">
+          版本检测
+          <a class="icon ion-chevron-right icon-accessory" href="#"></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="list list-borderless row-no-padding">
+      <div class="item row ">
+        <div class="col col-10 text-center"><i class="icon ion-ios-email-outline"></i></div>
+        <div class="col col-90 with-no-bottom-border item-icon-right mytext">
+          新消息提醒
+          <a class="icon ion-chevron-right icon-accessory" href="#"></a>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="list list-borderless row-no-padding">
+      <div class="item text-center">
+        <i class="button button-clear button-assertive button-full"  ng-click="logout()">退出当前账号</i>
+      </div>
+    </div>
+
+  </ion-content>
+</ion-view>

@@ -4,16 +4,6 @@
     <button  class="button button-icon icon ion-ios-arrow-back"  ng-click="goBack()"></button>
   </ion-nav-buttons>
   <ion-content>
-    <style>
-      .img-fixed{width:100%;height:120px;}
-      .move-up-note{margin:-30px 0 0 0;padding:0 0 0 6px; font-size: x-small;
-        background-image: url('img/bar_back.png');
-        background-repeat: repeat-x;
-        background-position: bottom;
-        color:white;
-      }
-      .move-up-note img{ border-radius:50%; height:30px;margin-top:-15px}
-    </style>
 
     <ion-list class="text-center">
       <div class="item">
@@ -23,7 +13,7 @@
         <div><a href="#/record/{{myvideo._id}}" class="button button-small button-light">我来配音</a></div>
 
       </div>
-      <div class="row text-center item-divider-ios" style="padding:2px 0 0 0; font-size:x-small; line-height: 12px;">
+      <div class="row text-center item-divider-ios" style="padding:2px 0 0 0; font-size:x-small; line-height: 12px;margin-bottom:-1px">
         <div class="col {{mode==1 ? 'tab_selected':''}}" ng-click="setMode(1)">最赞</div>
         <div class="col {{mode==2 ? 'tab_selected':''}}" ng-click="setMode(2)">最新</i></div>
       </div>

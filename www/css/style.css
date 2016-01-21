@@ -19,7 +19,7 @@
   float:left; /* 向左漂移，将竖排变为横排 */
   width:74px;
   text-align: center;
-  font-size: .8em;
+  font-size: .7em;
 }
 .hlistnarrow ul li
 {
@@ -46,4 +46,18 @@
 
 .move-up{margin-top:-12px;z-index: 1000;}
 .move-down{margin-bottom:-12px;z-index: 9999;}
+/*图片和note over图片*/
+.img-fixed{height:120px;width:100%;}
+.move-up-note{margin:-25px 0 0 0;padding:0 0 0 6px; font-size: .75em;
+  background: url('../img/bar_back.png') repeat-x;
+  width:50%;
+  color:white;
+  position:absolute;
+}
+.move-up-note img{ border-radius:50%; height:30px;margin-top:-15px}
 
+a{text-decoration: none;}
+.with-bottom-border {border-bottom: 1px solid seashell; padding:8px; width:100%;}
+.with-no-bottom-border { padding:8px; width:100%;}
+
+.mytext{color: #2B333F;font-size: .8em;}

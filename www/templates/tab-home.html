@@ -1,27 +1,20 @@
 <ion-view view-title="{{title}}">
   <ion-content class="">
     <ion-refresher on-refresh="doRefresh()"></ion-refresher>
-    <div class="item item-divider">热门推荐 {{downloadProgress}}</div>
     <style>
       a{
         text-decoration:none;
         color:white;
       }
-      .img-fixed{height:120px;width:100%;z-index:2;}
-      .move-up-note{margin:-25px 0 0 0;padding:0 0 0 6px; font-size: smaller;
-        background-image: url('img/bar_back.png');
-        background-repeat: repeat-x;
-        background-position: bottom;
-        z-index: 1;
-        color:white;
-      }
-      .move-up-note img{ border-radius:50%; height:30px;margin-top:-15px}
+      .slide-item{width:100%;}
     </style>
-    <!--<video  class="video-js vjs-default-skin vjs-big-play-centered" on-finish-render ng-repeat="video in videos | limitTo:1"-->
-            <!--controls preload="auto" style="width: 100%" height="200" id="main_video{{videoid}}"-->
-            <!--poster="{{video.poster}}">-->
-      <!--<source src="http://101.200.81.99:8080/ciwen/test2x.mp4" type='video/mp4'>-->
-    <!--</video>-->
+    <ion-slide-box pager-click="navSlide(index)" auto-play="true" does-continue="true" style="margin-bottom:-4px;">
+      <ion-slide ng-repeat="s in ['a.jpg', 'b.jpg', 'c.jpg', 'd.jpg']">
+        <img class="slide-item" height="{{slideHeight}}" src="img/{{s}}">
+      </ion-slide>
+    </ion-slide-box>
+    <div class="item item-divider">热门推荐 {{downloadProgress}}</div>
+
 
 
     <div class="row row-no-padding" ng-repeat="video in videos" ng-if="$index % 2 === 0" style="height:125px">
@@ -30,7 +23,7 @@
         <a ui-sref="video({vid: videos[$index]._id})">
           <img src="http://101.200.81.99:808/{{videos[$index].poster}}" class="img-fixed" />
         </a>
-        <div class="move-up-note person-page-note">
+        <div class="move-up-note">
           <a href="#/tab/focus/{{videos[$index].author._id}}">
             <img ng-src="{{videos[$index].author.icon}}">
           </a>

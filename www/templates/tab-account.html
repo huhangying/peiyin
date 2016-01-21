@@ -1,27 +1,67 @@
-<ion-view cache-view="false" view-title="我的">
-  <ion-content>
-    <ion-list>
-      <ion-item class="item-avatar">
-        <!--<ion-item class="item-remove-animate item-avatar item-icon-right">-->
+<ion-view cache-view="false" view-title="我">
+  <ion-content style="background-color: snow">
+    <script>
+
+    </script>
+    <div class="list list-borderless row-no-padding">
+      <div class="item item-avatar item-icon-right">
         <img ng-src="{{icon}}" ng-click="changeIcon()">
-        <div class="text-right" style="display:block;float:right;">
-          <a class="button button-light button-small" href="#">修改密码</a>
-        </div>
+
         <h2>{{user_name}}</h2>
         <div class="row row-no-padding">
-          <div class="col col-20"><i class="icon ion-ios-film-outline"> {{usr.videoNo}}</i></div>
-          <div class="col "><i class="icon ion-ios-heart"> {{usr.totalVotes}}</i></div>
+          ddd
         </div>
-      </ion-item>
-    </ion-list>
-    <ion-list>
-    <ion-toggle  ng-model="muted" ng-change="updateMuted()">
-        配音时视频静音（默认）
-    </ion-toggle>
-    </ion-list>
+        <a class="icon ion-chevron-right icon-accessory" href="#"></a>
+      </div>
+      <div class="item row text-center row-no-padding" style="font-size:12px; line-height: 16px;">
+        <div class="col col-33 item-divider-ios padding-vertical">{{usr.videoNo}}<br>视频</div>
+        <div class="col col-33 item-divider-ios padding-vertical">{{usr.totalVotes}}<br>喜欢</div>
+        <div class="col col-33 item-divider-ios padding-vertical">3<br>粉丝</div>
+      </div>
+    </div>
 
-    <div class="text-center" ng-click="logout()">
-      <i class="button button-balanced button-full">退出登录&nbsp;&nbsp;</i>
+    <div class="list list-borderless row-no-padding">
+    <div class="item row">
+      <div class="col col-10 text-center"><i class="icon ion-ios-personadd-outline"></i></div>
+      <div class="col col-90 with-bottom-border item-icon-right mytext">
+        关注
+        <a class="icon ion-chevron-right icon-accessory" href="#"></a>
+      </div>
+    </div>
+    <div class="item row ">
+      <div class="col col-10 text-center"><i class="icon ion-ios-people-outline"></i></div>
+      <div class="col col-90 with-bottom-border item-icon-right mytext">
+        粉丝
+        <a class="icon ion-chevron-right icon-accessory" href="#"></a>
+      </div>
+    </div>
+    <div class="item row ">
+      <div class="col col-10 text-center"><i class="icon ion-ios-heart-outline"></i></div>
+      <div class="col col-90 with-no-bottom-border item-icon-right mytext">
+        喜欢
+        <a class="icon ion-chevron-right icon-accessory" href="#"></a>
+      </div>
+    </div>
+  </div>
+
+    <div class="list list-borderless row-no-padding">
+      <div class="item row ">
+        <div class="col col-10 text-center"><i class="icon ion-ios-email-outline"></i></div>
+        <div class="col col-90 with-no-bottom-border item-icon-right mytext">
+          消息通知
+          <a class="icon ion-chevron-right icon-accessory" href="#"></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="list list-borderless row-no-padding">
+      <div class="item row ">
+        <span class="col col-10 text-center"><i class="icon ion-ios-gear-outline"></i></span>
+        <a class="col col-90 with-no-bottom-border item-icon-right mytext"  href="#/settings">
+          设置
+          <i class="icon ion-chevron-right icon-accessory"></i>
+        </a>
+      </div>
     </div>
 
   </ion-content>

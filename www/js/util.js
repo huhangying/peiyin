@@ -25,6 +25,20 @@ angular.module('util', [])
         return winWidth * 9 / 16;
       },
 
+      slideHeight: function(){
+        var winWidth = 0;
+        //获取窗口宽度
+        if (window.innerWidth)
+          winWidth = window.innerWidth;
+        else if ((document.body) && (document.body.clientWidth))
+          winWidth = document.body.clientWidth;
+        //通过深入Document内部对body进行检测，获取窗口大小
+        if (document.documentElement && document.documentElement.clientHeight && document.documentElement.clientWidth){
+          winWidth = document.documentElement.clientWidth;
+        }
+        return winWidth / 3.2;
+      },
+
       object2Params: function (obj) {
         var p = [];
         for (var key in obj) {

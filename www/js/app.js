@@ -154,7 +154,14 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
     .state('forgotpassword', {
       url: '/forgot-password',
       templateUrl: 'templates/register/forgot-password.html'
-    });
+    })
+
+    // 设置相关
+    .state('settings', {
+      url: '/settings',
+      templateUrl: 'templates/settings/settings.html',
+      controller: 'SettingsCtrl'
+    })
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/tab/home');
