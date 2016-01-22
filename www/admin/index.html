@@ -21,7 +21,7 @@
   <div class="row">
     <div class="col col-sm-10">
       视频分类：
-      <select class="padding" ng-model="optionCat" ng-options="cat.id as cat.name for cat in cats">
+      <select class="padding" ng-model="optionCat" ng-options="tag.tag as tag.tag for tag in tags">
       </select>
     </div>
     <div class="col col-sm-2">
@@ -43,10 +43,10 @@
         <th>票数</th>
         <th></th>
       </tr>
-      <tr ng-repeat="video in videos | filter : {cat_id : optionCat}" class="row">
+      <tr ng-repeat="video in videos | filter : {tags : optionCat}" class="row">
         <td>
           <input type="hidden" name="value" ng-model="video.id" >
-          <input type="hidden" name="value" ng-model="video.cat_id" >
+          <!--<input type="hidden" name="value" ng-model="video.cat_id" >-->
           <input type="text" class='class{{video.id}} form-control' ng-model="video.name" class="inactive" readonly />
         </td>
         <td>
@@ -56,7 +56,7 @@
           <input type="text" class='class{{video.id}} form-control' ng-model="video.author" class="inactive" readonly />
         </td>
         <td>
-          <input type="text" class='class{{video.id}} form-control' ng-model="video.screenshot" class="inactive" readonly />
+          <input type="text" class='class{{video.id}} form-control' ng-model="video.poster" class="inactive" readonly />
         </td>
         <td>
           <input type="text" class='class{{video.id}} form-control' ng-model="video.url" class="inactive" readonly />

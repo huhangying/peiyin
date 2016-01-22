@@ -3,20 +3,20 @@
  */
 
 app = angular.module('admin', ['ui.bootstrap']);
-var API_URL = 'http://182.92.230.67:3300';
+var API_URL = 'http://182.92.230.67:33445';
 
 app.controller('adminCtrl', function($scope, $http) {
   $scope.optionCat = '';
 
-  $http.get(API_URL + '/cat')
+  $http.get(API_URL + '/tag')
     .then(function(response){
       if (response.data.return == 'empty'){
         alert('没有视频数据');
       }
       else{
-        $scope.cats = response.data;
-        if ($scope.cats && $scope.cats.length > 0){
-          $scope.optionCat = $scope.cats[0].id;
+        $scope.tags = response.data;
+        if ($scope.tags && $scope.cats.length > 0){
+          $scope.optionCat = $scope.tags[0].tag;
         }
       }
     });
@@ -168,7 +168,7 @@ Object.toParams = function ObjecttoParams(obj) {
 };
 
 var getVideos = function($scope,$http){
-  $http.get(API_URL + '/video')
+  $http.get(API_URL + '/videos/1')
     .then(function(response){
       if (response.data.return == 'empty'){
         alert('没有视频数据');

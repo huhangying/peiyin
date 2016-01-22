@@ -30,7 +30,7 @@ angular.module('settingsCtrl', [])
     }
   })
 
-  .controller('EditmeCtrl', function($scope, Users, $ionicActionSheet,$cordovaCamera,$cordovaFileTransfer,$cordovaToast) {
+  .controller('EditmeCtrl', function($scope, Users, $state, $timeout,$ionicActionSheet,$cordovaCamera,$cordovaFileTransfer,$cordovaToast) {
 
     $scope.icon = localStorage['icon'];
     $scope.cell = localStorage['cell'];
@@ -58,12 +58,12 @@ angular.module('settingsCtrl', [])
       localStorage['gender'] = $scope.gender;
 
       Users.updateUser(usr).then(function(res){
-
-
         $cordovaToast.showShortCenter('你更新了个人资料');
-
       });
 
+      $timeout(function(){
+        $state.go('tab.account');
+      },2000);
     }
 
     $scope.changeIcon = function(){
@@ -165,7 +165,6 @@ angular.module('settingsCtrl', [])
     //var uid = ;
 
     App.getMyNotifications('111111111111111111111111').then(function(data){
-      alert(JSON.stringify(data))
       $scope.notifications = data;
     });
   })
