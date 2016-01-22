@@ -213,12 +213,23 @@ angular.module('recordCtrl', ['util'])
     }
   }
 
+
+  $scope.hideLoading = function(){
+    $ionicLoading.hide();
+  }
+
+  $ionicLoading.show({
+    template: '<i ng-click="hideLoading()">视频加载中...</i>',
+    duration: 20000,
+    noBackdrop:true
+  });
+
   $scope.loadVideoByid = function(id){
 
-    //alert(id)
     Videos.get(id).then(function(data){
       $scope.myvideo = data;
       //alert(JSON.stringify(data))
+
 
       // 看，还有相关的推荐配音视频
       Videos.getByTag(1, $scope.myvideo.tags[0]).then(function(data){
@@ -270,13 +281,7 @@ angular.module('recordCtrl', ['util'])
     $scope.loadVideoByid($stateParams.catId);
 
 
-    $ionicLoading.show({
-      template: '<i onclick="hideLoading()">视频加载中...</i>',
-      noBackdrop:true
-    });
-    var hideLoading = function(){
-      $ionicLoading.hide();
-    }
+
 
     $scope.my_player.on("loadeddata", function(a){
       if ($scope.duration < 1) return;

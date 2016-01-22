@@ -70,7 +70,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
   })
 
     .state('tab.focus', {
-      url: '/focus/:author',
+      url: '/focus/:author/:mode',
       views: {
         'tab-focus': {
           templateUrl: 'templates/tab-focus.html',
@@ -80,7 +80,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
     })
 
     .state('tab.focusAdd', {
-      url: '/focus/add/interests',
+      url: '/focus/addinterests',
       views: {
         'tab-focus': {
           templateUrl: 'templates/tab-focus-add.html',
@@ -162,6 +162,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
       templateUrl: 'templates/settings/settings.html',
       controller: 'SettingsCtrl'
     })
+    .state('aboutus', {
+      url: '/settings/aboutus',
+      templateUrl: 'templates/settings/aboutus.html',
+      controller: 'SettingsCtrl'
+    })
+    .state('feedback', {
+    url: '/settings/feedback',
+    templateUrl: 'templates/settings/feedback.html',
+    controller: 'SettingsCtrl'
+  })
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/tab/home');

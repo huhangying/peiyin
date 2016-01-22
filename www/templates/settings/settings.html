@@ -6,16 +6,16 @@
 <br>
     <div class="list list-borderless">
       <div class="item row row-no-padding">
-        <div class="with-bottom-border mytext">
+        <div class="with-bottom-border">
           <ion-toggle  ng-model="muted" ng-change="updateMuted()">
-            配音时视频静音（默认）
+            <i class="mytext">配音时视频静音（默认）</i>
           </ion-toggle>
         </div>
       </div>
       <div class="item row row-no-padding">
-        <div class="with-no-bottom-border mytext">
+        <div class="with-no-bottom-border">
           <ion-toggle  ng-model="muted" ng-change="updateMuted()">
-            配音时视频静音（默认）
+            <i class="mytext">发布时不用背景音频（默认）</i>
           </ion-toggle>
         </div>
       </div>
@@ -24,24 +24,21 @@
 
     <div class="list list-borderless row-no-padding">
       <div class="item row ">
-        <div class="col col-10 text-center"><i class="icon ion-ios-people-outline"></i></div>
-        <div class="col col-90 with-bottom-border item-icon-right mytext">
+        <a class="col col-90 with-bottom-border item-icon-right mytext" href="#/settings/feedback">
           意见反馈
-          <a class="icon ion-chevron-right icon-accessory" href="#"></a>
-        </div>
+          <i class="icon ion-chevron-right icon-accessory"></i>
+        </a>
       </div>
       <div class="item row ">
-        <div class="col col-10 text-center"><i class="icon ion-ios-heart-outline"></i></div>
-        <div class="col col-90 with-no-bottom-border item-icon-right mytext">
+        <span class="col col-90 with-no-bottom-border item-icon-right mytext">
           版本检测
           <a class="icon ion-chevron-right icon-accessory" href="#"></a>
-        </div>
+        </span>
       </div>
     </div>
 
     <div class="list list-borderless row-no-padding">
       <div class="item row ">
-        <div class="col col-10 text-center"><i class="icon ion-ios-email-outline"></i></div>
         <div class="col col-90 with-no-bottom-border item-icon-right mytext">
           新消息提醒
           <a class="icon ion-chevron-right icon-accessory" href="#"></a>
@@ -49,7 +46,14 @@
       </div>
     </div>
 
-
+    <div class="list list-borderless row-no-padding">
+      <div class="item row ">
+        <a class="col col-90 with-no-bottom-border item-icon-right mytext"  href="#/settings/aboutus">
+          关于我们
+          <i class="icon ion-chevron-right icon-accessory"></i>
+        </a>
+      </div>
+    </div>
 
     <div class="list list-borderless row-no-padding">
       <div class="item text-center">

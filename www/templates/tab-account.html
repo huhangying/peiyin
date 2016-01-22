@@ -8,39 +8,39 @@
         <img ng-src="{{icon}}" ng-click="changeIcon()">
 
         <h2>{{user_name}}</h2>
-        <div class="row row-no-padding">
-          ddd
+        <div class="mynote">
+          点击添加个性签名
         </div>
         <a class="icon ion-chevron-right icon-accessory" href="#"></a>
       </div>
       <div class="item row text-center row-no-padding" style="font-size:12px; line-height: 16px;">
-        <div class="col col-33 item-divider-ios padding-vertical">{{usr.videoNo}}<br>视频</div>
-        <div class="col col-33 item-divider-ios padding-vertical">{{usr.totalVotes}}<br>喜欢</div>
-        <div class="col col-33 item-divider-ios padding-vertical">3<br>粉丝</div>
+        <a class="col col-33 item-divider-ios padding-vertical" href="#/tab/focus/0/1">{{usr.videoNo}}<br>视频</a>
+        <a class="col col-33 item-divider-ios padding-vertical" href="#/tab/focus/0/2">{{usr.totalVotes}}<br>喜欢</a>
+        <a class="col col-33 item-divider-ios padding-vertical" href="#/tab/focus/0/4">3<br>粉丝</a>
       </div>
     </div>
 
     <div class="list list-borderless row-no-padding">
     <div class="item row">
-      <div class="col col-10 text-center"><i class="icon ion-ios-personadd-outline"></i></div>
-      <div class="col col-90 with-bottom-border item-icon-right mytext">
+      <span class="col col-10 text-center"><i class="icon ion-ios-personadd-outline"></i></span>
+      <a class="col col-90 with-bottom-border item-icon-right mytext" href="#/tab/focus/0/3">
         关注
-        <a class="icon ion-chevron-right icon-accessory" href="#"></a>
-      </div>
+        <i class="icon ion-chevron-right icon-accessory"></i>
+      </a>
     </div>
     <div class="item row ">
-      <div class="col col-10 text-center"><i class="icon ion-ios-people-outline"></i></div>
-      <div class="col col-90 with-bottom-border item-icon-right mytext">
+      <span class="col col-10 text-center"><i class="icon ion-ios-people-outline"></i></span>
+      <a class="col col-90 with-bottom-border item-icon-right mytext" href="#/tab/focus/0/4">
         粉丝
-        <a class="icon ion-chevron-right icon-accessory" href="#"></a>
-      </div>
+        <a class="icon ion-chevron-right icon-accessory"></a>
+      </a>
     </div>
     <div class="item row ">
-      <div class="col col-10 text-center"><i class="icon ion-ios-heart-outline"></i></div>
-      <div class="col col-90 with-no-bottom-border item-icon-right mytext">
+      <span class="col col-10 text-center"><i class="icon ion-ios-heart-outline"></i></span>
+      <a class="col col-90 with-no-bottom-border item-icon-right mytext" href="#/tab/focus/0/2">
         喜欢
-        <a class="icon ion-chevron-right icon-accessory" href="#"></a>
-      </div>
+        <i class="icon ion-chevron-right icon-accessory"></i>
+      </a>
     </div>
   </div>
 
