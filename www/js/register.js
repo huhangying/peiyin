@@ -41,6 +41,7 @@ angular.module('starter.register', ['ngCordova'])
           localStorage['cell'] = user.cell;
           localStorage['name'] = users[0].name;
           localStorage['icon'] = users[0].icon;
+          localStorage['gender'] = users[0].gender;
           localStorage['authorized'] = 'yes';
 
           // 如果状态是播放视频页，改到视频分类页（因为视频页带参数）
@@ -104,6 +105,7 @@ angular.module('starter.register', ['ngCordova'])
             localStorage['cell'] = user.cell;
             localStorage['name'] = user.name;
             localStorage['icon'] = data[0].icon;
+            localStorage['gender'] = data[0].gender;
             localStorage['authorized'] = 'yes';
 
             // 特殊处理

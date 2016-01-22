@@ -67,14 +67,10 @@ module.exports = {
   },
 
   Update: function(req, res){
-    var name = '', value = '';
-    if (req.params){
-      name = req.params.name;
-      value = req.params.value;
-    }
+    var user = req.body;
 
-    var conditions = {name :name};
-    var fields     = {value : value};
+    var conditions = {cell :user.cell};
+    var fields     = {name : user.name, gender: user.gender};
     var options    = {};
 
     User.update(conditions, fields, options, function (err, raw) {

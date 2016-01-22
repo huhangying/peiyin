@@ -57,8 +57,12 @@
 .move-up-note img{ border-radius:50%; height:30px;margin-top:-15px}
 
 a{text-decoration: none;}
-.with-bottom-border {border-bottom: 1px solid seashell; padding:8px; width:100%;}
+.with-bottom-border {border-bottom: 1px solid #f9f4f4; padding:8px; width:100%;}
 .with-no-bottom-border { padding:8px; width:100%;}
 
 .mytext{color: #2B333F;font-size: .9em;}
 .mynote{color: #a3b4c6;font-size:12px;}
+
+.myavatar{border-radius:50%; height:30px;}
+.mytab{margin:0 1px 0 0; color:gray; background-color: #eeeeee; height: 40px;line-height:17px;font-size:13px;}
+.mybackground{background-color: #e2dddd;}

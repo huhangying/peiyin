@@ -8,15 +8,6 @@ angular.module('focusCtrl', [])
   // 包含 关注页 和 个人主页
   .controller('FocusCtrl', function($scope, Users, $state, Videos, $stateParams,$ionicNavBarDelegate) {
     var uid = window.localStorage['uid'];
-    var author_id = $stateParams.author;
-    if (author_id === '0') author_id = uid;
-    var mode_id = $stateParams.mode || 1;
-
-    $scope.isPersonPage = (author_id && author_id != '');
-    $scope.yourVideos = []; // 作品
-    $scope.yourVotedVideos = []; // 喜欢
-    $scope.yourVotedVideos = []; //
-    $scope.fans = []; //
 
 
     $scope.videos = [];
@@ -54,7 +45,7 @@ angular.module('focusCtrl', [])
       });
     }
 
-    if (!$scope.isPersonPage){
+
       $scope.title = '关注';
 
       // 没有设置 author， 则显示全部关注的视频
@@ -68,8 +59,159 @@ angular.module('focusCtrl', [])
           }
           $scope.getAllFocusVideos();
         });
+
+
+  })
+
+  .controller('FocusAddCtrl', function($scope,$rootScope,$http,$cordovaToast, Users,$state, Videos) {
+    var uid = window.localStorage['uid'];
+
+    $scope.setAuthorVideos = function(index, uid){
+      var author_votes = 0;
+      Videos.getAuthorVideos($scope.users[index]._id)
+        .then(function (author_videos) {
+
+          $scope.users[index].videoNo = author_videos.length;
+          for (var j = 0; j < author_videos.length; j++) {
+            author_votes += author_videos[j].vote;
+          }
+          $scope.users[index].totalVotes = author_votes;
+
+        });
     }
-    else{
+
+    $scope.checkIfFocus = function(authorId){
+      //alert(JSON.stringify($scope.user_interests) + ':' + authorId)
+      //alert(($scope.user_interests.indexOf(authorId) > -1))
+      var len = $scope.user_interests.length;
+      for (var i=0; i<len; i++){
+        if ($scope.user_interests[i]._id == authorId) {
+          //alert(authorId)
+          return true;
+        }
+      }
+      return false;
+
+    }
+
+    $scope.user_interests = [];
+    Users.getUserInterests(uid)
+      .then(function(data){
+        $scope.user_interests = data[0].interests;
+        //alert(JSON.stringify($scope.user_interests))
+
+        Users.all().then(function(data){
+
+          $scope.users = data;
+          var length = $scope.users.length;
+
+          for (var i=0; i<length; i++) {
+
+            $scope.setAuthorVideos(i, $scope.users[i]._id);
+            $scope.users[i].checked = $scope.checkIfFocus($scope.users[i]._id);
+          }
+
+        });
+      });
+
+
+
+    $scope.modifyInteres = function(){
+      var _interests = [];
+      $scope.users.forEach(function(usr){
+        if (usr.checked){
+          _interests.push(usr._id);
+        }
+      });
+
+      var interest = {
+        uid: uid,
+        interests: _interests
+      };
+
+      Users.addInterest(interest)
+        .then(function(data){
+          if (data && data != 'error'){
+            $state.go('tab.focus');
+            $cordovaToast.showShortCenter('成功的增加关注');
+          }
+          else {
+            $cordovaToast.showShortCenter('请选择关注，然后添加')
+          }
+        });
+
+    }
+
+    $scope.InterestChanged = function(index, authorId){
+      //alert(index + ':' + $scope.users[index].checked)
+      $scope.users[index].checked = !$scope.users[index].checked;
+    }
+  })
+
+  .controller('PersonCtrl', function($scope, Users, $state, Videos, $stateParams,$ionicNavBarDelegate) {
+    var uid = window.localStorage['uid'];
+    var author_id = $stateParams.author;
+    if (author_id === '0') author_id = uid;
+    var mode_id = $stateParams.mode || 1;
+
+    $scope.yourVideos = []; // 作品
+    $scope.yourVotedVideos = []; // 喜欢
+    $scope.yourVotedVideos = []; //
+    $scope.fans = []; //
+
+
+    //$scope.videos = [];
+    //$scope.getAllFocusVideos = function() {
+    //
+    //  Videos.all(0).then(function(videos){
+    //    $scope.videos = [];
+    //
+    //    if (videos == 'null'){
+    //      $state.go('tab.focusAdd')
+    //      $cordovaToast.showShortCenter('没有视频');
+    //      return;
+    //    }
+    //
+    //    videos.forEach(function(video){
+    //
+    //      if (video.author){
+    //        // 视频有主，并且并关注
+    //        //alert(video.author._id)
+    //        Users.checkFocus(uid, video.author._id)
+    //          .then(function(data){
+    //            if (data == 'true' || data == true){
+    //              $scope.videos.push(video);
+    //            }
+    //
+    //            if (!$scope.videos || $scope.videos.length < 1){
+    //              //$state.go('tab.focusAdd');
+    //              //$cordovaToast.showShortCenter('没有关注视频，请先关注');
+    //            }
+    //
+    //          });
+    //      }
+    //    });
+    //
+    //  });
+    //}
+
+    //if (!$scope.isPersonPage){
+    //  $scope.title = '关注';
+    //
+    //  // 没有设置 author， 则显示全部关注的视频
+    //  Users.getUserInterests(uid)
+    //    .then(function(data){
+    //      //alert(JSON.stringify(data))
+    //      if (!data || data.length < 1){
+    //        // go and add more interest
+    //        $state.go('tab.focusAdd');
+    //        return;
+    //      }
+    //      $scope.getAllFocusVideos();
+    //    });
+    //}
+    //else
+    //{
       $scope.title = '个人主页';
 
       Users.GetById(author_id).then(function(author){
@@ -154,7 +296,7 @@ angular.module('focusCtrl', [])
 
       });
 
-    }
+
 
     // set 作者关注的人 or 作者的粉丝 的关注情况
     $scope.setFocus = function(usrs){
@@ -251,90 +393,5 @@ angular.module('focusCtrl', [])
           $scope.users[index].totalVotes = author_votes;
 
         });
-    }
-  })
-
-  .controller('FocusAddCtrl', function($scope,$rootScope,$http,$cordovaToast, Users,$state, Videos) {
-    var uid = window.localStorage['uid'];
-
-    $scope.setAuthorVideos = function(index, uid){
-      var author_votes = 0;
-      Videos.getAuthorVideos($scope.users[index]._id)
-        .then(function (author_videos) {
-
-          $scope.users[index].videoNo = author_videos.length;
-          for (var j = 0; j < author_videos.length; j++) {
-            author_votes += author_videos[j].vote;
-          }
-          $scope.users[index].totalVotes = author_votes;
-
-        });
-    }
-
-    $scope.checkIfFocus = function(authorId){
-      //alert(JSON.stringify($scope.user_interests) + ':' + authorId)
-      //alert(($scope.user_interests.indexOf(authorId) > -1))
-      var len = $scope.user_interests.length;
-      for (var i=0; i<len; i++){
-        if ($scope.user_interests[i]._id == authorId) {
-          //alert(authorId)
-          return true;
-        }
-      }
-      return false;
-
-    }
-
-    $scope.user_interests = [];
-    Users.getUserInterests(uid)
-      .then(function(data){
-        $scope.user_interests = data[0].interests;
-        //alert(JSON.stringify($scope.user_interests))
-
-        Users.all().then(function(data){
-
-          $scope.users = data;
-          var length = $scope.users.length;
-
-          for (var i=0; i<length; i++) {
-
-            $scope.setAuthorVideos(i, $scope.users[i]._id);
-            $scope.users[i].checked = $scope.checkIfFocus($scope.users[i]._id);
-          }
-
-        });
-      });
-
-
-
-    $scope.modifyInteres = function(){
-      var _interests = [];
-      $scope.users.forEach(function(usr){
-        if (usr.checked){
-          _interests.push(usr._id);
-        }
-      });
-
-      var interest = {
-        uid: uid,
-        interests: _interests
-      };
-
-      Users.addInterest(interest)
-        .then(function(data){
-          if (data && data != 'error'){
-            $state.go('tab.focus')
-            $cordovaToast.showShortCenter('成功的增加关注');
-          }
-          else {
-            $cordovaToast.showShortCenter('请选择关注，然后添加')
-          }
-        });
-
-    }
-
-    $scope.InterestChanged = function(index, authorId){
-      //alert(index + ':' + $scope.users[index].checked)
-      $scope.users[index].checked = !$scope.users[index].checked;
     }
   })

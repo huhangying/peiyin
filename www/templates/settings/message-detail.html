@@ -1,0 +1,22 @@
+<ion-view cache-view="false" view-title="通知">
+  <ion-nav-buttons side="left"> <!-- left -->
+    <a class="button button-icon icon ion-ios-arrow-back" href="#/settings/message"></a>
+  </ion-nav-buttons>
+
+  <ion-content class="mybackground">
+
+    <div class="list">
+      <div class="item" ng-repeat="noti in notifications">
+        <div style="font-size: .7em;color:gainsboro;">
+          {{noti.title}}</div>
+        <div style="font-size:.8em;color:gray;">
+          {{noti.text}}
+        </div>
+        <div style="font-size: .7em;color:gainsboro;">
+          {{noti.updated | date:'MM-dd HH:mm'}}
+        </div>
+      </div>
+    </div>
+
+  </ion-content>
+</ion-view>

@@ -11,7 +11,7 @@
               ng-click="modifyInterest(noFocus)" ng-show="showFocus">&nbsp;关注</span>
         <a class="icon ion-ios-redo-outline" style="text-decoration: none" href="#/tab/player/{{myvideo._id}}" ng-show="!showFocus">&nbsp;分享</a>
       </div>
-    <a  href="#/tab/focus/{{myvideo.author._id}}" style="text-decoration: none;color:black;">
+    <a  href="#/person/{{myvideo.author._id}}/" style="text-decoration: none;color:black;">
       <div class="item-avatar" style="margin: -10px 0 -10px 0;">
         <img src="{{myvideo.author.icon}}" />
         <div style="padding-top:15px;">
@@ -81,8 +81,8 @@
   <!-- align to the bottom of the page -->
   <div class="login-form row-no-padding" style="position: absolute; bottom: 0px; width: 100%">
     <div class="list ">
-       <span class="item item-input" style="padding:0">
-         <i class="icon ion-at placeholder-icon padding-left"></i>
+       <span class="item item-input" style="padding-left:10px">
+         <!--<i class="icon ion-at placeholder-icon padding-left"></i>-->
          <input id="txtMyComment" type="text" placeholder="写评论..." ng-model="$root.myComment">
          <i class="button button-clear button-positive" ng-click="sendMyComment()">发送</i>
        </span>

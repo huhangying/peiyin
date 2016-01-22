@@ -381,7 +381,7 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize','resourceCtrl','
   //============================================================================================================
 
   // 用户账号管理
-  .controller('AccountCtrl', function($scope,$state,$rootScope,$http,$cordovaToast,Videos,Users, $ionicActionSheet,$cordovaCamera,$cordovaFileTransfer) {
+  .controller('AccountCtrl', function($scope,$state,$rootScope,$http,$cordovaToast,Videos,Util) {
 
     // 如果没有登录，去登录
     if (!localStorage['authorized'] || localStorage['authorized'] != 'yes'){
@@ -389,7 +389,6 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize','resourceCtrl','
       return;
     }
 
-    //alert($scope.volume.video)
     // 公用的函数
     $scope.setAuthorVideos = function(uid){
       var author_votes = 0;
@@ -410,99 +409,12 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize','resourceCtrl','
       $scope.user_name = '我未登录';
     else{
       $scope.icon = localStorage['icon'];
+      $scope.icon += '?v=' + Util.randomId();
       $scope.user_name = localStorage['name'];
       $scope.cell = localStorage['cell'];
+      $scope.gender = localStorage['gender'];
       var uid = window.localStorage["uid"];
       $scope.setAuthorVideos(uid);
-    }
-
-
-
-    $scope.changeIcon = function(){
-      // 显示操作表
-      $ionicActionSheet.show({
-        titleText: '更新你的头像',
-        buttons: [
-          { text: '拍照上传' },
-          { text: '手机相册上传' },
-        ],
-        cancelText: '取消',
-        buttonClicked: function(index) {
-          if (index == 0) {//拍照上传
-            $scope.takePhoto();
-          }
-          else if (index == 1){ //手机相册上传
-            $scope.choosePhoto();
-          }
-          return true;
-        }
-      });
-    }
-
-    $scope.takePhoto = function () {
-      var options = {
-        quality: 75,
-        destinationType: Camera.DestinationType.FILE_URI,
-        sourceType: Camera.PictureSourceType.CAMERA,
-        allowEdit: true,
-        encodingType: Camera.EncodingType.JPEG,
-        targetWidth: 100,
-        targetHeight: 100,
-        popoverOptions: CameraPopoverOptions,
-        saveToPhotoAlbum: false
-      };
-
-      $cordovaCamera.getPicture(options).then(function (imagePath) {
-        $scope.icon = imagePath;
-        var new_file_name = $scope.cell + '.jpg';
-        // 上传文件，并修改数据库
-        $scope.uploadMyIcon(imagePath, new_file_name);
-
-      }, function (err) {
-        // An error occured. Show a message to the user
-      });
-    }
-
-    $scope.choosePhoto = function () {
-      var options = {
-        quality: 75,
-        destinationType: Camera.DestinationType.FILE_URI,
-        sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
-        allowEdit: true,
-        encodingType: Camera.EncodingType.JPEG,
-        targetWidth: 100,
-        targetHeight: 100,
-        popoverOptions: CameraPopoverOptions,
-        saveToPhotoAlbum: false
-      };
-
-      $cordovaCamera.getPicture(options).then(function (imagePath) {
-        $scope.icon = imagePath;
-        var new_file_name = $scope.cell + '.jpg';
-        alert(imagePath + '>>' +  new_file_name)
-        $scope.uploadMyIcon(imagePath, new_file_name);
-      }, function (err) {
-        // An error occured. Show a message to the user
-      });
-    }
-
-    $scope.uploadMyIcon = function(path, new_file_name){
-      var options = {
-        fileName: new_file_name,
-        chunkedMode: false,
-        mimeType: "image/jpg",
-        httpMethod: "post"
-      };
-      $cordovaFileTransfer.upload(UPLOAD_URL + "/uploadicon",path, options, true)
-        .then(function(result) {
-
-          // update the database
-          Users.updateIcon($scope.cell);
-
-        }, function(err) {
-          alert("上传icon失败: " + JSON.stringify(err));
-        });
-
     }
 
   })

@@ -1,0 +1,86 @@
+<ion-view cache-view="false" view-title="{{title}}">
+  <ion-nav-buttons side="left"> <!-- left -->
+    <button  class="button button-icon icon ion-ios-arrow-back"  ng-click="goBack()"></button>
+  </ion-nav-buttons>
+  <ion-content>
+    <style>
+      a{
+        text-decoration:none;
+        color:white;
+      }
+      .item-img img{ border-radius:50%; height:40px;}
+    </style>
+
+
+    <ion-list class="text-center">
+      <div class="item">
+        <img src="{{author.icon}}" style="height:80px;border-radius:50%;">
+        <div>{{author.name}}</div>
+        <div ng-show="showFocus">
+          <span class="icon {{noFocus ? 'ion-ios-plus-outline balanced' : 'ion-ios-minus-outline'}}" ng-click="modifyInterest(noFocus)">&nbsp;关注</span>
+        </div>
+      </div>
+      <div class="row text-center item-divider-ios" style="padding:2px 0 0 0; font-size:15px; line-height: 15px;margin-bottom:-1px">
+        <div class="col col-25 {{mode==1 ? 'tab_selected':''}}" ng-click="setMode(1)">{{yourVideos.length}}<br>作品</div>
+        <div class="col col-25 {{mode==2 ? 'tab_selected':''}}" ng-click="setMode(2)">{{yourVotedVideos.length}}<br>喜欢</i></div>
+        <div class="col col-25 {{mode==3 ? 'tab_selected':''}}" ng-click="setMode(3)">{{authorInterestedUsers.length}}<br>关注</i></div>
+        <div class="col col-25 {{mode==4 ? 'tab_selected':''}}" ng-click="setMode(4)">{{fans.length}}<br>粉丝</i></div>
+      </div>
+    </ion-list>
+
+
+
+    <div class="row row-no-padding" ng-repeat="video in videos" ng-if="$index % 2 === 0" ng-show="mode != 3 && mode != 4" style="height:125px">
+
+      <div class="col col-50" ng-if="$index < videos.length">
+        <a href="#/video/{{videos[$index]._id}}">
+          <img src="http://101.200.81.99:808/{{videos[$index].poster}}" class="img-fixed" />
+        </a>
+        <div class="move-up-note">
+          <a href="#/tab/focus/{{videos[$index].author._id}}/" ng-hide="isPersonPage&&mode==1">
+            <img ng-src="{{videos[$index].author.icon}}">
+          </a>
+          {{videos[$index].name}}
+        </div>
+      </div>
+
+      <div class="col col-50" ng-if="$index + 1 < videos.length">
+        <a href="#/video/{{videos[$index+1]._id}}">
+          <img src="http://101.200.81.99:808/{{videos[$index+1].poster}}" class="img-fixed" />
+        </a>
+        <div class="move-up-note">
+          <a href="#/tab/focus/{{videos[$index+1].author._id}}/" ng-hide="isPersonPage&&mode==1">
+            <img ng-src="{{videos[$index+1].author.icon}}">
+          </a>
+          <span>{{videos[$index+1].name}}</span>
+
+        </div>
+      </div>
+    </div>
+
+
+
+    <ion-item class="row-no-padding" ng-show="mode == 3 || mode ==4"
+              ng-repeat="usr in users" type="item-text-wrap">
+      <div class="row">
+        <div class="col col-10">
+          <a  href="#/tab/focus/{{usr._id}}/" class="item-img">
+            <img ng-src="{{usr.icon}}">
+          </a>
+        </div>
+        <div class="col col-80" style="padding-left:20px;">
+          <div>{{usr.name}}</div>
+          <div class="row row-no-padding">
+            <div class="col col-20"><i class="icon ion-ios-film-outline"> {{usr.videoNo}}</i></div>
+            <div class="col "><i class="icon ion-ios-heart"> {{usr.totalVotes}}</i></div>
+          </div>
+        </div>
+        <div class="col col-10" style="padding:12px 12px 0 0;">
+          <ion-checkbox class="item-borderless" ng-model="!usr.noFocus" ng-click="modifyInterest(usr.noFocus, usr._id)"></ion-checkbox>
+        </div>
+      </div>
+    </ion-item>
+    </ion-list>
+
+  </ion-content>
+</ion-view>

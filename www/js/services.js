@@ -1,6 +1,6 @@
-angular.module('starter.services', [])
+angular.module('starter.services', ['util'])
 
-  .factory('Videos', function($http, $q){
+  .factory('Videos', function($http, $q, Util){
   var videos = [];
 
   return {
@@ -85,16 +85,9 @@ angular.module('starter.services', [])
     },
 
     add: function(video){
-      Object.toParams = function ObjecttoParams(obj) {
-        var p = [];
-        for (var key in obj) {
-          p.push(key + '=' + encodeURIComponent(obj[key]));
-        }
-        return p.join('&');
-      };
 
       var deferred = $q.defer(); // 声明延后执行，表示要去监控后面的执行
-      $http.post('http://182.92.230.67:33445/video', Object.toParams(video), {
+      $http.post('http://182.92.230.67:33445/video', Util.object2Params(video), {
           dataType: 'json',
           headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         })
@@ -123,7 +116,7 @@ angular.module('starter.services', [])
 
     addComment: function (comment){
       var deferred = $q.defer(); // 声明延后执行，表示要去监控后面的执行
-      $http.post('http://182.92.230.67:33445/comment',Object.toParams(comment), {
+      $http.post('http://182.92.230.67:33445/comment',Util.object2Params(comment), {
           dataType: 'json',
           headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         })
@@ -156,7 +149,7 @@ angular.module('starter.services', [])
   }
 })
 
-  .factory('Users', function($http, $q) {
+  .factory('Users', function($http, $q, Util) {
     var users = [];
 
     return {
@@ -181,6 +174,21 @@ angular.module('starter.services', [])
             deferred.resolve(data);  // 声明执行成功，即http请求数据成功，可以返回数据了
           })
           .error(function (data, status, headers, config) {
+            deferred.reject(data);   // 声明执行失败，即服务器返回错误
+          });
+        return deferred.promise;   // 返回承诺，这里并不是最终数据，而是访问最终数据的API
+      },
+
+      updateUser: function (usr){
+        var deferred = $q.defer(); // 声明延后执行，表示要去监控后面的执行
+        $http.put('http://182.92.230.67:33445/user', Util.object2Params(usr), {
+            dataType: 'json',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+          })
+          .success(function(data, status, headers, config){
+            deferred.resolve(data);  // 声明执行成功，即http请求数据成功，可以返回数据了
+          })
+          .error(function(data,status, headers, config){
             deferred.reject(data);   // 声明执行失败，即服务器返回错误
           });
         return deferred.promise;   // 返回承诺，这里并不是最终数据，而是访问最终数据的API
@@ -237,7 +245,7 @@ angular.module('starter.services', [])
 
       addInterest: function (interest){
         var deferred = $q.defer(); // 声明延后执行，表示要去监控后面的执行
-        $http.post('http://182.92.230.67:33445/interest',Object.toParams(interest), {
+        $http.post('http://182.92.230.67:33445/interest', Util.object2Params(interest), {
             dataType: 'json',
             headers: {'Content-Type': 'application/x-www-form-urlencoded'}
           })
@@ -252,7 +260,7 @@ angular.module('starter.services', [])
 
       removeInterest: function (interest){
         var deferred = $q.defer(); // 声明延后执行，表示要去监控后面的执行
-        $http.post('http://182.92.230.67:33445/interest/delete',Object.toParams(interest), {
+        $http.post('http://182.92.230.67:33445/interest/delete',Util.object2Params(interest), {
             dataType: 'json',
             headers: {'Content-Type': 'application/x-www-form-urlencoded'}
           })
@@ -324,6 +332,18 @@ angular.module('starter.services', [])
       getNotification: function () {
         var deferred = $q.defer(); // 声明延后执行，表示要去监控后面的执行
         $http.get('http://182.92.230.67:33445/noti')
+          .success(function (data, status, headers, config) {
+            deferred.resolve(data);  // 声明执行成功，即http请求数据成功，可以返回数据了
+          })
+          .error(function (data, status, headers, config) {
+            deferred.reject(data);   // 声明执行失败，即服务器返回错误
+          });
+        return deferred.promise;   // 返回承诺，这里并不是最终数据，而是访问最终数据的API
+      },
+
+      getMyNotifications: function (uid) {
+        var deferred = $q.defer(); // 声明延后执行，表示要去监控后面的执行
+        $http.get('http://182.92.230.67:33445/noti/' + uid)
           .success(function (data, status, headers, config) {
             deferred.resolve(data);  // 声明执行成功，即http请求数据成功，可以返回数据了
           })

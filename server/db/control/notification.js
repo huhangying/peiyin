@@ -19,6 +19,17 @@ module.exports = {
         });
   },
 
+  GetByUid: function (req, res) {
+    var uid = req.params.uid;
+    var result = Notification.find({to: uid})
+      .sort({updated: -1})
+      .exec(function (err, items) {
+        if (!items || items.length < 1)
+          return res.send('null');
+        res.json(items);
+      });
+  },
+
   Add: function(req, res){
     var not = req.body;
 
@@ -29,9 +40,13 @@ module.exports = {
   },
 
   AddFake: function(req, res){
+    var to = req.params.to;
+    if (to.length < 12) to = '111111111111111111111111';
+    //console.log(to);
     var not = {
       title: req.params.title,
       text: req.params.text,
+      to: to,
     };
 
     //console.log(JSON.stringify(not))

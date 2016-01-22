@@ -86,7 +86,7 @@ router.route('/download/:file')
 router.route('/user')
   .get(User.GetAll)
   .post(urlencodedParser,User.Add)
-  .put(User.Update);
+  .put(urlencodedParser, User.Update);
 router.route('/user/:cell')
   .get(User.Get);
 router.route('/usericon/:cell')
@@ -129,7 +129,9 @@ router.route('/tag/add/:cat/:tag/:order')
 router.route('/noti')
   .get(Notification.Get)
   .post(urlencodedParser, Notification.Add);
-router.route('/noti/add/:title/:text')
+router.route('/noti/:uid')
+  .get(Notification.GetByUid)
+router.route('/noti/add/:title/:text/:to')
   .get(Notification.AddFake);
 
 

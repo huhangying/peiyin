@@ -1,56 +1,46 @@
 <ion-view cache-view="false" view-title="我">
-  <ion-content style="background-color: snow">
-    <script>
-
-    </script>
+  <ion-content class="mybackground">
+    <br>
     <div class="list list-borderless row-no-padding">
-      <div class="item item-avatar item-icon-right">
-        <img ng-src="{{icon}}" ng-click="changeIcon()">
+      <a class="item item-avatar item-icon-right" href="#/settings/editme">
+        <img ng-src="{{icon}}">
 
-        <h2>{{user_name}}</h2>
+        <span class="h4">{{user_name}} &nbsp; <i class=" {{gender == 'M' ? 'ion-man positive' : (gender == 'F' ? 'ion-woman assertive' : '')}}"></i></span>
         <div class="mynote">
-          点击添加个性签名
+          点击修改个人资料
         </div>
-        <a class="icon ion-chevron-right icon-accessory" href="#"></a>
-      </div>
-      <div class="item row text-center row-no-padding" style="font-size:12px; line-height: 16px;">
-        <a class="col col-33 item-divider-ios padding-vertical" href="#/tab/focus/0/1">{{usr.videoNo}}<br>视频</a>
-        <a class="col col-33 item-divider-ios padding-vertical" href="#/tab/focus/0/2">{{usr.totalVotes}}<br>喜欢</a>
-        <a class="col col-33 item-divider-ios padding-vertical" href="#/tab/focus/0/4">3<br>粉丝</a>
+        <i class="icon ion-chevron-right icon-accessory"></i>
+      </a>
+      <div class="item row text-center row-no-padding">
+        <a class="col col-50 mytab" href="#/person/0/1">{{usr.videoNo}}<br>视频</a>
+        <a class="col col-50 mytab" href="#/person/0/2">{{usr.totalVotes}}<br>喜欢</a>
       </div>
     </div>
 
     <div class="list list-borderless row-no-padding">
-    <div class="item row">
-      <span class="col col-10 text-center"><i class="icon ion-ios-personadd-outline"></i></span>
-      <a class="col col-90 with-bottom-border item-icon-right mytext" href="#/tab/focus/0/3">
-        关注
-        <i class="icon ion-chevron-right icon-accessory"></i>
-      </a>
+      <div class="item row">
+        <span class="col col-10 text-center"><i class="icon ion-ios-personadd-outline"></i></span>
+        <a class="col col-90 with-bottom-border item-icon-right mytext" href="#/person/0/3">
+          关注
+          <i class="icon ion-chevron-right icon-accessory"></i>
+        </a>
+      </div>
+      <div class="item row ">
+        <span class="col col-10 text-center"><i class="icon ion-ios-people-outline"></i></span>
+        <a class="col col-90 with-no-bottom-border item-icon-right mytext" href="#/person/0/4">
+          粉丝
+          <i class="icon ion-chevron-right icon-accessory"></i>
+        </a>
+      </div>
     </div>
-    <div class="item row ">
-      <span class="col col-10 text-center"><i class="icon ion-ios-people-outline"></i></span>
-      <a class="col col-90 with-bottom-border item-icon-right mytext" href="#/tab/focus/0/4">
-        粉丝
-        <a class="icon ion-chevron-right icon-accessory"></a>
-      </a>
-    </div>
-    <div class="item row ">
-      <span class="col col-10 text-center"><i class="icon ion-ios-heart-outline"></i></span>
-      <a class="col col-90 with-no-bottom-border item-icon-right mytext" href="#/tab/focus/0/2">
-        喜欢
-        <i class="icon ion-chevron-right icon-accessory"></i>
-      </a>
-    </div>
-  </div>
 
     <div class="list list-borderless row-no-padding">
       <div class="item row ">
-        <div class="col col-10 text-center"><i class="icon ion-ios-email-outline"></i></div>
-        <div class="col col-90 with-no-bottom-border item-icon-right mytext">
-          消息通知
-          <a class="icon ion-chevron-right icon-accessory" href="#"></a>
-        </div>
+        <span class="col col-10 text-center"><i class="icon ion-ios-email-outline"></i></span>
+        <a class="col col-90 with-no-bottom-border item-icon-right mytext" href="#/settings/message">
+          消息通知 &nbsp; <span class="badge badge-assertive" style="font-size:xx-small;line-height:10px;">1</span>
+          <i class="icon ion-chevron-right icon-accessory"></i>
+        </a>
       </div>
     </div>
 
