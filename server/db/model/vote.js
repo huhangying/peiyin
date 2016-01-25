@@ -8,7 +8,8 @@ var _Vote = new Schema({
   //author: {type: Schema.Types.ObjectId, ref: 'user' },
   user: {type: Schema.Types.ObjectId, ref:'user'},
   vote: {type:Number, default: 0},
-  updated: {type : Date, default: Date.now} // 每天只能投一次
+  updated: {type : Date, default: Date.now}, // 每天只能投一次
+  viewed: {type: Boolean, default: false},
 });
 
 module.exports =  mongoose.model('vote', _Vote);

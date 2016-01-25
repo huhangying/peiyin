@@ -101,6 +101,8 @@ router.route('/comment')
   .post(urlencodedParser, Comment.Add);
 router.route('/comment/:vid')
   .get(Comment.Get);
+router.route('/mycomment/:uid')
+  .get(Comment.getMyComments);
 
 
 router.route('/interest')

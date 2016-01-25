@@ -14,16 +14,10 @@
         </a>
       </div>
       <div class="item row ">
-        <span class="col col-10 text-center"><i class="icon ion-ios-heart-outline"></i></span>
-        <a class="col col-90 with-bottom-border item-icon-right mytext" href="#/">
-          赞
-          <i class="icon ion-chevron-right icon-accessory"></i>
-        </a>
-      </div>
-      <div class="item row ">
         <span class="col col-10 text-center"><i class="icon ion-ios-paper-outline"></i></span>
-        <a class="col col-90 with-no-bottom-border item-icon-right mytext" href="#/">
-          评论
+        <a class="col col-90 with-no-bottom-border item-icon-right mytext" href="#/settings/message-comment">
+          评论&nbsp;
+          <span class="badge badge-assertive" style="font-size:xx-small;line-height:12px;" ng-show="commentsCount>0">{{commentsCount}}</span>
           <i class="icon ion-chevron-right icon-accessory"></i>
         </a>
       </div>
@@ -33,7 +27,8 @@
       <div class="item row ">
         <span class="col col-10 text-center"><i class="icon ion-ios-email-outline"></i></span>
         <a class="col col-90 with-no-bottom-border item-icon-right mytext" href="#/settings/message-detail">
-          消息
+          消息&nbsp;
+          <span class="badge badge-assertive" style="font-size:xx-small;line-height:12px;" ng-show="messageCount>0">{{messageCount}}</span>
           <i class="icon ion-chevron-right icon-accessory"></i>
         </a>
       </div>

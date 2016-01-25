@@ -21,7 +21,7 @@ module.exports = {
 
   GetByUid: function (req, res) {
     var uid = req.params.uid;
-    var result = Notification.find({to: uid})
+    var result = Notification.find({to: uid, viewed: false})
       .sort({updated: -1})
       .exec(function (err, items) {
         if (!items || items.length < 1)

@@ -380,44 +380,6 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize','resourceCtrl','
 
   //============================================================================================================
 
-  // 用户账号管理
-  .controller('AccountCtrl', function($scope,$state,$rootScope,$http,$cordovaToast,Videos,Util) {
-
-    // 如果没有登录，去登录
-    if (!localStorage['authorized'] || localStorage['authorized'] != 'yes'){
-      $state.go('signin');
-      return;
-    }
-
-    // 公用的函数
-    $scope.setAuthorVideos = function(uid){
-      var author_votes = 0;
-      $scope.usr = [];
-      Videos.getAuthorVideos(uid)
-        .then(function (author_videos) {
-          $scope.usr.videoNo = author_videos.length;
-          for (var j = 0; j < author_videos.length; j++) {
-            author_votes += author_videos[j].vote;
-          }
-          $scope.usr.totalVotes = author_votes;
-
-        });
-    }
-
-    $scope.cell = '';
-    if (!localStorage['cell'])
-      $scope.user_name = '我未登录';
-    else{
-      $scope.icon = localStorage['icon'];
-      $scope.icon += '?v=' + Util.randomId();
-      $scope.user_name = localStorage['name'];
-      $scope.cell = localStorage['cell'];
-      $scope.gender = localStorage['gender'];
-      var uid = window.localStorage["uid"];
-      $scope.setAuthorVideos(uid);
-    }
-
-  })
 
   //--------------------------------------------------------------------------------------------------------------
   .directive('onFinishRender', function () {

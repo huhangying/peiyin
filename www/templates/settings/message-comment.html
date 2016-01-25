@@ -1,0 +1,27 @@
+<ion-view cache-view="false" view-title="我收到的最新评论">
+  <ion-nav-buttons side="left"> <!-- left -->
+    <a class="button button-icon icon ion-ios-arrow-back" href="#/settings/message"></a>
+  </ion-nav-buttons>
+
+  <ion-content class="mybackground">
+
+    <div class="list">
+      <div class="item item-thumbnail-left" ng-repeat="comment in comments">
+        <img src="http://101.200.81.99:808/{{comment.video.icon}}" class="img-fixed">
+        <div style="font-size: .7em;color:#cccccc;">
+          {{comment.video.name}}
+        </div>
+        <div style="font-size:.8em;color:gray;">
+          {{comment.comment}}
+        </div>
+        <div style="font-size: .7em;color:#cccccc;">
+          来自：{{comment.author.name}}
+        </div>
+        <div style="font-size: .7em;color:#cccccc;">
+          {{comment.created | date:'MM-dd HH:mm'}}
+        </div>
+      </div>
+    </div>
+
+  </ion-content>
+</ion-view>

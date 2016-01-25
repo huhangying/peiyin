@@ -32,13 +32,21 @@
           <i class="icon ion-chevron-right icon-accessory"></i>
         </a>
       </div>
+      <div class="item row ">
+        <span class="col col-10 text-center"><i class="icon ion-ios-heart-outline"></i></span>
+        <a class="col col-90 with-bottom-border item-icon-right mytext" href="#/settings/favor">
+          赞
+          <i class="icon ion-chevron-right icon-accessory"></i>
+        </a>
+      </div>
     </div>
 
     <div class="list list-borderless row-no-padding">
       <div class="item row ">
         <span class="col col-10 text-center"><i class="icon ion-ios-email-outline"></i></span>
         <a class="col col-90 with-no-bottom-border item-icon-right mytext" href="#/settings/message">
-          消息通知 &nbsp; <span class="badge badge-assertive" style="font-size:xx-small;line-height:10px;">1</span>
+          消息通知 &nbsp;
+          <span class="badge badge-assertive" style="font-size:xx-small;line-height:12px;" ng-show="messageCount>0">{{messageCount}}</span>
           <i class="icon ion-chevron-right icon-accessory"></i>
         </a>
       </div>

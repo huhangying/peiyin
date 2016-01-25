@@ -187,6 +187,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
       templateUrl: 'templates/settings/message-detail.html',
       controller: 'MessageDetailCtrl'
     })
+    .state('message-comment', {
+      url: '/settings/message-comment',
+      templateUrl: 'templates/settings/message-comment.html',
+      controller: 'MessageCommentCtrl'
+    })
+    .state('favor', {
+      url: '/settings/favor',
+      templateUrl: 'templates/settings/favor.html',
+      controller: 'FavorCtrl'
+    })
     .state('editme', {
       url: '/settings/editme',
       templateUrl: 'templates/settings/editme.html',
