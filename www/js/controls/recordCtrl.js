@@ -232,7 +232,7 @@ angular.module('recordCtrl', ['util'])
 
 
       // 看，还有相关的推荐配音视频
-      Videos.getByTag(1, $scope.myvideo.tags[0]).then(function(data){
+      Videos.getByTag(1, $scope.myvideo.tags.split(',')[0]).then(function(data){
         // alert($scope.myvideo._id + '/' + data.length)
         $scope.tagVideos = data;
       });

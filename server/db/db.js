@@ -55,15 +55,15 @@ router.route('/videos/voted/:uid')
 router.route('/videos/parent/:vid/:sort')
   .get(Video.getBrotherVideos);
 router.route('/video')
-  .post(urlencodedParser, Video.Add);
+  .post(urlencodedParser, Video.Add)
+  .put(urlencodedParser, Video.Update);
 router.route('/video/:vid')
-  .get(Video.getOne);
-//router.route('/video/add/:vid')
-//  .get(Video.Add);
-router.route('/video/update/:vid')
-  .get(Video.Update);
-router.route('/video/delete/:vid')
+  .get(Video.getOne)
+  .delete(Video.Delete);
+router.route('/video/delete/:vid') //manual
   .get(Video.Delete);
+//router.route('/video/update/:vid')
+//  .get(Video.Update);
 router.route('/video/addcomment/:vid/:cid')
   .get(Video.AddComment);
 router.route('/vote/:vid/:uid')

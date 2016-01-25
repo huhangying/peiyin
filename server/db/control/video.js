@@ -37,14 +37,12 @@ module.exports = {
 
   getByTypeTag: function(req, res){
     var type = '',tag='';
-    //var type = '',tags=[];
     if (req.params){
       type = req.params.type;
       tag = req.params.tag;
-      //tags = req.params.tag.split(',');
     }
 
-    Video.find({type: type, tags: tag})
+    Video.find({type: type, tags: new RegExp(tag, "i")})
       .populate('author')
       .exec(function (err, videos) {
         if (!videos)
@@ -128,27 +126,31 @@ module.exports = {
 
   },
   Update: function(req, res){
-    var vid = '';
-    if (req.params)
-      vid = req.params.vid;
-    var conditions = {name : '1'};
-    var fields     = {url : 'ciwen.com', desc : 'some desc',author: vid};
-    var options    = {upsert : true};
-    //res.send(Video.getTest());
-    //Video.update(conditions, update);
+    var video = req.body;
+    //console.log(JSON.stringify(video));
+    var conditions = {_id : video._id};
+    var fields     = {url : video.url, name: video.name, desc: video.desc, poster: video.poster, icon: video.icon, tags: video.tags, author: video.author};
+    var options    = {upsert : false};
+
     Video.update(conditions, fields, options,function (err, raw) {
-      if (err) return console.error(err);
-      res.send('update success: ', raw);
+      if (err){
+        console.error(err);
+        return res.send('error');
+      }
+      res.json(raw);
     });
   },
   Delete: function(req, res){
     var vid = '';
     if (req.params)
       vid = req.params.vid;
-    Video.remove({url: vid}, function(err){
-      if (err)
+    Video.remove({_id: vid}, function(err){
+      if (err){
+        res.send('error');
         return console.error(err);
-      res.send('removed url=' + vid);
+      }
+      console.log('video deleted: ' + vid)
+      res.status(200).send('removed url=' + vid);
     });
   },
 

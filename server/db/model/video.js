@@ -19,7 +19,7 @@ var _Video = Schema({
   //from: String,
   author: {type: Schema.Types.ObjectId, ref: 'user' },
   vote: Number,
-  tags: { type: [String], index: true },
+  tags: { type: String, index: true },
   comments: [{type: Schema.Types.ObjectId, ref: 'comment' }], //comment model定义的名字，跟数据库表名相关
   apply: {type : Boolean, default: true}
 });
