@@ -8,12 +8,16 @@
       }
       .slide-item{width:100%;}
     </style>
+    <div class="mybar" ng-show="downloadProgress>0">
+      <div style="width:{{downloadProgress}}%;">
+      </div>
+    </div>
     <ion-slide-box pager-click="navSlide(index)" auto-play="true" does-continue="true" style="margin-bottom:-4px;">
       <ion-slide ng-repeat="s in ['a.jpg', 'b.jpg', 'c.jpg', 'd.jpg']">
         <img class="slide-item" height="{{slideHeight}}" src="img/{{s}}">
       </ion-slide>
     </ion-slide-box>
-    <div class="item item-divider">热门推荐 {{downloadProgress}}</div>
+    <div class="item item-divider">热门推荐</div>
 
 
 

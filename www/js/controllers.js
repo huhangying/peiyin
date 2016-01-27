@@ -12,9 +12,11 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize','resourceCtrl','
      * */
     document.addEventListener("deviceready", function () {
       $cordovaAppVersion.getVersionNumber().then(function (version) {
+        $rootScope.version = version;
 //        alert(version)
 //var version = '0.0.2'
         App.getConfig('version').then(function(lastest_version){
+          $rootScope.lastestVerson = lastest_version;
           if (lastest_version.localeCompare(version) > 0){
             // 如果有更新的版本, for Android
             if (ionic.Platform.isAndroid()){
@@ -66,8 +68,6 @@ angular.module('starter.controllers', ['ngCordova','ngSanitize','resourceCtrl','
 
       });
     }, false);
-
-
 
     $scope.slideHeight = Util.slideHeight();
     $scope.navSlide = function(index) {

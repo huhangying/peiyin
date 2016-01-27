@@ -62,7 +62,7 @@ angular.module('settingsCtrl', [])
   //==========================================================================================
 
 
-  .controller('SettingsCtrl', function($scope, Users, $state, $rootScope, Videos, $stateParams,$ionicNavBarDelegate) {
+  .controller('SettingsCtrl', function($scope, $rootScope, Users, $state) {
 
 
     // MUTED related!
@@ -85,6 +85,15 @@ angular.module('settingsCtrl', [])
       localStorage['uid'] = '';
       $rootScope.previousState = '';
       $state.go('tab.home');
+    }
+
+    $scope.checkVersion = function(){
+      if ($rootScope.lastestVerson.localeCompare($rootScope.version) > 0) {
+        $scope.versoinResult = '有新版本 ' + $rootScope.lastestVerson;
+      }
+      else{
+        $scope.versoinResult = '当前版本 ' + $rootScope.version + '已经是最新';
+      }
     }
   })
 

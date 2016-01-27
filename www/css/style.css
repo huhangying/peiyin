@@ -1,3 +1,7 @@
+.tabs .tab-item{
+  padding-top:4px;line-height:8px!important;
+}
+
 /* Empty. Add your own CSS if you like */
 .wide-item {
   width: 10000px;
@@ -66,3 +70,7 @@ a{text-decoration: none;}
 .myavatar{border-radius:50%; height:30px;}
 .mytab{margin:0 1px 0 0; color:gray; background-color: #eeeeee; height: 40px;line-height:17px;font-size:13px;}
 .mybackground{background-color: #e2dddd;}
+
+.mybar { position: relative; width: 100%;}
+.mybar div{ display: block; position: relative;background: #ffc94c;/* 进度条背景颜色 */height: 2px;line-height: 2px;}
+

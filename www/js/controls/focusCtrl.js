@@ -160,141 +160,89 @@ angular.module('focusCtrl', [])
     $scope.fans = []; //
 
 
-    //$scope.videos = [];
-    //$scope.getAllFocusVideos = function() {
-    //
-    //  Videos.all(0).then(function(videos){
-    //    $scope.videos = [];
-    //
-    //    if (videos == 'null'){
-    //      $state.go('tab.focusAdd')
-    //      $cordovaToast.showShortCenter('没有视频');
-    //      return;
-    //    }
-    //
-    //    videos.forEach(function(video){
-    //
-    //      if (video.author){
-    //        // 视频有主，并且并关注
-    //        //alert(video.author._id)
-    //        Users.checkFocus(uid, video.author._id)
-    //          .then(function(data){
-    //            if (data == 'true' || data == true){
-    //              $scope.videos.push(video);
-    //            }
-    //
-    //            if (!$scope.videos || $scope.videos.length < 1){
-    //              //$state.go('tab.focusAdd');
-    //              //$cordovaToast.showShortCenter('没有关注视频，请先关注');
-    //            }
-    //
-    //          });
-    //      }
-    //    });
-    //
-    //  });
-    //}
+    $scope.title = '个人主页';
 
-    //if (!$scope.isPersonPage){
-    //  $scope.title = '关注';
-    //
-    //  // 没有设置 author， 则显示全部关注的视频
-    //  Users.getUserInterests(uid)
-    //    .then(function(data){
-    //      //alert(JSON.stringify(data))
-    //      if (!data || data.length < 1){
-    //        // go and add more interest
-    //        $state.go('tab.focusAdd');
-    //        return;
-    //      }
-    //      $scope.getAllFocusVideos();
-    //    });
-    //}
-    //else
-    //{
-      $scope.title = '个人主页';
+    Users.GetById(author_id).then(function(author){
+      if (author != 'error' && author != 'null'){
+        $scope.author = author;
+      }
 
-      Users.GetById(author_id).then(function(author){
-        if (author != 'error' && author != 'null'){
-          $scope.author = author;
+      // 根据情况添加关注
+      if ($scope.author){
+        // 不能关注自己
+        if ( $scope.author._id == uid){
+          $scope.showFocus = false;
         }
-
-        // 根据情况添加关注
-        if ($scope.author){
-          // 不能关注自己
-          if ( $scope.author._id == uid){
-            $scope.showFocus = false;
-          }
-          else { // 关注别人
-            $scope.showFocus = true;
-            // check if focus already
-            var isFocus = Users.checkFocus(uid, $scope.author._id)
-              .then(function(data){
-                if (data == true){
-                  $scope.noFocus = false;
-                }
-                else{
-                  $scope.noFocus = true;
-                }
-                $scope.$apply();
-              });
-          }
+        else { // 关注别人
+          $scope.showFocus = true;
+          // check if focus already
+          var isFocus = Users.checkFocus(uid, $scope.author._id)
+            .then(function(data){
+              if (data == true){
+                $scope.noFocus = false;
+              }
+              else{
+                $scope.noFocus = true;
+              }
+              $scope.$apply();
+            });
         }
+      }
 
-        // 该作者的作品
-        Videos.getAuthorVideos(author_id).then(function(videos){
-          if (videos== 'null'){
-            $cordovaToast.showShortCenter('没有发现该作者相关的视频');
-            return;
-          }
-          $scope.yourVideos = videos;
+      // 该作者的作品
+      Videos.getAuthorVideos(author_id).then(function(videos){
+        if (videos== 'null'){
+          $cordovaToast.showShortCenter('没有发现该作者相关的视频');
+          return;
+        }
+        $scope.yourVideos = videos;
 
-          if (mode_id == 1)
-            $scope.setMode(1); // default=1: 显示该作者的作品
-
-        });
-
-        // 该作者点过赞的作品
-        Videos.getVotedVideos(author_id).then(function(videos){
-          if (videos== 'null'){
-            $cordovaToast.showShortCenter('没有发现该作者喜欢的视频');
-            return;
-          }
-          $scope.yourVotedVideos = videos;
-
-          if (mode_id == 2)
-            $scope.setMode(2);
-        });
-
-        // 该作者关注的人
-        Users.getUserInterests(author_id)
-          .then(function(data){
-            //alert(JSON.stringify(data))
-            if (data && data.length > 0){
-              $scope.authorInterestedUsers = data[0].interests;
-              //
-              $scope.setFocus($scope.authorInterestedUsers);
-            }
-            if (mode_id == 3)
-              $scope.setMode(3);
-          });
-
-        // 该作者的粉丝（关注改作者的人）
-        Users.getFans(author_id)
-          .then(function(fans){
-            //alert(JSON.stringify(data))
-            if (fans && fans.length > 0){
-              $scope.fans = fans;
-              //
-              $scope.setFocus($scope.fans);
-            }
-            if (mode_id == 4){
-              $scope.setMode(4);
-            }
-          });
-
+        if (mode_id == 1)
+          $scope.setMode(1); // default=1: 显示该作者的作品
 
       });
+
+      // 该作者点过赞的作品
+      Videos.getVotedVideos(author_id).then(function(videos){
+        if (videos== 'null'){
+          $cordovaToast.showShortCenter('没有发现该作者喜欢的视频');
+          return;
+        }
+        $scope.yourVotedVideos = videos;
+
+        if (mode_id == 2)
+          $scope.setMode(2);
+      });
+
+      // 该作者关注的人
+      Users.getUserInterests(author_id)
+        .then(function(data){
+          //alert(JSON.stringify(data))
+          if (data && data.length > 0){
+            $scope.authorInterestedUsers = data[0].interests;
+            //
+            $scope.setFocus($scope.authorInterestedUsers);
+          }
+          if (mode_id == 3)
+            $scope.setMode(3);
+        });
+
+      // 该作者的粉丝（关注改作者的人）
+      Users.getFans(author_id)
+        .then(function(fans){
+          //alert(JSON.stringify(data))
+          if (fans && fans.length > 0){
+            $scope.fans = fans;
+            //
+            $scope.setFocus($scope.fans);
+          }
+          if (mode_id == 4){
+            $scope.setMode(4);
+          }
+        });
+
+
+    });
 
 
 

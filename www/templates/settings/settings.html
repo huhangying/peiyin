@@ -24,24 +24,17 @@
 
     <div class="list list-borderless row-no-padding">
       <div class="item row ">
-        <a class="col col-90 with-bottom-border item-icon-right mytext" href="#/settings/feedback">
+        <a class="col col-90 with-no-bottom-border item-icon-right mytext" href="#/settings/feedback">
           意见反馈
           <i class="icon ion-chevron-right icon-accessory"></i>
         </a>
-      </div>
-      <div class="item row ">
-        <span class="col col-90 with-no-bottom-border item-icon-right mytext">
-          版本检测
-          <a class="icon ion-chevron-right icon-accessory" href="#"></a>
-        </span>
       </div>
     </div>
 
     <div class="list list-borderless row-no-padding">
       <div class="item row ">
-        <div class="col col-90 with-no-bottom-border item-icon-right mytext">
-          新消息提醒
-          <a class="icon ion-chevron-right icon-accessory" href="#"></a>
+        <div class="col col-90 with-no-bottom-border item-icon-right mytext" ng-click="checkVersion()" >
+          版本检测 &nbsp;&nbsp;&nbsp;&nbsp; <i class="positive">{{versoinResult}}</i>
         </div>
       </div>
     </div>

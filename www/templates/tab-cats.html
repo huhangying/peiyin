@@ -1,12 +1,14 @@
 <ion-view view-title="资源库">
-  <ion-content>
-    <ion-list>
-      <div class="row text-center item-divider-ios" style="padding:2px 0 0 0; font-size:12px; line-height: 12px;padding-top:1px;margin-bottom:-1px;">
-        <div class="col {{$index == selectedTagIndex ? 'tab_selected':''}}" ng-repeat="tag in tags" ng-click="setContent(tag.tag, $index)">
-          {{tag.tag}}
-        </div>
+  <ion-list>
+    <div class="row text-center item-divider-ios" style="position:fixed; top:44px;z-index: 1000; padding:2px 0 0 0; font-size:12px; line-height: 12px;padding-top:1px;margin-bottom:-1px;">
+      <div class="col {{$index == selectedTagIndex ? 'tab_selected':''}}" ng-repeat="tag in tags" ng-click="setContent(tag.tag, $index)">
+        {{tag.tag}}
       </div>
-    </ion-list>
+    </div>
+  </ion-list>
+  <ion-content>
+
+    <br>
     <ion-list>
       <ion-item class="item-avatar item-icon-right" ng-repeat="video in videos" type="item-text-wrap" href="#/record/{{video._id}}">
         <img ng-src="http://101.200.81.99:808/{{video.poster}}">
