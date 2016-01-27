@@ -214,16 +214,6 @@ angular.module('recordCtrl', ['util'])
   }
 
 
-  $scope.hideLoading = function(){
-    $ionicLoading.hide();
-  }
-
-  $ionicLoading.show({
-    template: '<i ng-click="hideLoading()">视频加载中...</i>',
-    duration: 20000,
-    noBackdrop:true
-  });
-
   $scope.loadVideoByid = function(id){
 
     Videos.get(id).then(function(data){
@@ -281,7 +271,15 @@ angular.module('recordCtrl', ['util'])
     $scope.loadVideoByid($stateParams.catId);
 
 
+    $scope.hideLoading = function(){
+      $ionicLoading.hide();
+    }
 
+    $ionicLoading.show({
+      template: '<i ng-click="hideLoading()">视频加载中...</i>',
+      duration: 20000,
+      noBackdrop:true
+    });
 
     $scope.my_player.on("loadeddata", function(a){
       if ($scope.duration < 1) return;

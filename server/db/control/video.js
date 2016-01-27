@@ -43,6 +43,7 @@ module.exports = {
     }
 
     Video.find({type: type, tags: new RegExp(tag, "i")})
+      .sort({datetime: -1})
       .populate('author')
       .exec(function (err, videos) {
         if (!videos)
@@ -163,7 +164,7 @@ module.exports = {
 
     var conditions = {_id : vid};
     var fields     = {$inc: { vote: 1 }};
-    var options    = {upsert : true};
+    var options    = {upsert : false};
     //res.send(Video.getTest());
     //Video.update(conditions, update);
     Video.update(conditions, fields, options,function (err, raw) {
@@ -186,7 +187,7 @@ module.exports = {
 
     var conditions = {_id : vid};
     var fields     = {$inc: { vote: -1 }};
-    var options    = {upsert : true};
+    var options    = {upsert : false};
     //res.send(Video.getTest());
     //Video.update(conditions, update);
     Video.update(conditions, fields, options,function (err, raw) {

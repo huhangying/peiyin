@@ -20,10 +20,26 @@
     <div class="item item-divider">热门推荐</div>
 
 
-
-    <div class="row row-no-padding" ng-repeat="video in videos" ng-if="$index % 2 === 0" style="height:125px">
-      <div class="col col-50" ng-if="$index < videos.length">
-        <!--<a href="#/video/{{videos[$index]._id}}">-->
+    <div class="row row-no-padding" style="height:126px;">
+      <div class="col col-50" style="padding-right:1px;">
+        <a  href="#/resource/5698b07f9ad49e2a28cf2f6d">
+          <img src="http://101.200.81.99:808/assets/4994438-1.jpg" class="img-fixed" />
+        </a>
+        <div class="move-up-note-royal light assertive-bg">
+          上海话 + 英语
+        </div>
+      </div>
+       <div class="col col-50">
+          <a href="#/resource/56a5cd3f70a70a52335706a2">
+            <img src="http://101.200.81.99:808/assets/5237300-1.jpg" class="img-fixed" />
+          </a>
+          <div class="move-up-note-energized">
+            台湾腔东北话 part3
+          </div>
+      </div>
+    </div>
+    <div class="row row-no-padding" ng-repeat="video in videos" ng-if="$index % 2 === 0" style="height:126px">
+      <div class="col col-50" style="padding-right:1px;" ng-if="$index < videos.length">
         <a ui-sref="video({vid: videos[$index]._id})">
           <img src="http://101.200.81.99:808/{{videos[$index].poster}}" class="img-fixed" />
         </a>
@@ -35,7 +51,6 @@
         </div>
       </div>
       <div class="col col-50" ng-if="$index + 1 < videos.length">
-        <!--<a href="#/video/{{videos[$index+1]._id}}">-->
         <a ui-sref="video({vid: videos[$index+1]._id})">
         <img src="http://101.200.81.99:808/{{videos[$index+1].poster}}" class="img-fixed" />
         </a>

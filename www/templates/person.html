@@ -30,9 +30,9 @@
 
 
 
-    <div class="row row-no-padding" ng-repeat="video in videos" ng-if="$index % 2 === 0" ng-show="mode != 3 && mode != 4" style="height:125px">
+    <div class="row row-no-padding" ng-repeat="video in videos" ng-if="$index % 2 === 0" ng-show="mode != 3 && mode != 4" style="height:126px">
 
-      <div class="col col-50" ng-if="$index < videos.length">
+      <div class="col col-50" style="padding-right:1px;" ng-if="$index < videos.length">
         <a href="#/video/{{videos[$index]._id}}">
           <img src="http://101.200.81.99:808/{{videos[$index].poster}}" class="img-fixed" />
         </a>
@@ -72,11 +72,12 @@
           <div>{{usr.name}}</div>
           <div class="row row-no-padding">
             <div class="col col-20"><i class="icon ion-ios-film-outline"> {{usr.videoNo}}</i></div>
-            <div class="col "><i class="icon ion-ios-heart"> {{usr.totalVotes}}</i></div>
+            <div class="col"><i class="icon ion-ios-heart"> {{usr.totalVotes}}</i></div>
           </div>
         </div>
-        <div class="col col-10" style="padding:12px 12px 0 0;">
+        <div class="col col-10" style="padding:14px 22px 0 0;">
           <ion-checkbox class="item-borderless" ng-model="!usr.noFocus" ng-click="modifyInterest(usr.noFocus, usr._id)"></ion-checkbox>
+          &nbsp;&nbsp;
         </div>
       </div>
     </ion-item>

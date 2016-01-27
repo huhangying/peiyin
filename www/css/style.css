@@ -58,6 +58,16 @@
   color:white;
   position:absolute;
 }
+
+.move-up-note-royal{margin:-24px 0 0 0; font-size: .75em; text-align: center; width:50%;color:white; position:absolute;
+  background: rgba(136, 106, 234, 0.8) none repeat scroll 0 0 !important;/*实现FF背景透明，文字不透明*/
+  filter:Alpha(opacity=0.8); background:#886aea;/*实现IE背景透明*/}
+.move-up-note-positive{margin:-24px 0 0 0; font-size: .75em; text-align: center; width:50%;color:white; position:absolute;
+  background: rgba(56, 126, 245, 0.8) none repeat scroll 0 0 !important;/*实现FF背景透明，文字不透明*/
+  filter:Alpha(opacity=0.8); background:#387ef5;/*实现IE背景透明*/}
+.move-up-note-energized{margin:-24px 0 0 0; font-size: .75em; text-align: center; width:50%;color:white; position:absolute;
+  background: rgba(255, 201, 0, 0.8) none repeat scroll 0 0 !important;/*实现FF背景透明，文字不透明*/
+  filter:Alpha(opacity=0.8); background:#ffc900;/*实现IE背景透明*/}
 .move-up-note img{ border-radius:50%; height:30px;margin-top:-15px}
 
 a{text-decoration: none;}
